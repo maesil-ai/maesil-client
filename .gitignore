@@ -36,6 +36,3 @@ yarn-error.log*
 logs
 **/*.backup.*
 **/*.back.*
-
-# SECRET
-/src/secret.ts
