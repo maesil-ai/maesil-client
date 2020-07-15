@@ -4,7 +4,7 @@ import api_address from '../secret';
 import axios from 'axios';
 import React from 'react';
 import Screen from '../components/Screen';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';

@@ -55,9 +55,9 @@ const defaultInput : posenet.ModelConfig = {
     quantBytes: 2,
 };
 
-const defaultResNetMultiplier = 1.0;
-const defaultResNetStride = 32;
-const defaultResNetInputResolution = 250;
+// const defaultResNetMultiplier = 1.0;
+// const defaultResNetStride = 32;
+// const defaultResNetInputResolution = 250;
 
 class Screen extends React.Component<ScreenProps, ScreenState> {
     canvas: React.RefObject<HTMLCanvasElement>;
