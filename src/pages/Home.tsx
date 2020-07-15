@@ -1,19 +1,24 @@
 import api_address from '../secret';
+
+// @ts-ignore
 import axios from 'axios';
 import React from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 interface HomeProps {
 
 };
 
-interface video {
+interface exercise {
     id: number,
     url: string,
 };
 
 interface HomeState {
-    videos: video[],
+    exercises: exercise[],
     select: number,
 };
 
@@ -21,39 +26,40 @@ class Home extends React.Component<HomeProps, HomeState> {
     constructor(props : HomeProps) {
         super(props);
         this.state = {
-            videos: [],
+            exercises: [],
             select: -1,
         };
     }
 
-    loadVideo = async () => {
-        axios({
-            url: api_address,
-            method: 'GET',
-        }).then((response : any) => {
-            let videoData = response.data.result;
-            var videos : video[] = [{
+    loadExercises = async () => {
+        axios.get(
+            api_address + '/exercises/',
+        ).then((response) => {
+            let exerciseData = response.data.result;
+            var exercises : exercise[] = [{
                 id: -1,
                 url: "눌러서 선택해주세요~~",
             }];
-            for (let video of videoData) {
-                videos.push({
-                    id: video.video_id, 
-                    url: video.video_url
+            for (let exercise of exerciseData) {
+                exercises.push({
+                    id: exercise.exercise_id, 
+                    url: exercise.video_url
                 });
             }
             this.setState({
                 ...this.state,
-                videos: videos,
+                exercises: exercises,
             });
+        }).catch((error) => {
+            
         });
     }
 
     componentDidMount() {
-        this.loadVideo();
+        this.loadExercises();
     }
 
-    onVideoSelect = (event : any) => {
+    onItemSelect = (event : any) => {
         this.setState({
             ...this.state,
             select: event.target.value,
@@ -62,17 +68,19 @@ class Home extends React.Component<HomeProps, HomeState> {
     }
 
     render() {
-        let options = this.state.videos.map(({id, url}, key) => (<option value={id} key={key}>{url}</option>));
+        let options = this.state.exercises.map(({id, url}, key) => (<option value={id} key={key}>{url}</option>));
         return (
             <div>
-                <select onChange = { this.onVideoSelect }>
+                <Header/>
+                <select onChange = { this.onItemSelect }>
                     { options }
                 </select>
-                <Link to={"/" + (this.state.select === -1 ? "" : this.state.select)}>
+                <Link to={"/exercise/" + (this.state.select === -1 ? "" : this.state.select)}>
                     <button>
                         Pose estimation.. 해볼래?
                     </button>
                 </Link>
+                <Footer/>
             </div>
         );
     }

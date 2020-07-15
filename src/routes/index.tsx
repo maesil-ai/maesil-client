@@ -1,13 +1,15 @@
 import React from 'react';
 import Home from '../pages/Home';
-import Video from '../pages/Video';
+import Exercise from '../pages/Exercise';
+import Result from '../pages/Result';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 const Root: React.FC = () => (
     <BrowserRouter>
         <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/:id" component={Video} />
+            <Route path="/exercise/:id" component={Exercise} />
+            <Route path="/result" component={Result} />
             <Redirect path="*" to="/" />
         </Switch>
     </BrowserRouter>

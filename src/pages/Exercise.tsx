@@ -1,25 +1,32 @@
 import api_address from '../secret';
+
+// @ts-ignore
 import axios from 'axios';
 import React from 'react';
 import Screen from '../components/Screen';
+import { Link } from 'react-router-dom';
 
-interface VideoProps {
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
+interface ExerciseProps {
     match: any,
+    history?: any,
 };
 
-interface VideoState {
+interface ExerciseState {
     isLoading: boolean,
     id: number,
     url?: string,
 };
 
-class Video extends React.Component<VideoProps, VideoState> {
+class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     guideVideo = React.createRef<HTMLVideoElement>();
     userVideo = React.createRef<HTMLVideoElement>();
     videoWidth = 800;
     videoHeight = 600;
 
-    constructor(props : VideoProps) {
+    constructor(props : ExerciseProps) {
         super(props);
 
         this.state = {
@@ -29,10 +36,7 @@ class Video extends React.Component<VideoProps, VideoState> {
     }
 
     loadVideo = async (id : number) => {
-        let response = await axios({
-            url: api_address + '/' + id,
-            method: 'GET',
-        });
+        let response = await axios.get(api_address + '/exercises/' + id);
         return response.data.result.video_url;
     }
 
@@ -61,18 +65,28 @@ class Video extends React.Component<VideoProps, VideoState> {
 
             new Promise((resolve) => {
                 let cnt = 0;
-                guideVideo.onloadeddata = () => {
-                    cnt += 1;
-                    if (cnt >= 2) resolve();
-                };
-                userVideo.onloadeddata = () => {
+                let incrementCnt = () => {
                     cnt += 1;
                     if (cnt >= 2) resolve();
                 }
+                guideVideo.onloadeddata = incrementCnt;
+                userVideo.onloadeddata = incrementCnt;
             }).then(() => this.setState({
                 ...this.state,
                 isLoading: false,
             }));
+        });
+    }
+
+    onExerciseFinish = (data) => {
+        axios.post(api_address + "/exercises/" + this.state.id + "/history", {
+            "score": -1,
+            "play_time": "00:01:03",
+            "cal": -1,
+        }).then((response) => {
+            this.props.history.push('/result');
+        }).catch((error) => {
+            
         });
     }
 
@@ -98,12 +112,15 @@ class Video extends React.Component<VideoProps, VideoState> {
 
         if (this.state.isLoading) return (
             <div>
+                <Header/>
                 { videos }
-                Loading......
+                운동 불러오는 중...
+                <Footer/>
             </div>
         );
         else return (
             <div>
+                <Header/>
                 { videos }
                 <Screen
                     videoWidth = { this.videoWidth }
@@ -121,9 +138,13 @@ class Video extends React.Component<VideoProps, VideoState> {
                         }
                     ]}
                 />
+                <button onClick={ this.onExerciseFinish }>
+                    그냥 결과창 보내기        
+                </button>
+                <Footer/>
             </div>
         );
     }
 };
 
-export default Video;
+export default Exercise;
