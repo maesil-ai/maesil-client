@@ -1,13 +1,12 @@
-import api_address from '../secret';
+import apiAddress from '../secret';
 
 // @ts-ignore
 import axios from 'axios';
 import React from 'react';
 import Screen from '../components/Screen';
-// import { Link } from 'react-router-dom';
-
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Redirect } from 'react-router-dom';
 
 interface ExerciseProps {
     match: any,
@@ -16,9 +15,30 @@ interface ExerciseProps {
 
 interface ExerciseState {
     isLoading: boolean,
+    isFinished: boolean,
+    redirectToResult: boolean,
     id: number,
     url?: string,
+    score: number,
+    time: number,
+    calorie: number,
 };
+
+function timeToString(time : number) {
+    let sec0 = time % 10;
+    time = (time - sec0) / 10;
+    let sec1 = time % 6;
+    time = (time - sec1) / 6;
+    let min0 = time % 10;
+    time = (time - min0) / 10;
+    let min1 = time % 6;
+    time = (time - min1) / 6;
+    let hr0 = time % 10;
+    time = (time - hr0) / 10;
+    let hr1 = time % 10;
+    
+    return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`
+}
 
 class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     guideVideo = React.createRef<HTMLVideoElement>();
@@ -31,12 +51,17 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
         this.state = {
             isLoading: true,
+            isFinished: false,
+            redirectToResult: false,
             id: props.match.params.id,
-        }
+            score: 10.21,
+            time: 63,
+            calorie: 731,
+        };
     }
 
     loadVideo = async (id : number) => {
-        let response = await axios.get(api_address + '/exercises/' + id);
+        let response = await axios.get(apiAddress + '/exercises/' + id);
         return response.data.result.video_url;
     }
 
@@ -76,21 +101,38 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                 isLoading: false,
             }));
         });
-    }
+    };
 
     onExerciseFinish = (data) => {
-        axios.post(api_address + "/exercises/" + this.state.id + "/history", {
-            "score": -1,
-            "play_time": "00:01:03",
-            "cal": -1,
+        axios.post(apiAddress + "/exercises/" + this.state.id + "/history", {
+            "score": this.state.score,
+            "play_time": timeToString(this.state.time),
+            "cal": this.state.calorie,
         }).then((response) => {
-            this.props.history.push('/result');
+            // response.data.code != 200이면?
+            console.log(response);
+            if (response.data.code === 200) {
+                this.setState({
+                    ...this.state,
+                    redirectToResult: true,
+                });
+            }
         }).catch((error) => {
             
         });
     }
 
     render() {
+        if (this.state.redirectToResult) {
+            return <Redirect push to={{
+                pathname: "/result",
+                state: {
+                    score: this.state.score,
+                    time: this.state.time,
+                    calorie: this.state.calorie,
+                }
+            }}/>
+        }
         let videos = (
             <div>
                 <video

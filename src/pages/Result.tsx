@@ -1,4 +1,4 @@
-import api_address from '../secret';
+import apiAddress from '../secret';
 
 // @ts-ignore
 import axios from 'axios';
@@ -17,7 +17,7 @@ interface Stats {
 
 interface ResultProps {
     exerciseId : number,
-    stats: Stats,
+    location: any,
 };
 
 interface ResultState {
@@ -26,8 +26,17 @@ interface ResultState {
 };
 
 class Result extends React.Component<ResultProps, ResultState> {
+    stats: Stats;
+
     constructor(props) {
         super(props);
+
+        console.log(this.props);
+        this.stats = {
+            time: this.props.location.state.time,
+            calorie: this.props.location.state.calorie,
+            score: this.props.location.state.score,
+        };
 
         this.state = {
             loading: true,
@@ -37,7 +46,7 @@ class Result extends React.Component<ResultProps, ResultState> {
     componentDidMount = () => {
         axios({
             method: "GET",
-            url: api_address + "/exercises/" + 1,
+            url: apiAddress + "/exercises/" + 1,
         }).then((response) => {
             let exerciseName = response.data.result.title;
 
@@ -63,7 +72,7 @@ class Result extends React.Component<ResultProps, ResultState> {
                 </div>
             );
         } else {
-            let stats = this.props.stats;
+            let stats = this.stats;
             if (!stats) {
                 stats = {
                     time: 63,

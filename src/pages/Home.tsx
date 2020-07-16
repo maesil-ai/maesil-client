@@ -1,4 +1,4 @@
-import api_address from '../secret';
+import apiAddress from '../secret';
 
 // @ts-ignore
 import axios from 'axios';
@@ -33,7 +33,7 @@ class Home extends React.Component<HomeProps, HomeState> {
 
     loadExercises = async () => {
         axios.get(
-            api_address + '/exercises/',
+            apiAddress + '/exercises/',
         ).then((response) => {
             let exerciseData = response.data.result;
             var exercises : exercise[] = [{
