@@ -19,7 +19,7 @@ export async function scorePoseSimilarity(views) {
     if (modelPose == null) return -1;
     if (userPose == null) return 0;
 
-    return poseSimilarity(modelPose, modelPose, {strategy: "weightedDistance"}); // 0일수록 비슷 아마 1넘어가기 힘들듯?
+    return poseSimilarity(modelPose, userPose, {strategy: "weightedDistance"}); // 0일수록 비슷 아마 1넘어가기 힘들듯?
     // return poseSimilarity(modelPose, userPose, {strategy: "cosineDistance"}); // 0일수록 비슷 0~2사이 값 
     // return poseSimilarity(modelPose, userPose, {strategy: "cosineSimilarity"});// -1~1 사이 값, -1이면 방향 완전 반대, 1이면 완전 똑같음
 }
