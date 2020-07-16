@@ -105,11 +105,11 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
                     net: poseNet,
                 }
             });
-            this.drawPose();
+            this.drawCanvas();
         });
     }
 
-    drawPose = () => {
+    drawCanvas = () => {
         const ctx = this.ctx!;
         const guiState = this.state.guiState;
         const net = guiState.net!;
