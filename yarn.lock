@@ -8255,6 +8255,11 @@ portfinder@^1.0.25:
     debug "^3.1.1"
     mkdirp "^0.5.1"
 
+posenet-similarity@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/posenet-similarity/-/posenet-similarity-0.4.7.tgz#b132c7337ceadfcb7fbbb497708e0e535a9ee6da"
+  integrity sha512-q94sW1RQDKpYoOChXDULgs54YSyACQ63ULLlL3qh1Bc7wjK+HHez1QJy4m0I4S+4iunzds/DvzFNlTXtayWFsw==
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
