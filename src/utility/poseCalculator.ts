@@ -28,6 +28,8 @@ const defaultConfig : Config = {
   },
 };
 
+export type Pose = posenet.Pose;
+
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
 // const defaultResNetInputResolution = 250;
@@ -40,8 +42,10 @@ class PoseCalculator {
     video : HTMLVideoElement;
     poseNet : posenet.PoseNet;
     config : Config;
+    readyToUse : boolean;
     modelInUse : boolean;
-    resultPoses : posenet.Pose[][];
+    resultPoses : posenet.Pose[];
+    record : posenet.Pose[];
 
     /**
      * Creates an instance of PoseCalculator.
@@ -53,23 +57,29 @@ class PoseCalculator {
       this.video = video;
       this.config = config;
       this.modelInUse = true;
-      posenet.load(config.model).then((poseNet) => {
-        this.poseNet = poseNet;
-        this.modelInUse = false;
-      });
+      this.readyToUse = false;
       this.resultPoses = [];
+      this.record = [];
+    }
+
+    load = async () => {
+      const poseNet = await posenet.load(this.config.model);
+      this.poseNet = poseNet;
+      this.modelInUse = false;
+      this.readyToUse = true;
     }
 
     // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
 
     getPoseResult = async () => {
       if (this.modelInUse) {
+        if (this.record.length > 0) this.record.push(this.record[this.record.length-1]);
         return false;
       }
 
       this.modelInUse = true;
 
-      let poses : posenet.Pose[][] = [];
+      let poses : posenet.Pose[] = [];
 
       switch (this.config.algorithm) {
         case 'single-pose':
@@ -92,6 +102,8 @@ class PoseCalculator {
           poses = poses.concat(allPoses);
           break;
       }
+
+      if (poses[0]) this.record.push(poses[0]);
 
       this.resultPoses = poses;
       this.modelInUse = false;

@@ -1,11 +1,11 @@
 import React from 'react';
-import PoseCalculator from '../utility/poseCalculator';
+import PoseCalculator, { Pose } from '../utility/poseCalculator';
 import {
   drawBoundingBox,
   drawKeypoints,
   drawSkeleton,
 } from '../utility/draw';
-// import { flipPoseHorizontal } from '@tensorflow-models/posenet/dist/util';
+import { exerciseScore } from '../utility/score';
 
 interface View {
     video: HTMLVideoElement,
@@ -14,24 +14,37 @@ interface View {
     calculator?: PoseCalculator,
 };
 
+interface ViewConfig {
+  flipPoseHorizontal: boolean,
+  showVideo: boolean,
+  showSkeleton: boolean,
+  showPoints: boolean,
+  showBoundingBox: boolean,
+  minPoseConfidence: number,
+  minPartConfidence: number,
+};
+
+const defaultViewConfig = {
+  flipPoseHorizontal: false,
+  showVideo: true,
+  showSkeleton: true,
+  showPoints: true,
+  showBoundingBox: true,
+  minPoseConfidence: 0.15,
+  minPartConfidence: 0.1,
+};
+
 interface ScreenProps {
     videoWidth: number,
     videoHeight: number,
     views: View[],
+    viewConfig: ViewConfig,
+    onExerciseFinish: (record: any) => any,
     match?: any,
 };
 
-interface ViewConfig {
-    flipPoseHorizontal: boolean,
-    showVideo: boolean,
-    showSkeleton: boolean,
-    showPoints: boolean,
-    showBoundingBox: boolean,
-    minPoseConfidence: number,
-    minPartConfidence: number,
-}
-
 interface ScreenState {
+  finishCount: number,
 };
 
 
@@ -42,6 +55,14 @@ interface ScreenState {
  * @extends {React.Component<ScreenProps, ScreenState>}
  */
 class Screen extends React.Component<ScreenProps, ScreenState> {
+    static defaultProps : ScreenProps = {
+      videoWidth: 800,
+      videoHeight: 600,
+      views: [],
+      onExerciseFinish: () => {},
+      viewConfig: defaultViewConfig,
+    };
+
     ctx: CanvasRenderingContext2D;
     canvas: React.RefObject<HTMLCanvasElement>;
     views: View[];
@@ -56,20 +77,31 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       super(props);
 
       this.canvas = React.createRef<HTMLCanvasElement>();
-      this.viewConfig = {
-        flipPoseHorizontal: false,
-        showVideo: true,
-        showSkeleton: true,
-        showPoints: true,
-        showBoundingBox: true,
-        minPoseConfidence: 0.15,
-        minPartConfidence: 0.1,
-      };
+      this.viewConfig = this.props.viewConfig;
       this.views = this.props.views;
+      this.state = {
+        finishCount: 0,
+      };
+
       for (let i=0; i<this.views.length; i++) {
         Object.assign(this.views[i], {
           calculator: new PoseCalculator(this.views[i].video),
         });
+
+        this.views[i].video.onended = () => {
+          let finishCount = this.state.finishCount + 1;
+          this.setState({
+            finishCount: finishCount,
+          });
+
+          if (finishCount === 1) {
+            this.props.onExerciseFinish({
+              score: exerciseScore(this.views[0].calculator.record, this.views[1].calculator.record),
+              time: 63*60,
+              calorie: 1021,
+            });
+          }
+        }
       }
     }
 
@@ -79,13 +111,24 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
      */
     componentDidMount() {
       this.ctx = this.canvas.current!.getContext('2d')!;
-      this.drawCanvas();
+      let promises : Promise<void>[] = [];
+      for (let i=0; i<this.views.length; i++) {
+        promises.push(this.views[i].calculator.load());
+      }
+
+      Promise.all(promises).then(() => {
+        this.drawCanvas();
+      });
     }
 
     drawCanvas = () => {
       const ctx = this.ctx!;
 
-      const drawVideoPose = (video, poses, scale = 1,
+      for (let i=0; i<this.views.length; i++) {
+        this.views[i].video.play();
+      }
+
+      const drawVideoPose = (video: CanvasImageSource, poses: Pose[], scale = 1,
           offset: [number, number] = [0, 0]) => {
         const ctx = this.ctx!;
 
@@ -162,11 +205,12 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
             width={this.props.videoWidth}
             height={this.props.videoHeight}
           >
-                    Canvas가 지원이 안 되는 것 같은데요 ㅠㅠㅠㅠ
+            운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
           </canvas>
         </div>
       );
     }
 }
+
 
 export default Screen;
