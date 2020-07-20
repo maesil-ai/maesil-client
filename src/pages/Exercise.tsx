@@ -15,18 +15,22 @@ interface ExerciseProps {
   history?: any,
 };
 
+interface Record {
+  score: number,
+  playTime: number,
+  calorie: number,
+};
+
 interface ExerciseState {
-    isLoading: boolean,
-    isFinished: boolean,
-    redirectToResult: boolean,
+  isLoading: boolean,
+  isFinished: boolean,
+  redirectToResult: boolean,
 
-    id: number,
+  id: number,
 
-    score: number,
-    time: number,
-    calorie: number,
+  record: Record | null,
 
-    url?: string,
+  url?: string,
 };
 
 /**
@@ -34,21 +38,21 @@ interface ExerciseState {
  * @param {number} time
  * @return {string} 시간을 DB에 저장하기 좋게 string으로 변환
  */
-function timeToString(time : number) {
-  const sec0 = time % 10;
-  time = (time - sec0) / 10;
-  const sec1 = time % 6;
-  time = (time - sec1) / 6;
-  const min0 = time % 10;
-  time = (time - min0) / 10;
-  const min1 = time % 6;
-  time = (time - min1) / 6;
-  const hr0 = time % 10;
-  time = (time - hr0) / 10;
-  const hr1 = time % 10;
+// function timeToString(time : number) {
+//   const sec0 = time % 10;
+//   time = (time - sec0) / 10;
+//   const sec1 = time % 6;
+//   time = (time - sec1) / 6;
+//   const min0 = time % 10;
+//   time = (time - min0) / 10;
+//   const min1 = time % 6;
+//   time = (time - min1) / 6;
+//   const hr0 = time % 10;
+//   time = (time - hr0) / 10;
+//   const hr1 = time % 10;
 
-  return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
-}
+//   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
+// }
 
 /**
  * Excerciese 페이지
@@ -77,9 +81,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       isFinished: false,
       redirectToResult: false,
       id: props.match.params.id,
-      score: 10.21,
-      time: 63,
-      calorie: 731,
+      record: null,
     };
   }
 
@@ -113,9 +115,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           const guideVideo = this.guideVideo.current!;
           const userVideo = this.userVideo.current!;
           guideVideo.src = guideSource;
-          guideVideo.play();
           userVideo.srcObject = userStream;
-          userVideo.play();
 
           new Promise((resolve) => {
             let cnt = 0;
@@ -132,21 +132,19 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         });
   };
 
-  /**
-   * 운동이 끝날때 실행될 함수
-   * @param {*} data 넘겨줄 데이터
-   * @memberof Exercise
-   */
-  handleExerciseFinish = (data) => {
+  handleExerciseFinish = (record: Record) => {
+    console.log("HI!!!!");
     axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
-      'score': this.state.score,
-      'play_time': timeToString(this.state.time),
-      'cal': this.state.calorie,
+      'score': record.score,
+      'play_time': "00:01:03",
+      'cal': record.calorie,
     }).then((response) => {
+      console.log(response);
       // response.data.code != 200이면?
       if (response.data.code === 200) {
         this.setState({
           ...this.state,
+          record: record,
           redirectToResult: true,
         });
       } else {
@@ -167,9 +165,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       return <Redirect push to={{
         pathname: '/result',
         state: {
-          score: this.state.score,
-          time: this.state.time,
-          calorie: this.state.calorie,
+          score: this.state.record.score,
+          time: this.state.record.playTime,
+          calorie: this.state.record.calorie,
         },
       }}/>;
     }
@@ -180,7 +178,6 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           width={this.props.videoWidth}
           crossOrigin={'anonymous'}
           style={{display: 'none'}}
-          onEnded={this.handleExerciseFinish}
           ref={this.guideVideo}
         />
         <video
@@ -208,6 +205,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           <Header/>
           { videos }
           <Screen
+            onExerciseFinish = { this.handleExerciseFinish }
             videoWidth = { this.props.videoWidth }
             videoHeight = { this.props.videoHeight }
             views = {[
@@ -223,9 +221,6 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
               },
             ]}
           />
-          <button onClick={ this.handleExerciseFinish }>
-            그냥 결과창 보내기
-          </button>
           <Footer/>
         </div>
       );

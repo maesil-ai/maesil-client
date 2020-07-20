@@ -51,8 +51,8 @@ export async function scorePoseSimilarity(views) {
 /**
  * modelPose와 userPose의 배열을 받이서 전체 운동에 대한 점수를 return
  * @export
- * @param {*} modelPose posenet.Pose[][],
- * @param {*} userPose posenet.Pose[][]
+ * @param {*} modelPose posenet.Pose[],
+ * @param {*} userPose posenet.Pose[]
  * @return {*} score
  */
 export function exerciseScore(modelPose: posenet.Pose[],
