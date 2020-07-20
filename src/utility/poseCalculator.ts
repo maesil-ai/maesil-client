@@ -32,6 +32,10 @@ const defaultConfig : Config = {
 // const defaultResNetStride = 32;
 // const defaultResNetInputResolution = 250;
 
+/**
+ * PoseCalculator 클래스
+ * @class PoseCalculator
+ */
 class PoseCalculator {
     video : HTMLVideoElement;
     poseNet : posenet.PoseNet;
@@ -39,6 +43,12 @@ class PoseCalculator {
     modelInUse : boolean;
     resultPoses : posenet.Pose[][];
 
+    /**
+     * Creates an instance of PoseCalculator.
+     * @param {HTMLVideoElement} video
+     * @param {*} [config=defaultConfig]
+     * @memberof PoseCalculator
+     */
     constructor(video : HTMLVideoElement, config = defaultConfig) {
       this.video = video;
       this.config = config;

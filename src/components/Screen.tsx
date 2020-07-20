@@ -34,12 +34,24 @@ interface ViewConfig {
 interface ScreenState {
 };
 
+
+/**
+ * Screen 클래스
+ * 운동하고 있는 화면을 보여주는 스크린
+ * @class Screen
+ * @extends {React.Component<ScreenProps, ScreenState>}
+ */
 class Screen extends React.Component<ScreenProps, ScreenState> {
     ctx: CanvasRenderingContext2D;
     canvas: React.RefObject<HTMLCanvasElement>;
     views: View[];
     viewConfig: ViewConfig;
 
+    /**
+     * Creates an instance of Screen.
+     * @param {ScreenProps} props
+     * @memberof Screen
+     */
     constructor(props: ScreenProps) {
       super(props);
 
@@ -61,6 +73,10 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       }
     }
 
+    /**
+     * 리액트 컴포넌트 클래스 기본 함수
+     * @memberof Screen
+     */
     componentDidMount() {
       this.ctx = this.canvas.current!.getContext('2d')!;
       this.drawCanvas();
@@ -69,12 +85,14 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
     drawCanvas = () => {
       const ctx = this.ctx!;
 
-      const drawVideoPose = (video, poses, scale = 1, offset: [number, number] = [0, 0]) => {
+      const drawVideoPose = (video, poses, scale = 1,
+          offset: [number, number] = [0, 0]) => {
         const ctx = this.ctx!;
 
         if (this.viewConfig.showVideo) {
           ctx.save();
-          ctx.translate(this.viewConfig.flipPoseHorizontal ? (scale * this.props.videoWidth) : 0, 0);
+          ctx.translate(this.viewConfig.flipPoseHorizontal ?
+            (scale * this.props.videoWidth) : 0, 0);
           ctx.scale(this.viewConfig.flipPoseHorizontal ? -1 : 1, 1);
           ctx.drawImage(
               video,
@@ -90,10 +108,12 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
           poses.forEach(({score, keypoints}) => {
             if (score >= this.viewConfig.minPoseConfidence) {
               if (this.viewConfig.showPoints) {
-                drawKeypoints(keypoints, this.viewConfig.minPartConfidence, ctx, scale, offset);
+                drawKeypoints(keypoints,
+                    this.viewConfig.minPartConfidence, ctx, scale, offset);
               }
               if (this.viewConfig.showSkeleton) {
-                drawSkeleton(keypoints, this.viewConfig.minPartConfidence, ctx, scale, offset);
+                drawSkeleton(keypoints,
+                    this.viewConfig.minPartConfidence, ctx, scale, offset);
               }
               if (this.viewConfig.showBoundingBox) {
                 drawBoundingBox(keypoints, ctx, scale, offset);
@@ -103,6 +123,10 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
         }
       };
 
+      /**
+       * 매 프레임 마다 다시 콜백으로 자기를 불러서 무한반복으로 실행
+       * @param {*} callback 자기자신
+       */
       function executeEveryFrame(callback) {
         //            stats.begin();
         callback();
@@ -125,6 +149,11 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       });
     }
 
+    /**
+     * 직접 실행할일은 없음, 지원하지 않을때는 뜨는 함수
+     * @return {any} HTML 반환
+     * @memberof Screen
+     */
     render() {
       return (
         <div>

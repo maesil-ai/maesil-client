@@ -25,6 +25,11 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
+/**
+ * register 리액트가 자동으로 만든 함수
+ * @export
+ * @param {Config} [config]
+ */
 export function register(config?: Config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -43,7 +48,8 @@ export function register(config?: Config) {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
+        // This is running on localhost.
+        // Let's check if a service worker still exists or not.
         checkValidServiceWorker(swUrl, config);
 
         // Add some additional logging to localhost, pointing developers to the
@@ -62,6 +68,11 @@ export function register(config?: Config) {
   }
 }
 
+/**
+ * registerValidSW
+ * @param {string} swUrl
+ * @param {Config} [config]
+ */
 function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
       .register(swUrl)
@@ -106,6 +117,11 @@ function registerValidSW(swUrl: string, config?: Config) {
       });
 }
 
+/**
+ * checkValidServiceWorker
+ * @param {string} swUrl
+ * @param {Config} [config]
+ */
 function checkValidServiceWorker(swUrl: string, config?: Config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
@@ -136,6 +152,10 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
       });
 }
 
+/**
+ * 언레지스터
+ * @export
+ */
 export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready

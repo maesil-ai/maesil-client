@@ -25,9 +25,19 @@ interface ResultState {
     exerciseName? : string,
 };
 
+/**
+ * Result 페이지
+ * @class Result
+ * @extends {React.Component<ResultProps, ResultState>}
+ */
 class Result extends React.Component<ResultProps, ResultState> {
     stats: Stats;
 
+    /**
+     *Creates an instance of Result.
+     * @param {*} props
+     * @memberof Result
+     */
     constructor(props) {
       super(props);
 
@@ -62,6 +72,11 @@ class Result extends React.Component<ResultProps, ResultState> {
       });
     }
 
+    /**
+     * result페이지를 렌더링 하는 함순
+     * @return {any} 렌더링 될 HTML
+     * @memberof Result
+     */
     render() {
       if (this.state.loading) {
         return (
@@ -85,7 +100,9 @@ class Result extends React.Component<ResultProps, ResultState> {
           <div>
             <Header/>
             <Title title={ this.state.exerciseName + ' 완료!' } />
-            <StatView time={ stats.time } calorie={ stats.calorie } score={ stats.score } />
+            <StatView time={ stats.time }
+              calorie={ stats.calorie }
+              score={ stats.score } />
                     다음 코스도 추천해 주자~
             <Footer/>
           </div>

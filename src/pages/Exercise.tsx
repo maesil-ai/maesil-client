@@ -24,6 +24,11 @@ interface ExerciseState {
     calorie: number,
 };
 
+/**
+ * 시간(숫자)을 string으로 변환하는 함수
+ * @param {number} time
+ * @return {string} 시간을 DB에 저장하기 좋게 string으로 변환
+ */
 function timeToString(time : number) {
   const sec0 = time % 10;
   time = (time - sec0) / 10;
@@ -40,12 +45,22 @@ function timeToString(time : number) {
   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
 }
 
+/**
+ * Excerciese 페이지
+ * @class Exercise
+ * @extends {React.Component<ExerciseProps, ExerciseState>}
+ */
 class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     guideVideo = React.createRef<HTMLVideoElement>();
     userVideo = React.createRef<HTMLVideoElement>();
     videoWidth = 800;
     videoHeight = 600;
 
+    /**
+     * Creates an instance of Exercise.
+     * @param {ExerciseProps} props
+     * @memberof Exercise
+     */
     constructor(props : ExerciseProps) {
       super(props);
 
@@ -60,6 +75,12 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       };
     }
 
+
+    /**
+     * id로 서버에 비디오를 요청해서 url을 받아옴
+     * @param {number} id
+     * @return {*} 비디오의 url
+     */
     loadVideo = async (id : number) => {
       const response = await axios.get(apiAddress + '/exercises/' + id);
       return response.data.result.video_url;
@@ -80,29 +101,35 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       const guideSource = this.loadVideo(this.state.id);
       const userStream = this.loadStream();
 
-      Promise.all([guideSource, userStream]).then(([guideSource, userStream]) => {
-        const guideVideo = this.guideVideo.current!;
-        const userVideo = this.userVideo.current!;
-        guideVideo.src = guideSource;
-        guideVideo.play();
-        userVideo.srcObject = userStream;
-        userVideo.play();
+      Promise.all([guideSource, userStream]).
+          then(([guideSource, userStream]) => {
+            const guideVideo = this.guideVideo.current!;
+            const userVideo = this.userVideo.current!;
+            guideVideo.src = guideSource;
+            guideVideo.play();
+            userVideo.srcObject = userStream;
+            userVideo.play();
 
-        new Promise((resolve) => {
-          let cnt = 0;
-          const incrementCnt = () => {
-            cnt += 1;
-            if (cnt >= 2) resolve();
-          };
-          guideVideo.onloadeddata = incrementCnt;
-          userVideo.onloadeddata = incrementCnt;
-        }).then(() => this.setState({
-          ...this.state,
-          isLoading: false,
-        }));
-      });
+            new Promise((resolve) => {
+              let cnt = 0;
+              const incrementCnt = () => {
+                cnt += 1;
+                if (cnt >= 2) resolve();
+              };
+              guideVideo.onloadeddata = incrementCnt;
+              userVideo.onloadeddata = incrementCnt;
+            }).then(() => this.setState({
+              ...this.state,
+              isLoading: false,
+            }));
+          });
     };
 
+    /**
+     * 운동이 끝날때 실행될 함수
+     * @param {*} data 넘겨줄 데이터
+     * @memberof Exercise
+     */
     onExerciseFinish = (data) => {
       axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
         'score': this.state.score,
@@ -122,6 +149,11 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       });
     }
 
+    /**
+     * 운동 페이지를 렌더링 해서 보여줌
+     * @return {any} 운동 페이지 HTML
+     * @memberof Exercise
+     */
     render() {
       if (this.state.redirectToResult) {
         return <Redirect push to={{

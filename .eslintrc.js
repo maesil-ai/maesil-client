@@ -15,10 +15,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {
-    "require-jsdoc" : 0,
-    "max-len": 0,
     "no-invalid-this": 0,
-    "valid-jsdoc": 0,
   },
   settings: {
     react: {

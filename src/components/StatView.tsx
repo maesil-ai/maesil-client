@@ -6,6 +6,11 @@ interface StatViewProps {
     score: number,
 };
 
+/**
+ * 결과창 페이지 인자로 보여줄 스탯값을 넘겨주고 예쁘게 출력
+ * @param {StatViewProps} {time, calorie, score}
+ * @return {any} HTML 페이지
+ */
 function StatView({time, calorie, score} : StatViewProps) {
   return (
     <div className={'boxContainer'}>
