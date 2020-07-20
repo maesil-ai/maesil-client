@@ -1,12 +1,16 @@
 import React from 'react';
 
 
+/**
+ * Footer HTML 변환
+ * @return {any} Footer HTML
+ */
 function Footer() {
-    return (
-        <footer>
+  return (
+    <footer>
             © SW마에스트로 11기 코드블루팀
-        </footer>
-    );
+    </footer>
+  );
 }
 
 export default Footer;

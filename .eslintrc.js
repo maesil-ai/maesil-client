@@ -14,7 +14,9 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: {},
+  rules: {
+    "no-invalid-this": 0,
+  },
   ignorePatterns: ['build/'],
   settings: {
     react: {
