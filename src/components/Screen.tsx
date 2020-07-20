@@ -94,7 +94,7 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
             finishCount: finishCount,
           });
 
-          if (finishCount == 1) {
+          if (finishCount === 1) {
             this.props.onExerciseFinish({
               score: exerciseScore(this.views[0].calculator.record, this.views[1].calculator.record),
               time: 63*60,
