@@ -15,7 +15,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint'],
   rules: {
-    "no-invalid-this": 0,
+    'no-invalid-this': 0,
   },
   ignorePatterns: ['build/'],
   settings: {
