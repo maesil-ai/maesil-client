@@ -14,6 +14,7 @@ interface HomeProps {
 
 interface exercise {
     id: number,
+    name: string,
     url: string,
 };
 
@@ -49,11 +50,13 @@ class Home extends React.Component<HomeProps, HomeState> {
       const exerciseData = response.data.result;
       const exercises : exercise[] = [{
         id: -1,
-        url: '눌러서 선택해주세요~~',
+        name: '눌러서 선택해주세요!',
+        url: '',
       }];
       for (const exercise of exerciseData) {
         exercises.push({
           id: exercise.exercise_id,
+          name: exercise.title,
           url: exercise.video_url,
         });
       }
@@ -88,8 +91,8 @@ class Home extends React.Component<HomeProps, HomeState> {
    * @memberof Home
    */
   render() {
-    const options = this.state.exercises.map(({id, url}, key) =>
-      (<option value={id} key={key}>{url}</option>));
+    const options = this.state.exercises.map(({id, name, url}, key) =>
+      (<option value={id} key={key}> {name} </option>));
     return (
       <div>
         <Header/>

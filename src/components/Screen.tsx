@@ -1,10 +1,11 @@
 import React from 'react';
-import PoseCalculator from '../utility/poseCalculator';
+import PoseCalculator, { Pose } from '../utility/poseCalculator';
 import {
   drawBoundingBox,
   drawKeypoints,
   drawSkeleton,
 } from '../utility/draw';
+import { exerciseScore } from '../utility/score';
 
 interface View {
     video: HTMLVideoElement,
@@ -38,10 +39,12 @@ interface ScreenProps {
     videoHeight: number,
     views: View[],
     viewConfig: ViewConfig,
+    onExerciseFinish: (record: any) => any,
     match?: any,
 };
 
 interface ScreenState {
+  finishCount: number,
 };
 
 
@@ -56,6 +59,7 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       videoWidth: 800,
       videoHeight: 600,
       views: [],
+      onExerciseFinish: () => {},
       viewConfig: defaultViewConfig,
     };
 
@@ -75,10 +79,29 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       this.canvas = React.createRef<HTMLCanvasElement>();
       this.viewConfig = this.props.viewConfig;
       this.views = this.props.views;
+      this.state = {
+        finishCount: 0,
+      };
+
       for (let i=0; i<this.views.length; i++) {
         Object.assign(this.views[i], {
           calculator: new PoseCalculator(this.views[i].video),
         });
+
+        this.views[i].video.onended = () => {
+          let finishCount = this.state.finishCount + 1;
+          this.setState({
+            finishCount: finishCount,
+          });
+
+          if (finishCount == 1) {
+            this.props.onExerciseFinish({
+              score: exerciseScore(this.views[0].calculator.record, this.views[1].calculator.record),
+              time: 63*60,
+              calorie: 1021,
+            });
+          }
+        }
       }
     }
 
@@ -88,13 +111,24 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
      */
     componentDidMount() {
       this.ctx = this.canvas.current!.getContext('2d')!;
-      this.drawCanvas();
+      let promises : Promise<void>[] = [];
+      for (let i=0; i<this.views.length; i++) {
+        promises.push(this.views[i].calculator.load());
+      }
+
+      Promise.all(promises).then(() => {
+        this.drawCanvas();
+      });
     }
 
     drawCanvas = () => {
       const ctx = this.ctx!;
 
-      const drawVideoPose = (video, poses, scale = 1,
+      for (let i=0; i<this.views.length; i++) {
+        this.views[i].video.play();
+      }
+
+      const drawVideoPose = (video: CanvasImageSource, poses: Pose[], scale = 1,
           offset: [number, number] = [0, 0]) => {
         const ctx = this.ctx!;
 
