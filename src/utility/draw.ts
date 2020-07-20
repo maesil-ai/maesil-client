@@ -24,26 +24,26 @@ const boundingBoxColor = 'red';
 const lineWidth = 1;
 
 function isAndroid() {
-     return /Android/i.test(navigator.userAgent);
+  return /Android/i.test(navigator.userAgent);
 }
 
 function isiOS() {
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 export function isMobile() {
-    return isAndroid() || isiOS();
+  return isAndroid() || isiOS();
 }
 
 function toTuple(pos : any) : [number, number] {
-    return [pos.y, pos.x];
+  return [pos.y, pos.x];
 }
 
 export function drawPoint(ctx, y, x, r, color) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = color;
-    ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
+  ctx.fill();
 }
 
 /**
@@ -57,19 +57,19 @@ export function drawSegment(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    ctx.beginPath();
-    ctx.moveTo(ax * scale + offsetx, ay * scale + offsety);
-    ctx.lineTo(bx * scale + offsetx, by * scale + offsety);
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = color;
-    ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(ax * scale + offsetx, ay * scale + offsety);
+  ctx.lineTo(bx * scale + offsetx, by * scale + offsety);
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  ctx.stroke();
 }
 
 /**
  * Draws a pose skeleton by looking up all adjacent keypoints/joints
  */
 
- 
+
 export function drawSkeleton(
     keypoints: posenet.Keypoint[],
     minConfidence: number,
@@ -77,19 +77,19 @@ export function drawSkeleton(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-        keypoints,
-        minConfidence,
-    );
+  const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
+      keypoints,
+      minConfidence,
+  );
 
-    adjacentKeyPoints.forEach((keypoints) => drawSegment(
-        toTuple(keypoints[0].position),
-        toTuple(keypoints[1].position),
-        color,
-        ctx,
-        scale,
-        [offsetx, offsety])
-    );
+  adjacentKeyPoints.forEach((keypoints) => drawSegment(
+      toTuple(keypoints[0].position),
+      toTuple(keypoints[1].position),
+      color,
+      ctx,
+      scale,
+      [offsetx, offsety]),
+  );
 }
 
 /**
@@ -102,16 +102,16 @@ export function drawKeypoints(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    for (let i = 0; i < keypoints.length; i++) {
-        const keypoint = keypoints[i];
+  for (let i = 0; i < keypoints.length; i++) {
+    const keypoint = keypoints[i];
 
-        if (keypoint.score < minConfidence) {
-        continue;
-        }
-
-        const {y, x} = keypoint.position;
-        drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+    if (keypoint.score < minConfidence) {
+      continue;
     }
+
+    const {y, x} = keypoint.position;
+    drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+  }
 }
 
 /**
@@ -125,17 +125,17 @@ export function drawBoundingBox(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    const boundingBox = posenet.getBoundingBox(keypoints);
+  const boundingBox = posenet.getBoundingBox(keypoints);
 
-    ctx.rect(
-        scale * boundingBox.minX + offsetx,
-        scale * boundingBox.minY + offsety,
-        scale * (boundingBox.maxX - boundingBox.minX),
-        scale * (boundingBox.maxY - boundingBox.minY),
-    );
+  ctx.rect(
+      scale * boundingBox.minX + offsetx,
+      scale * boundingBox.minY + offsety,
+      scale * (boundingBox.maxX - boundingBox.minX),
+      scale * (boundingBox.maxY - boundingBox.minY),
+  );
 
-    ctx.strokeStyle = boundingBoxColor;
-    ctx.stroke();
+  ctx.strokeStyle = boundingBoxColor;
+  ctx.stroke();
 }
 
 /**

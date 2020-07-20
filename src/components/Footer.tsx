@@ -2,11 +2,11 @@ import React from 'react';
 
 
 function Footer() {
-    return (
-        <footer>
+  return (
+    <footer>
             © SW마에스트로 11기 코드블루팀
-        </footer>
-    );
+    </footer>
+  );
 }
 
 export default Footer;

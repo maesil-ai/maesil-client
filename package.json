@@ -28,7 +28,8 @@
     "start": "react-scripts start NODE_PATH=src",
     "build": "react-scripts build NODE_PATH=src",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "npx eslint --fix 'src/**/*.ts' && npx eslint --fix 'src/**/*.tsx'"
   },
   "eslintConfig": {
     "extends": "react-app"

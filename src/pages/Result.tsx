@@ -29,68 +29,68 @@ class Result extends React.Component<ResultProps, ResultState> {
     stats: Stats;
 
     constructor(props) {
-        super(props);
+      super(props);
 
-        console.log(this.props);
-        this.stats = {
-            time: this.props.location.state.time,
-            calorie: this.props.location.state.calorie,
-            score: this.props.location.state.score,
-        };
+      console.log(this.props);
+      this.stats = {
+        time: this.props.location.state.time,
+        calorie: this.props.location.state.calorie,
+        score: this.props.location.state.score,
+      };
 
-        this.state = {
-            loading: true,
-        };
+      this.state = {
+        loading: true,
+      };
     }
 
     componentDidMount = () => {
-        axios({
-            method: "GET",
-            url: apiAddress + "/exercises/" + 1,
-        }).then((response) => {
-            let exerciseName = response.data.result.title;
+      axios({
+        method: 'GET',
+        url: apiAddress + '/exercises/' + 1,
+      }).then((response) => {
+        const exerciseName = response.data.result.title;
 
-            console.log(exerciseName);
+        console.log(exerciseName);
 
-            this.setState({
-                ...this.state,
-                loading: false,
-                exerciseName: exerciseName,
-            });
-        }).catch((error) => {
-            console.log('ㅋㅋ');
+        this.setState({
+          ...this.state,
+          loading: false,
+          exerciseName: exerciseName,
         });
+      }).catch((error) => {
+        console.log('ㅋㅋ');
+      });
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <div>
-                    <Header/>
+      if (this.state.loading) {
+        return (
+          <div>
+            <Header/>
                     결과를 불러오는 중입니다...
-                    <Footer/>
-                </div>
-            );
-        } else {
-            let stats = this.stats;
-            if (!stats) {
-                stats = {
-                    time: 63,
-                    calorie: 1021,
-                    score: 0.5
-                };
-            }
-
-            return (
-                <div>
-                    <Header/>
-                    <Title title={ this.state.exerciseName + " 완료!" } />
-                    <StatView time={ stats.time } calorie={ stats.calorie } score={ stats.score } />
-                    다음 코스도 추천해 주자~
-                    <Footer/>
-                </div>
-            );
+            <Footer/>
+          </div>
+        );
+      } else {
+        let stats = this.stats;
+        if (!stats) {
+          stats = {
+            time: 63,
+            calorie: 1021,
+            score: 0.5,
+          };
         }
+
+        return (
+          <div>
+            <Header/>
+            <Title title={ this.state.exerciseName + ' 완료!' } />
+            <StatView time={ stats.time } calorie={ stats.calorie } score={ stats.score } />
+                    다음 코스도 추천해 주자~
+            <Footer/>
+          </div>
+        );
+      }
     }
 };
 
