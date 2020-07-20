@@ -8,14 +8,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {Redirect} from 'react-router-dom';
 
-interface ExerciseProps {
+interface PlaygroundProps {
   videoWidth: number,
   videoHeight: number,
   match?: any,
   history?: any,
 };
 
-interface ExerciseState {
+interface PlaygroundState {
     isLoading: boolean,
     isFinished: boolean,
     redirectToResult: boolean,
@@ -53,11 +53,13 @@ function timeToString(time : number) {
 /**
  * Excerciese 페이지
  * @class Exercise
- * @extends {React.Component<ExerciseProps, ExerciseState>}
+ * @extends {React.Component<PlaygroundProps, PlaygroundState>}
  */
-class Exercise extends React.Component<ExerciseProps, ExerciseState> {
+class Playground extends React.Component<PlaygroundProps, PlaygroundState> {
   guideVideo = React.createRef<HTMLVideoElement>();
   userVideo = React.createRef<HTMLVideoElement>();
+  path1 = "";
+  path2 = "";
   
   static defaultProps = {
     videoWidth: 800,
@@ -66,10 +68,10 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
   /**
    * Creates an instance of Exercise.
-   * @param {ExerciseProps} props
+   * @param {PlaygroundProps} props
    * @memberof Exercise
    */
-  constructor(props : ExerciseProps) {
+  constructor(props : PlaygroundProps) {
     super(props);
 
     this.state = {
@@ -84,37 +86,16 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
 
-  /**
-   * id로 서버에 비디오를 요청해서 url을 받아옴
-   * @param {number} id
-   * @return {*} 비디오의 url
-   */
-  loadVideo = async (id : number) => {
-    const response = await axios.get(apiAddress + '/exercises/' + id);
-    return response.data.result.video_url;
-  }
+  loadVideo = () => {
+    const videoA = this.path1;
+    const videoB = this.path2;
 
-  loadStream = async () => {
-    return await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: 'user',
-        width: this.props.videoWidth,
-        height: this.props.videoHeight,
-      },
-    });
-  }
-
-  componentDidMount = () => {
-    const guideSource = this.loadVideo(this.state.id);
-    const userStream = this.loadStream();
-
-    Promise.all([guideSource, userStream]).then(([guideSource, userStream]) => {
+    Promise.all([videoA, videoB]).then(([videoA, videoB]) => {
           const guideVideo = this.guideVideo.current!;
           const userVideo = this.userVideo.current!;
-          guideVideo.src = guideSource;
+          guideVideo.src = videoA;
           guideVideo.play();
-          userVideo.srcObject = userStream;
+          userVideo.src = videoB;
           userVideo.play();
 
           new Promise((resolve) => {
@@ -155,6 +136,18 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     }).catch((error) => {
       console.log('ㅋㅋ..ㅈㅅ!!ㅎㅎ..');
     });
+  }
+
+  onChange1 = (e) => {
+    this.path1 = e.target.value;
+  }
+
+  onChange2 = (e) => {
+    this.path2 = e.target.value;
+  }
+
+  onButtonClick = (e) => {
+    this.loadVideo();
   }
 
   /**
@@ -198,7 +191,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         <div>
           <Header/>
           { videos }
-              운동 불러오는 중...
+            <input onChange={this.onChange1} placeholder={"첫번째 영상 경로"} />
+            <input onChange={this.onChange2} placeholder={"두번째 영상 경로"} />
+            <button onClick={this.onButtonClick}>실행!!!</button>
           <Footer/>
         </div>
       );
@@ -233,4 +228,4 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 };
 
-export default Exercise;
+export default Playground;
