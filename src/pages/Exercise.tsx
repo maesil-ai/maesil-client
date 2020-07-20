@@ -9,19 +9,24 @@ import Footer from '../components/Footer';
 import {Redirect} from 'react-router-dom';
 
 interface ExerciseProps {
-    match: any,
-    history?: any,
+  videoWidth: number,
+  videoHeight: number,
+  match?: any,
+  history?: any,
 };
 
 interface ExerciseState {
     isLoading: boolean,
     isFinished: boolean,
     redirectToResult: boolean,
+
     id: number,
-    url?: string,
+
     score: number,
     time: number,
     calorie: number,
+
+    url?: string,
 };
 
 /**
@@ -51,177 +56,180 @@ function timeToString(time : number) {
  * @extends {React.Component<ExerciseProps, ExerciseState>}
  */
 class Exercise extends React.Component<ExerciseProps, ExerciseState> {
-    guideVideo = React.createRef<HTMLVideoElement>();
-    userVideo = React.createRef<HTMLVideoElement>();
-    videoWidth = 800;
-    videoHeight = 600;
+  guideVideo = React.createRef<HTMLVideoElement>();
+  userVideo = React.createRef<HTMLVideoElement>();
+  
+  static defaultProps = {
+    videoWidth: 800,
+    videoHeight: 600,
+  };
 
-    /**
-     * Creates an instance of Exercise.
-     * @param {ExerciseProps} props
-     * @memberof Exercise
-     */
-    constructor(props : ExerciseProps) {
-      super(props);
+  /**
+   * Creates an instance of Exercise.
+   * @param {ExerciseProps} props
+   * @memberof Exercise
+   */
+  constructor(props : ExerciseProps) {
+    super(props);
 
-      this.state = {
-        isLoading: true,
-        isFinished: false,
-        redirectToResult: false,
-        id: props.match.params.id,
-        score: 10.21,
-        time: 63,
-        calorie: 731,
-      };
-    }
-
-
-    /**
-     * id로 서버에 비디오를 요청해서 url을 받아옴
-     * @param {number} id
-     * @return {*} 비디오의 url
-     */
-    loadVideo = async (id : number) => {
-      const response = await axios.get(apiAddress + '/exercises/' + id);
-      return response.data.result.video_url;
-    }
-
-    loadStream = async () => {
-      return await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: {
-          facingMode: 'user',
-          width: this.videoWidth,
-          height: this.videoHeight,
-        },
-      });
-    }
-
-    componentDidMount = () => {
-      const guideSource = this.loadVideo(this.state.id);
-      const userStream = this.loadStream();
-
-      Promise.all([guideSource, userStream]).
-          then(([guideSource, userStream]) => {
-            const guideVideo = this.guideVideo.current!;
-            const userVideo = this.userVideo.current!;
-            guideVideo.src = guideSource;
-            guideVideo.play();
-            userVideo.srcObject = userStream;
-            userVideo.play();
-
-            new Promise((resolve) => {
-              let cnt = 0;
-              const incrementCnt = () => {
-                cnt += 1;
-                if (cnt >= 2) resolve();
-              };
-              guideVideo.onloadeddata = incrementCnt;
-              userVideo.onloadeddata = incrementCnt;
-            }).then(() => this.setState({
-              ...this.state,
-              isLoading: false,
-            }));
-          });
+    this.state = {
+      isLoading: true,
+      isFinished: false,
+      redirectToResult: false,
+      id: props.match.params.id,
+      score: 10.21,
+      time: 63,
+      calorie: 731,
     };
+  }
 
-    /**
-     * 운동이 끝날때 실행될 함수
-     * @param {*} data 넘겨줄 데이터
-     * @memberof Exercise
-     */
-    onExerciseFinish = (data) => {
-      axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
-        'score': this.state.score,
-        'play_time': timeToString(this.state.time),
-        'cal': this.state.calorie,
-      }).then((response) => {
-        // response.data.code != 200이면?
-        console.log(response);
-        if (response.data.code === 200) {
-          this.setState({
+
+  /**
+   * id로 서버에 비디오를 요청해서 url을 받아옴
+   * @param {number} id
+   * @return {*} 비디오의 url
+   */
+  loadVideo = async (id : number) => {
+    const response = await axios.get(apiAddress + '/exercises/' + id);
+    return response.data.result.video_url;
+  }
+
+  loadStream = async () => {
+    return await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        facingMode: 'user',
+        width: this.props.videoWidth,
+        height: this.props.videoHeight,
+      },
+    });
+  }
+
+  componentDidMount = () => {
+    const guideSource = this.loadVideo(this.state.id);
+    const userStream = this.loadStream();
+
+    Promise.all([guideSource, userStream]).then(([guideSource, userStream]) => {
+          const guideVideo = this.guideVideo.current!;
+          const userVideo = this.userVideo.current!;
+          guideVideo.src = guideSource;
+          guideVideo.play();
+          userVideo.srcObject = userStream;
+          userVideo.play();
+
+          new Promise((resolve) => {
+            let cnt = 0;
+            const incrementCnt = () => {
+              cnt += 1;
+              if (cnt >= 2) resolve();
+            };
+            guideVideo.onloadeddata = incrementCnt;
+            userVideo.onloadeddata = incrementCnt;
+          }).then(() => this.setState({
             ...this.state,
-            redirectToResult: true,
-          });
-        }
-      }).catch((error) => {
+            isLoading: false,
+          }));
+        });
+  };
 
-      });
-    }
-
-    /**
-     * 운동 페이지를 렌더링 해서 보여줌
-     * @return {any} 운동 페이지 HTML
-     * @memberof Exercise
-     */
-    render() {
-      if (this.state.redirectToResult) {
-        return <Redirect push to={{
-          pathname: '/result',
-          state: {
-            score: this.state.score,
-            time: this.state.time,
-            calorie: this.state.calorie,
-          },
-        }}/>;
+  /**
+   * 운동이 끝날때 실행될 함수
+   * @param {*} data 넘겨줄 데이터
+   * @memberof Exercise
+   */
+  handleExerciseFinish = (data) => {
+    axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
+      'score': this.state.score,
+      'play_time': timeToString(this.state.time),
+      'cal': this.state.calorie,
+    }).then((response) => {
+      // response.data.code != 200이면?
+      if (response.data.code === 200) {
+        this.setState({
+          ...this.state,
+          redirectToResult: true,
+        });
+      } else {
+        console.log('ㅋㅋ..;;');
       }
-      const videos = (
+    }).catch((error) => {
+      console.log('ㅋㅋ..ㅈㅅ!!ㅎㅎ..');
+    });
+  }
+
+  /**
+   * 운동 페이지를 렌더링 해서 보여줌
+   * @return {any} 운동 페이지 HTML
+   * @memberof Exercise
+   */
+  render() {
+    if (this.state.redirectToResult) {
+      return <Redirect push to={{
+        pathname: '/result',
+        state: {
+          score: this.state.score,
+          time: this.state.time,
+          calorie: this.state.calorie,
+        },
+      }}/>;
+    }
+    const videos = (
+      <div>
+        <video
+          height={this.props.videoHeight}
+          width={this.props.videoWidth}
+          crossOrigin={'anonymous'}
+          style={{display: 'none'}}
+          ref={this.guideVideo}
+        />
+        <video
+          height={this.props.videoHeight}
+          width={this.props.videoWidth}
+          crossOrigin={'anonymous'}
+          style={{display: 'none'}}
+          ref={this.userVideo}
+        />
+      </div>
+    );
+
+    if (this.state.isLoading) {
+      return (
         <div>
-          <video
-            height={this.videoHeight}
-            width={this.videoWidth}
-            crossOrigin={'anonymous'}
-            style={{display: 'none'}}
-            ref={this.guideVideo}
-          />
-          <video
-            height={this.videoHeight}
-            width={this.videoWidth}
-            crossOrigin={'anonymous'}
-            style={{display: 'none'}}
-            ref={this.userVideo}
-          />
+          <Header/>
+          { videos }
+              운동 불러오는 중...
+          <Footer/>
         </div>
       );
-
-      if (this.state.isLoading) {
-        return (
-          <div>
-            <Header/>
-            { videos }
-                운동 불러오는 중...
-            <Footer/>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            <Header/>
-            { videos }
-            <Screen
-              videoWidth = { this.videoWidth }
-              videoHeight = { this.videoHeight }
-              views = {[
-                { // Guide View
-                  video: this.guideVideo.current!,
-                  scale: 1,
-                  offset: [0, 0],
-                },
-                { // User View
-                  video: this.userVideo.current!,
-                  scale: 0.4,
-                  offset: [100, 100],
-                },
-              ]}
-            />
-            <button onClick={ this.onExerciseFinish }>
-                    그냥 결과창 보내기
-            </button>
-            <Footer/>
-          </div>
-        );
-      }
+    } else {
+      return (
+        <div>
+          <Header/>
+          { videos }
+          <Screen
+            videoWidth = { this.props.videoWidth }
+            videoHeight = { this.props.videoHeight }
+            views = {[
+              { // Guide View
+                video: this.guideVideo.current!,
+                scale: 1,
+                offset: [0, 0],
+              },
+              { // User View
+                video: this.userVideo.current!,
+                scale: 0.3,
+                offset: [540, 400],
+              },
+            ]}
+          />
+          <button onClick={ this.handleExerciseFinish }>
+            그냥 결과창 보내기
+          </button>
+          <Footer/>
+        </div>
+      );
     }
+  }
 };
 
 export default Exercise;

@@ -8,10 +8,11 @@ body {
 }
 
 #title {
-  font-size: 24px;
+  margin: 15px;
+  font-size: 32px;
   font-weight: 700;
 
-  height: 50px;
+  height: 32px;
 }
 
 .box {
@@ -40,18 +41,19 @@ header {
   left: 0;
   right: 0;
 
-  height: 50px;
+  height: 20px;
   margin-bottom: 10px;
   font-size: 20px; 
-  background-color: #5476d4;
+  background-color: #54d4bf;
   text-align: left;
-  
+  font-weight: 800;
+  padding: 15px;
   color: #fff;
 }
 
 footer {
   height: 100px;
-  padding: 10px 0;
+  padding: 10px;
   margin-top: 10px;
 
   font-size: 11px;

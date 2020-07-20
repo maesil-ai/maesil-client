@@ -42,70 +42,70 @@ class Home extends React.Component<HomeProps, HomeState> {
     };
   }
 
-    loadExercises = async () => {
-      axios.get(
-          apiAddress + '/exercises/',
-      ).then((response) => {
-        const exerciseData = response.data.result;
-        const exercises : exercise[] = [{
-          id: -1,
-          url: '눌러서 선택해주세요~~',
-        }];
-        for (const exercise of exerciseData) {
-          exercises.push({
-            id: exercise.exercise_id,
-            url: exercise.video_url,
-          });
-        }
-        this.setState({
-          ...this.state,
-          exercises: exercises,
+  loadExercises = async () => {
+    axios.get(
+        apiAddress + '/exercises/',
+    ).then((response) => {
+      const exerciseData = response.data.result;
+      const exercises : exercise[] = [{
+        id: -1,
+        url: '눌러서 선택해주세요~~',
+      }];
+      for (const exercise of exerciseData) {
+        exercises.push({
+          id: exercise.exercise_id,
+          url: exercise.video_url,
         });
-      }).catch((error) => {
-
-      });
-    }
-
-    /**
-     * 기본 함수
-     * @memberof Home
-     */
-    componentDidMount() {
-      this.loadExercises();
-    }
-
-    onItemSelect = (event : any) => {
+      }
       this.setState({
         ...this.state,
-        select: event.target.value,
+        exercises: exercises,
       });
-      console.log(event.target.value);
-    }
+    }).catch((error) => {
 
-    /**
-     * Home 페이지를 렌더링하는 함수
-     * @return {any} 렌더될 HTML 코드
-     * @memberof Home
-     */
-    render() {
-      const options = this.state.exercises.map(({id, url}, key) =>
-        (<option value={id} key={key}>{url}</option>));
-      return (
-        <div>
-          <Header/>
-          <select onChange = { this.onItemSelect }>
-            { options }
-          </select>
-          <Link to={'/exercise/' +
-            (this.state.select === -1 ? '' : this.state.select)}>
-            <button>
-                        Pose estimation.. 해볼래?
-            </button>
-          </Link>
-          <Footer/>
-        </div>
-      );
-    }
+    });
+  }
+
+  /**
+   * 기본 함수
+   * @memberof Home
+   */
+  componentDidMount() {
+    this.loadExercises();
+  }
+
+  onItemSelect = (event : any) => {
+    this.setState({
+      ...this.state,
+      select: event.target.value,
+    });
+    console.log(event.target.value);
+  }
+
+  /**
+   * Home 페이지를 렌더링하는 함수
+   * @return {any} 렌더될 HTML 코드
+   * @memberof Home
+   */
+  render() {
+    const options = this.state.exercises.map(({id, url}, key) =>
+      (<option value={id} key={key}>{url}</option>));
+    return (
+      <div>
+        <Header/>
+        <select onChange = { this.onItemSelect }>
+          { options }
+        </select>
+        <Link to={'/exercise/' +
+          (this.state.select === -1 ? '' : this.state.select)}>
+          <button>
+                      Pose estimation.. 해볼래?
+          </button>
+        </Link>
+        <Footer/>
+      </div>
+    );
+  }
 };
 
 export default Home;
