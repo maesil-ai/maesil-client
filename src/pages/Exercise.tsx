@@ -101,28 +101,28 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       const guideSource = this.loadVideo(this.state.id);
       const userStream = this.loadStream();
 
-      Promise.all([guideSource, userStream]).
-          then(([guideSource, userStream]) => {
-            const guideVideo = this.guideVideo.current!;
-            const userVideo = this.userVideo.current!;
-            guideVideo.src = guideSource;
-            guideVideo.play();
-            userVideo.srcObject = userStream;
-            userVideo.play();
+      Promise.all([guideSource, userStream]).then((
+          [guideSource, userStream]) => {
+        const guideVideo = this.guideVideo.current!;
+        const userVideo = this.userVideo.current!;
+        guideVideo.src = guideSource;
+        guideVideo.play();
+        userVideo.srcObject = userStream;
+        userVideo.play();
 
-            new Promise((resolve) => {
-              let cnt = 0;
-              const incrementCnt = () => {
-                cnt += 1;
-                if (cnt >= 2) resolve();
-              };
-              guideVideo.onloadeddata = incrementCnt;
-              userVideo.onloadeddata = incrementCnt;
-            }).then(() => this.setState({
-              ...this.state,
-              isLoading: false,
-            }));
-          });
+        new Promise((resolve) => {
+          let cnt = 0;
+          const incrementCnt = () => {
+            cnt += 1;
+            if (cnt >= 2) resolve();
+          };
+          guideVideo.onloadeddata = incrementCnt;
+          userVideo.onloadeddata = incrementCnt;
+        }).then(() => this.setState({
+          ...this.state,
+          isLoading: false,
+        }));
+      });
     };
 
     /**
