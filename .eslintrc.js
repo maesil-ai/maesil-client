@@ -17,6 +17,7 @@ module.exports = {
   rules: {
     "no-invalid-this": 0,
   },
+  ignorePatterns: ['build/'],
   settings: {
     react: {
       version: 'detect',
