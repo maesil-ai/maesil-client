@@ -5,7 +5,6 @@ import {
   drawKeypoints,
   drawSkeleton,
 } from '../utility/draw';
-// import { flipPoseHorizontal } from '@tensorflow-models/posenet/dist/util';
 
 interface View {
     video: HTMLVideoElement,
@@ -14,22 +13,33 @@ interface View {
     calculator?: PoseCalculator,
 };
 
+interface ViewConfig {
+  flipPoseHorizontal: boolean,
+  showVideo: boolean,
+  showSkeleton: boolean,
+  showPoints: boolean,
+  showBoundingBox: boolean,
+  minPoseConfidence: number,
+  minPartConfidence: number,
+};
+
+const defaultViewConfig = {
+  flipPoseHorizontal: false,
+  showVideo: true,
+  showSkeleton: true,
+  showPoints: true,
+  showBoundingBox: true,
+  minPoseConfidence: 0.15,
+  minPartConfidence: 0.1,
+};
+
 interface ScreenProps {
     videoWidth: number,
     videoHeight: number,
     views: View[],
+    viewConfig: ViewConfig,
     match?: any,
 };
-
-interface ViewConfig {
-    flipPoseHorizontal: boolean,
-    showVideo: boolean,
-    showSkeleton: boolean,
-    showPoints: boolean,
-    showBoundingBox: boolean,
-    minPoseConfidence: number,
-    minPartConfidence: number,
-}
 
 interface ScreenState {
 };
@@ -42,6 +52,13 @@ interface ScreenState {
  * @extends {React.Component<ScreenProps, ScreenState>}
  */
 class Screen extends React.Component<ScreenProps, ScreenState> {
+    static defaultProps : ScreenProps = {
+      videoWidth: 800,
+      videoHeight: 600,
+      views: [],
+      viewConfig: defaultViewConfig,
+    };
+
     ctx: CanvasRenderingContext2D;
     canvas: React.RefObject<HTMLCanvasElement>;
     views: View[];
@@ -56,15 +73,7 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       super(props);
 
       this.canvas = React.createRef<HTMLCanvasElement>();
-      this.viewConfig = {
-        flipPoseHorizontal: false,
-        showVideo: true,
-        showSkeleton: true,
-        showPoints: true,
-        showBoundingBox: true,
-        minPoseConfidence: 0.15,
-        minPartConfidence: 0.1,
-      };
+      this.viewConfig = this.props.viewConfig;
       this.views = this.props.views;
       for (let i=0; i<this.views.length; i++) {
         Object.assign(this.views[i], {
@@ -162,11 +171,12 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
             width={this.props.videoWidth}
             height={this.props.videoHeight}
           >
-                    Canvas가 지원이 안 되는 것 같은데요 ㅠㅠㅠㅠ
+            운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
           </canvas>
         </div>
       );
     }
 }
+
 
 export default Screen;
