@@ -54,7 +54,7 @@ class Result extends React.Component<ResultProps, ResultState> {
   componentDidMount = () => {
     axios({
       method: 'GET',
-      url: apiAddress + '/exercises/' + 1,
+      url: apiAddress + '/exercises/' + this.props.exerciseId,
     }).then((response) => {
       const exerciseName = response.data.result.title;
 
