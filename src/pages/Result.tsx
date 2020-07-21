@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Title from '../components/Title';
 import StatView from '../components/StatView';
+import Loading from '../components/Loading';
 
 interface Stats {
     time: number,
@@ -22,6 +23,7 @@ interface ResultProps {
 
 interface ResultState {
     loading : boolean,
+    exerciseId : number,
     exerciseName? : string,
     stats: Stats,
 };
@@ -43,6 +45,7 @@ class Result extends React.Component<ResultProps, ResultState> {
 
     this.state = {
       loading: true,
+      exerciseId: this.props.location.state.exerciseId,
       stats: {
         time: this.props.location.state.time,
         calorie: this.props.location.state.calorie,
@@ -54,7 +57,7 @@ class Result extends React.Component<ResultProps, ResultState> {
   componentDidMount = () => {
     axios({
       method: 'GET',
-      url: apiAddress + '/exercises/' + this.props.exerciseId,
+      url: apiAddress + '/exercises/' + this.state.exerciseId,
     }).then((response) => {
       const exerciseName = response.data.result.title;
 
@@ -76,17 +79,17 @@ class Result extends React.Component<ResultProps, ResultState> {
   render() {
     if (this.state.loading) {
       return (
-        <div>
+        <>
           <Header/>
-                  결과를 불러오는 중입니다...
+          <Loading/>
           <Footer/>
-        </div>
+        </>
       );
     } else {
       let stats = this.state.stats;
 
       return (
-        <div>
+        <>
           <Header/>
           <Title title={ this.state.exerciseName + ' 완료!' } />
           <StatView time={ stats.time }
@@ -94,7 +97,7 @@ class Result extends React.Component<ResultProps, ResultState> {
             score={ stats.score } />
               다음 코스도 추천해 주자~
           <Footer/>
-        </div>
+        </>
       );
     }
   }

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "@tensorflow-models/posenet": "^2.2.1",
     "@tensorflow/tfjs": "^2.0.1",
     "@tensorflow/tfjs-node": "^2.0.1",
@@ -24,14 +25,15 @@
     "posenet-similarity": "^0.4.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-loading-screen": "^0.0.17",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
     "typescript": "^3.9.6"
   },
   "scripts": {
-    "start": "react-scripts start NODE_PATH=src",
-    "build": "react-scripts build NODE_PATH=src",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "npx eslint --fix 'src/**/*.ts' && npx eslint --fix 'src/**/*.tsx'"

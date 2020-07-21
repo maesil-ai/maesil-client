@@ -6,6 +6,7 @@ import React from 'react';
 import Screen from '../components/Screen';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loading from '../components/Loading';
 import {Redirect} from 'react-router-dom';
 
 interface ExerciseProps {
@@ -165,6 +166,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       return <Redirect push to={{
         pathname: '/result',
         state: {
+          exerciseId: this.state.id,
           score: this.state.record.score,
           time: this.state.record.playTime,
           calorie: this.state.record.calorie,
@@ -195,7 +197,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         <div>
           <Header/>
           { videos }
-              운동 불러오는 중...
+          <Loading/>
           <Footer/>
         </div>
       );
