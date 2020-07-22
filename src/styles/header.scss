@@ -17,7 +17,7 @@ header {
 	left: 0;
 	right: 0;
   
-	height: 30px;
+	height: 50px;
 	margin-bottom: 10px;
 	font-size: 30px; 
 	color: #006856;
@@ -686,4 +686,41 @@ header {
 			z-index: 100;
 		}
 	}
+}
+
+
+.top-bar {
+	padding: 0.5rem; 
+}
+.top-bar::before, .top-bar::after {
+	content: ' ';
+	display: table;
+	flex-basis: 0;
+	order: 1;
+}
+.top-bar::after {
+	clear: both; 
+}
+
+.top-bar, .top-bar ul {
+	background-color: #fff; 
+}
+.top-bar input {
+	width: 200px;
+	margin-right: 1rem; 
+}
+.top-bar .input-group-field {
+	width: 100%;
+	margin-right: 0; 
+}
+.top-bar input.button {
+	width: auto; 
+}
+
+.top-bar-left {
+	float: left;
+}
+  
+.top-bar-right {
+	float: right;
 }

@@ -6,19 +6,20 @@
     flex-wrap: nowrap;
     overflow: auto;
     justify-content: flex-start;
-};
+}
 
 .gridList {
   width: 222px;
   height: 222px;
   flex-wrap: nowrap;
   display: inline-block;
-};
-  
+}
+
 titleText {
+    font-family: "Noto Sans KR";
     font-weight: 700;
-};
+}
 
 titleBar {
     background: rgba(100, 100, 100, 0.54);
-};
+}

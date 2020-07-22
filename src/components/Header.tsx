@@ -6,8 +6,9 @@ function Header() {
   return (
     <header>
         <Link to='/'>
-          <div>매실</div>
+        <div className={"top-bar-left"}>매실</div>
         </Link>
+        <div className={"top-bar-right font-effect-fire-animation"}></div>
     </header>
   );
 }

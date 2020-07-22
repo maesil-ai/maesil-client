@@ -56,6 +56,8 @@ class Home extends React.Component<HomeProps, HomeState> {
    * @memberof Home
    */
   componentDidMount() {
+    const defaultImageUrl = 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg';
+
     this.loadExercises().then((response) => {
       const exerciseData = response.data.result;
       const exercises : Exercise[] = [];
@@ -63,7 +65,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         exercises.push({
           id: exercise.exercise_id,
           name: exercise.title,
-          thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg',
+          thumbUrl: exercise.thumb_url ? exercise.thumb_url : defaultImageUrl,
           playTime: exercise.play_time,
         });
       }

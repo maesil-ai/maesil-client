@@ -1,18 +1,20 @@
 import React from 'react';
 
-import LoadingScreen from 'react-loading-screen'
-
+import Title from './Title';
+import BeatLoader from "react-spinners/BeatLoader";
 
 function Loading() {
   return (
-    <LoadingScreen
-        loading={true}
-        spinnerColor='#9ee5f8'
-        textColor='#676767'
-        logoSrc='http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg'
-        text="불러오는 중..."
-    />
+    <div>
+      <Title title="불러오는 중..."/>
+    </div>
   );
 }
 
+/*
+        spinnerColor='#9ee5f8'
+        textColor='#676767'
+        text="불러오는 중..."
+
+*/
 export default Loading;

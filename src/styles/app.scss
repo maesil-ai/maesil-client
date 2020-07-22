@@ -3,7 +3,7 @@
   margin: 15px auto;
   padding-top: 30px;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
 
   height: 40px;
   width: 1200px;
@@ -17,7 +17,7 @@
   height: 20px;
 
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
 
   background-color: white;
   color: #555;
@@ -37,6 +37,7 @@
 }
 
 body {
+  font-family: 'Noto Sans KR';
   margin: 0px auto;
   background-color: #eeeeee;
 }
@@ -45,12 +46,20 @@ body {
 
 }
 
+img {
+  margin: auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
 a {
   text-decoration: none;
 }
 
 div {
   margin: 0px auto;
+  position: relative;
 }
 
 footer {
