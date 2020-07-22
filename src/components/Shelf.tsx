@@ -49,7 +49,7 @@ function Shelf({exercises} : ShelfProps) {
         { exercises.map((exercise) => (
           <GridListTile key={exercise.id} className={classes.gridList}>
               <Link to={'/exercise/' + exercise.id}>
-                  <img src={exercise.thumbUrl} alt={exercise.name} width={300} />
+                  <img src={exercise.thumbUrl} alt={exercise.name} className={'pretty'} width={300} />
               </Link>
               <GridListTileBar
                 title={exercise.name}

@@ -97,7 +97,8 @@ class Home extends React.Component<HomeProps, HomeState> {
         <Title title = { data.title }/>
         <Shelf exercises = { data.exercises }/>
       </React.Fragment>
-    ))
+    ));
+    
     return (
       <>
         <Header/>
