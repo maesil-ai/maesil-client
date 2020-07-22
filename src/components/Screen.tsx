@@ -197,7 +197,7 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
 
     render() {
       return (
-        <div>
+        <div style={{width: this.props.videoWidth}}>
           <canvas
             ref={this.canvas}
             width={this.props.videoWidth}

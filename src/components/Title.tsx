@@ -11,7 +11,7 @@ interface TitleProps {
  */
 function Title({title} : TitleProps) {
   return (
-    <div id={'title'}>
+    <div className={'title element'}>
       { title }
     </div>
   );

@@ -93,10 +93,10 @@ class Home extends React.Component<HomeProps, HomeState> {
   );
   else {
     const shelfs = this.state.shelfDatas.map((data) => (
-      <React.Fragment key={data.title}>
+      <div key={data.title}>
         <Title title = { data.title }/>
         <Shelf exercises = { data.exercises }/>
-      </React.Fragment>
+      </div>
     ));
     
     return (
