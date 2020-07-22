@@ -63,6 +63,7 @@ interface ExerciseState {
 class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   guideVideo = React.createRef<HTMLVideoElement>();
   userVideo = React.createRef<HTMLVideoElement>();
+  userStream : MediaStream | null;
   
   static defaultProps = {
     videoWidth: 800,
@@ -118,6 +119,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           guideVideo.src = guideSource;
           userVideo.srcObject = userStream;
 
+          this.userStream = userStream;
           new Promise((resolve) => {
             let cnt = 0;
             const incrementCnt = () => {
@@ -131,7 +133,16 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             isLoading: false,
           }));
         });
+    
   };
+
+  componentWillUnmount = () => {
+    if (this.userStream) {
+      this.userStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+  }
 
   handleExerciseFinish = (record: Record) => {
     console.log("HI!!!!");
