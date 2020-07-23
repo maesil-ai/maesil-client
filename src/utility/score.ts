@@ -23,13 +23,12 @@ export function extractPose(view) {
  * @param {*} userPose 유저 포즈
  * @return {*} score 유사도
  */
-export function posePoseSimilarity(modelPose, userPose) {
+export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
   // 0일수록 비슷 아마 1넘어가기 힘들듯?
   // return poseSimilarity(modelPose, userPose, {strategy: 'weightedDistance'});
   // 0일수록 비슷 0~2사이 값
   // return poseSimilarity(modelPose, userPose, {strategy: 'cosineDistance'});
   // -1~1 사이 값, -1이면 방향 완전 반대, 1이면 완전 똑같음
-  const bias = 0.5;
   const weight = 1 / (1 - bias);
   const similarity = poseSimilarity(modelPose, userPose, {strategy: 'cosineSimilarity'});
   if (typeof similarity == 'number') {
@@ -68,7 +67,7 @@ export function exerciseScore(modelPose: posenet.Pose[],
   const scoreMatrix = Array.from(Array(modelPose.length),
       () => new Array(userPose.length));
 
-  const minimumCoverage = 0.7;
+  const minimumCoverage = 0.9;
   for (let i = 0; i < modelPose.length; i++) {
     for (let j = 0; j < userPose.length; j++) {
       scoreMatrix[i][j] = posePoseSimilarity(modelPose[i], userPose[j]);
@@ -99,7 +98,6 @@ export function exerciseScore(modelPose: posenet.Pose[],
 
 
 /**
- *
  *
  * @export
  * @param {posenet.Pose[]} modelPose
