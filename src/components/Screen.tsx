@@ -115,6 +115,9 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       for (let i=0; i<this.views.length; i++) {
         promises.push(this.views[i].calculator.load());
       }
+      this.views.forEach((view) => {
+        promises.push(view.calculator.load());
+      })
 
       Promise.all(promises).then(() => {
         this.drawCanvas();
@@ -192,14 +195,9 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
       });
     }
 
-    /**
-     * 직접 실행할일은 없음, 지원하지 않을때는 뜨는 함수
-     * @return {any} HTML 반환
-     * @memberof Screen
-     */
     render() {
       return (
-        <div>
+        <div style={{width: this.props.videoWidth}}>
           <canvas
             ref={this.canvas}
             width={this.props.videoWidth}

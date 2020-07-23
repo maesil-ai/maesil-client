@@ -6,6 +6,7 @@ import React from 'react';
 import Screen from '../components/Screen';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loading from '../components/Loading';
 import {Redirect} from 'react-router-dom';
 
 interface ExerciseProps {
@@ -62,6 +63,7 @@ interface ExerciseState {
 class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   guideVideo = React.createRef<HTMLVideoElement>();
   userVideo = React.createRef<HTMLVideoElement>();
+  userStream : MediaStream | null;
   
   static defaultProps = {
     videoWidth: 800,
@@ -117,6 +119,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
           guideVideo.src = guideSource;
           userVideo.srcObject = userStream;
 
+          this.userStream = userStream;
           new Promise((resolve) => {
             let cnt = 0;
             const incrementCnt = () => {
@@ -130,7 +133,16 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             isLoading: false,
           }));
         });
+    
   };
+
+  componentWillUnmount = () => {
+    if (this.userStream) {
+      this.userStream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+  }
 
   handleExerciseFinish = (record: Record) => {
     console.log("HI!!!!");
@@ -165,6 +177,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       return <Redirect push to={{
         pathname: '/result',
         state: {
+          exerciseId: this.state.id,
           score: this.state.record.score,
           time: this.state.record.playTime,
           calorie: this.state.record.calorie,
@@ -195,7 +208,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         <div>
           <Header/>
           { videos }
-              운동 불러오는 중...
+          <Loading/>
           <Footer/>
         </div>
       );

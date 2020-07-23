@@ -8,6 +8,9 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Title from '../components/Title';
 import StatView from '../components/StatView';
+import Loading from '../components/Loading';
+
+import Shelf, { Exercise } from '../components/Shelf';
 
 interface Stats {
     time: number,
@@ -22,8 +25,10 @@ interface ResultProps {
 
 interface ResultState {
     loading : boolean,
+    exerciseId : number,
     exerciseName? : string,
     stats: Stats,
+    nextExercises: Exercise[],
 };
 
 /**
@@ -43,29 +48,59 @@ class Result extends React.Component<ResultProps, ResultState> {
 
     this.state = {
       loading: true,
+      exerciseId: this.props.location.state.exerciseId,
       stats: {
         time: this.props.location.state.time,
         calorie: this.props.location.state.calorie,
         score: this.props.location.state.score,
-      },  
+      },
+      nextExercises: [],
     };
   }
 
-  componentDidMount = () => {
-    axios({
-      method: 'GET',
-      url: apiAddress + '/exercises/' + 1,
-    }).then((response) => {
-      const exerciseName = response.data.result.title;
+
+  loadExercises = async () => {
+    let response = await axios.get(
+        apiAddress + '/exercises/'
+    );
+    return response;
+  }
+
+  loadExercise = async (id: number) => {
+    let response = await axios.get(
+      apiAddress + '/exercises/' + id
+    );
+    return response;
+  }
+
+  componentDidMount() {
+    let promises : Promise<any>[] = [
+      this.loadExercise(this.state.exerciseId),
+      this.loadExercises(),
+    ];
+
+    Promise.all(promises).then(([responseExercise, responseExercises]) => {
+      const exerciseName = responseExercise.data.result.title;
+
+      const exerciseData = responseExercises.data.result;
+      const exercises : Exercise[] = [];
+      for (const exercise of exerciseData) {
+        exercises.push({
+          id: exercise.exercise_id,
+          name: exercise.title,
+          thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg',
+          playTime: exercise.play_time,
+        });
+      };
 
       this.setState({
         ...this.state,
-        loading: false,
+        nextExercises: exercises,
         exerciseName: exerciseName,
+        loading: false,
       });
-    }).catch((error) => {
-      console.log('ㅋㅋ');
     });
+
   }
 
   /**
@@ -76,25 +111,26 @@ class Result extends React.Component<ResultProps, ResultState> {
   render() {
     if (this.state.loading) {
       return (
-        <div>
+        <>
           <Header/>
-                  결과를 불러오는 중입니다...
+          <Loading/>
           <Footer/>
-        </div>
+        </>
       );
     } else {
       let stats = this.state.stats;
 
       return (
-        <div>
+        <>
           <Header/>
           <Title title={ this.state.exerciseName + ' 완료!' } />
           <StatView time={ stats.time }
             calorie={ stats.calorie }
             score={ stats.score } />
-              다음 코스도 추천해 주자~
+          <Title title={"다음에 할 운동들"} />
+          <Shelf exercises={this.state.nextExercises} />
           <Footer/>
-        </div>
+        </>
       );
     }
   }
