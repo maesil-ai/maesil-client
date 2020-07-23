@@ -51,6 +51,16 @@ img {
   background-position: center center;
   background-repeat: no-repeat;
   overflow: hidden;
+  
+  &.hoverShow {
+    opacity: 0;
+    position: absolute;
+  }
+
+  &.hoverHide {
+    opacity: 1;
+    position: absolute;
+  }
 }
 
 a {

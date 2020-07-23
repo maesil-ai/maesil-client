@@ -57,6 +57,7 @@ class Home extends React.Component<HomeProps, HomeState> {
    */
   componentDidMount() {
     const defaultImageUrl = 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg';
+    const defaultGifImageUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
     this.loadExercises().then((response) => {
       const exerciseData = response.data.result;
@@ -66,6 +67,7 @@ class Home extends React.Component<HomeProps, HomeState> {
           id: exercise.exercise_id,
           name: exercise.title,
           thumbUrl: exercise.thumb_url ? exercise.thumb_url : defaultImageUrl,
+          thumbGifUrl: defaultGifImageUrl,
           playTime: exercise.play_time,
         });
       }
@@ -78,7 +80,7 @@ class Home extends React.Component<HomeProps, HomeState> {
           }, {
             title: "첫글자 P로 시작하는 운동들!",
             exercises: exercises.filter((exercise) => { return (exercise.name[0] === 'p' || exercise.name[0] === 'P'); })
-          }
+          }, 
         ],
         loading: false,
       });
