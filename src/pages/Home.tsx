@@ -56,7 +56,7 @@ class Home extends React.Component<HomeProps, HomeState> {
    * @memberof Home
    */
   componentDidMount() {
-    const defaultImageUrl = 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg';
+    const defaultImageUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
     const defaultGifImageUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
     this.loadExercises().then((response) => {

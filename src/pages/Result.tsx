@@ -88,7 +88,7 @@ class Result extends React.Component<ResultProps, ResultState> {
         exercises.push({
           id: exercise.exercise_id,
           name: exercise.title,
-          thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'http://www.foodnmed.com/news/photo/201903/18296_3834_4319.jpg',
+          thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
           playTime: exercise.play_time,
         });
       };
