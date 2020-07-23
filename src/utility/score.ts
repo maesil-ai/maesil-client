@@ -29,6 +29,9 @@ export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
   // 0일수록 비슷 0~2사이 값
   // return poseSimilarity(modelPose, userPose, {strategy: 'cosineDistance'});
   // -1~1 사이 값, -1이면 방향 완전 반대, 1이면 완전 똑같음
+  
+  const bias = 0.5;
+  
   const weight = 1 / (1 - bias);
   const similarity = poseSimilarity(modelPose, userPose, {strategy: 'cosineSimilarity'});
   if (typeof similarity == 'number') {
