@@ -39,21 +39,21 @@ interface ExerciseState {
  * @param {number} time
  * @return {string} 시간을 DB에 저장하기 좋게 string으로 변환
  */
-// function timeToString(time : number) {
-//   const sec0 = time % 10;
-//   time = (time - sec0) / 10;
-//   const sec1 = time % 6;
-//   time = (time - sec1) / 6;
-//   const min0 = time % 10;
-//   time = (time - min0) / 10;
-//   const min1 = time % 6;
-//   time = (time - min1) / 6;
-//   const hr0 = time % 10;
-//   time = (time - hr0) / 10;
-//   const hr1 = time % 10;
+ function timeToString(time : number) {
+   const sec0 = time % 10;
+   time = (time - sec0) / 10;
+   const sec1 = time % 6;
+   time = (time - sec1) / 6;
+   const min0 = time % 10;
+   time = (time - min0) / 10;
+   const min1 = time % 6;
+   time = (time - min1) / 6;
+   const hr0 = time % 10;
+   time = (time - hr0) / 10;
+   const hr1 = time % 10;
 
-//   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
-// }
+   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
+}
 
 /**
  * Excerciese 페이지
@@ -145,10 +145,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
   handleExerciseFinish = (record: Record) => {
-    console.log("HI!!!!");
     axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
       'score': record.score,
-      'play_time': "00:01:03",
+      'play_time': timeToString(record.playTime),
       'cal': record.calorie,
     }).then((response) => {
       console.log(response);

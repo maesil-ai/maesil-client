@@ -6,6 +6,7 @@ import {
   drawSkeleton,
 } from '../utility/draw';
 import { exerciseScore } from '../utility/score';
+import { exerciseCalorie } from '../utility/calorie';
 
 interface View {
     video: HTMLVideoElement,
@@ -27,9 +28,9 @@ interface ViewConfig {
 const defaultViewConfig = {
   flipPoseHorizontal: false,
   showVideo: true,
-  showSkeleton: true,
-  showPoints: true,
-  showBoundingBox: true,
+  showSkeleton: false,
+  showPoints: false,
+  showBoundingBox: false,
   minPoseConfidence: 0.15,
   minPartConfidence: 0.1,
 };
@@ -95,10 +96,12 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
           });
 
           if (finishCount === 1) {
+            const guideRecord = this.views[0].calculator.record;
+            const userRecord = this.views[1].calculator.record;
             this.props.onExerciseFinish({
-              score: exerciseScore(this.views[0].calculator.record, this.views[1].calculator.record),
-              time: 63*60,
-              calorie: 1021,
+              score: exerciseScore(guideRecord, userRecord),
+              playTime: guideRecord.length,
+              calorie: exerciseCalorie(guideRecord, userRecord),
             });
           }
         }

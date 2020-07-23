@@ -21,10 +21,4 @@ function StatView({time, calorie, score} : StatViewProps) {
   );
 }
 
-StatView.defaultProps = {
-  time: 63,
-  calorie: 0,
-  score: 0,
-};
-
 export default StatView;
