@@ -39,21 +39,21 @@ interface ExerciseState {
  * @param {number} time
  * @return {string} 시간을 DB에 저장하기 좋게 string으로 변환
  */
-// function timeToString(time : number) {
-//   const sec0 = time % 10;
-//   time = (time - sec0) / 10;
-//   const sec1 = time % 6;
-//   time = (time - sec1) / 6;
-//   const min0 = time % 10;
-//   time = (time - min0) / 10;
-//   const min1 = time % 6;
-//   time = (time - min1) / 6;
-//   const hr0 = time % 10;
-//   time = (time - hr0) / 10;
-//   const hr1 = time % 10;
+ function timeToString(time : number) {
+   const sec0 = time % 10;
+   time = (time - sec0) / 10;
+   const sec1 = time % 6;
+   time = (time - sec1) / 6;
+   const min0 = time % 10;
+   time = (time - min0) / 10;
+   const min1 = time % 6;
+   time = (time - min1) / 6;
+   const hr0 = time % 10;
+   time = (time - hr0) / 10;
+   const hr1 = time % 10;
 
-//   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
-// }
+   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
+}
 
 /**
  * Excerciese 페이지
@@ -99,41 +99,51 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
   loadStream = async () => {
-    return await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: 'user',
-        width: this.props.videoWidth,
-        height: this.props.videoHeight,
-      },
-    });
+    try {
+      return await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: 'user',
+          width: this.props.videoWidth,
+          height: this.props.videoHeight,
+        },
+      });
+    } catch (error) {
+      // TODO: 카메라가 없을때 혹은 유저가 카메라 권한을 거절했을때의 처리가
+      // 여기에 들어가야함
+      console.log(error);
+      throw error;
+    }
   }
 
-  componentDidMount = () => {
-    const guideSource = this.loadVideo(this.state.id);
-    const userStream = this.loadStream();
+  componentDidMount = async () => {
+    const [guideSource, userStream] = await Promise.all([
+      this.loadVideo(this.state.id),
+      this.loadStream(),
+    ])
 
-    Promise.all([guideSource, userStream]).then(([guideSource, userStream]) => {
-          const guideVideo = this.guideVideo.current!;
-          const userVideo = this.userVideo.current!;
-          guideVideo.src = guideSource;
-          userVideo.srcObject = userStream;
+    const guideVideo = this.guideVideo.current!;
+    const userVideo = this.userVideo.current!;
+    guideVideo.src = guideSource;
+    userVideo.srcObject = userStream;
 
-          this.userStream = userStream;
-          new Promise((resolve) => {
-            let cnt = 0;
-            const incrementCnt = () => {
-              cnt += 1;
-              if (cnt >= 2) resolve();
-            };
-            guideVideo.onloadeddata = incrementCnt;
-            userVideo.onloadeddata = incrementCnt;
-          }).then(() => this.setState({
-            ...this.state,
-            isLoading: false,
-          }));
-        });
-    
+    this.userStream = userStream;
+
+    const onBothVideoLoad = new Promise((resolve) => {
+      let cnt = 0;
+      const incrementCnt = () => {
+        cnt += 1;
+        if (cnt >= 2) resolve();
+      };
+      guideVideo.onloadeddata = incrementCnt;
+      userVideo.onloadeddata = incrementCnt;
+    });
+    await onBothVideoLoad;
+
+    this.setState({
+      ...this.state,
+      isLoading: false,
+    });
   };
 
   componentWillUnmount = () => {
@@ -144,13 +154,14 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     }
   }
 
-  handleExerciseFinish = (record: Record) => {
-    console.log("HI!!!!");
-    axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
-      'score': record.score,
-      'play_time': "00:01:03",
-      'cal': record.calorie,
-    }).then((response) => {
+  handleExerciseFinish = async (record: Record) => {
+    try {
+      const response = await axios.post(`${apiAddress}/exercises/${this.state.id}/history`, {
+        'score': record.score,
+        'play_time': timeToString(record.playTime),
+        'cal': record.calorie,
+      });
+
       console.log(response);
       // response.data.code != 200이면?
       if (response.data.code === 200) {
@@ -162,9 +173,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       } else {
         console.log('ㅋㅋ..;;');
       }
-    }).catch((error) => {
+    } catch(error) {
       console.log('ㅋㅋ..ㅈㅅ!!ㅎㅎ..');
-    });
+    }
   }
 
   /**
