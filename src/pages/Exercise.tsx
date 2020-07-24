@@ -99,14 +99,21 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
   loadStream = async () => {
-    return await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: 'user',
-        width: this.props.videoWidth,
-        height: this.props.videoHeight,
-      },
-    });
+    try {
+      audio: false,	      return await navigator.mediaDevices.getUserMedia({
+      video: {	        audio: false,
+        facingMode: 'user',	        video: {
+        width: this.props.videoWidth,	          facingMode: 'user',
+        height: this.props.videoHeight,	          width: this.props.videoWidth,
+      },	          height: this.props.videoHeight,
+    });	        },
+      });
+    } catch (error) {
+      // TODO: 카메라가 없을때 혹은 유저가 카메라 권한을 거절했을때의 처리가
+      // 여기에 들어가야함
+      console.log(error);
+      throw error;
+    }
   }
 
   componentDidMount = async () => {
