@@ -73,34 +73,31 @@ class Result extends React.Component<ResultProps, ResultState> {
     return response;
   }
 
-  componentDidMount() {
-    let promises : Promise<any>[] = [
+  async componentDidMount() {
+    const [responseExercise, responseExercises] = await Promise.all([
       this.loadExercise(this.state.exerciseId),
       this.loadExercises(),
-    ];
+    ]);
 
-    Promise.all(promises).then(([responseExercise, responseExercises]) => {
-      const exerciseName = responseExercise.data.result.title;
+    const exerciseName = responseExercise.data.result.title;
 
-      const exerciseData = responseExercises.data.result;
-      const exercises : Exercise[] = [];
-      for (const exercise of exerciseData) {
-        exercises.push({
-          id: exercise.exercise_id,
-          name: exercise.title,
-          thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
-          playTime: exercise.play_time,
-        });
-      };
-
-      this.setState({
-        ...this.state,
-        nextExercises: exercises,
-        exerciseName: exerciseName,
-        loading: false,
+    const exerciseData = responseExercises.data.result;
+    const exercises : Exercise[] = [];
+    for (const exercise of exerciseData) {
+      exercises.push({
+        id: exercise.exercise_id,
+        name: exercise.title,
+        thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
+        playTime: exercise.play_time,
       });
-    });
+    };
 
+    this.setState({
+      ...this.state,
+      nextExercises: exercises,
+      exerciseName: exerciseName,
+      loading: false,
+    });
   }
 
   /**

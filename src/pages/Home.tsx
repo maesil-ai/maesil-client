@@ -55,35 +55,34 @@ class Home extends React.Component<HomeProps, HomeState> {
    * 기본 함수
    * @memberof Home
    */
-  componentDidMount() {
+  async componentDidMount() {
     const defaultImageUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
     const defaultGifImageUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
-    this.loadExercises().then((response) => {
-      const exerciseData = response.data.result;
-      const exercises : Exercise[] = [];
-      for (const exercise of exerciseData) {
-        exercises.push({
-          id: exercise.exercise_id,
-          name: exercise.title,
-          thumbUrl: exercise.thumb_url ? exercise.thumb_url : defaultImageUrl,
-          thumbGifUrl: defaultGifImageUrl,
-          playTime: exercise.play_time,
-        });
-      }
-      this.setState({
-        ...this.state,
-        shelfDatas: [
-          {
-            title: "그냥... 모든 운동들",
-            exercises: exercises,
-          }, {
-            title: "첫글자 P로 시작하는 운동들!",
-            exercises: exercises.filter((exercise) => { return (exercise.name[0] === 'p' || exercise.name[0] === 'P'); })
-          }, 
-        ],
-        loading: false,
+    const response = await this.loadExercises();
+    const exerciseData = response.data.result;
+    const exercises : Exercise[] = [];
+    for (const exercise of exerciseData) {
+      exercises.push({
+        id: exercise.exercise_id,
+        name: exercise.title,
+        thumbUrl: exercise.thumb_url ? exercise.thumb_url : defaultImageUrl,
+        thumbGifUrl: defaultGifImageUrl,
+        playTime: exercise.play_time,
       });
+    }
+    this.setState({
+      ...this.state,
+      shelfDatas: [
+        {
+          title: "그냥... 모든 운동들",
+          exercises: exercises,
+        }, {
+          title: "첫글자 P로 시작하는 운동들!",
+          exercises: exercises.filter((exercise) => { return (exercise.name[0] === 'p' || exercise.name[0] === 'P'); })
+        },
+      ],
+      loading: false,
     });
   }
 

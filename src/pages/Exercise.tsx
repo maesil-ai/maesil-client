@@ -109,31 +109,34 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     });
   }
 
-  componentDidMount = () => {
-    const guideSource = this.loadVideo(this.state.id);
-    const userStream = this.loadStream();
+  componentDidMount = async () => {
+    const [guideSource, userStream] = await Promise.all([
+      this.loadVideo(this.state.id),
+      this.loadStream(),
+    ])
 
-    Promise.all([guideSource, userStream]).then(([guideSource, userStream]) => {
-          const guideVideo = this.guideVideo.current!;
-          const userVideo = this.userVideo.current!;
-          guideVideo.src = guideSource;
-          userVideo.srcObject = userStream;
+    const guideVideo = this.guideVideo.current!;
+    const userVideo = this.userVideo.current!;
+    guideVideo.src = guideSource;
+    userVideo.srcObject = userStream;
 
-          this.userStream = userStream;
-          new Promise((resolve) => {
-            let cnt = 0;
-            const incrementCnt = () => {
-              cnt += 1;
-              if (cnt >= 2) resolve();
-            };
-            guideVideo.onloadeddata = incrementCnt;
-            userVideo.onloadeddata = incrementCnt;
-          }).then(() => this.setState({
-            ...this.state,
-            isLoading: false,
-          }));
-        });
-    
+    this.userStream = userStream;
+
+    const onBothVideoLoad = new Promise((resolve) => {
+      let cnt = 0;
+      const incrementCnt = () => {
+        cnt += 1;
+        if (cnt >= 2) resolve();
+      };
+      guideVideo.onloadeddata = incrementCnt;
+      userVideo.onloadeddata = incrementCnt;
+    });
+    await onBothVideoLoad;
+
+    this.setState({
+      ...this.state,
+      isLoading: false,
+    });
   };
 
   componentWillUnmount = () => {
@@ -144,12 +147,14 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     }
   }
 
-  handleExerciseFinish = (record: Record) => {
-    axios.post(apiAddress + '/exercises/' + this.state.id + '/history', {
-      'score': record.score,
-      'play_time': timeToString(record.playTime),
-      'cal': record.calorie,
-    }).then((response) => {
+  handleExerciseFinish = async (record: Record) => {
+    try {
+      const response = await axios.post(`${apiAddress}/exercises/${this.state.id}/history`, {
+        'score': record.score,
+        'play_time': timeToString(record.playTime),
+        'cal': record.calorie,
+      });
+
       console.log(response);
       // response.data.code != 200이면?
       if (response.data.code === 200) {
@@ -161,9 +166,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       } else {
         console.log('ㅋㅋ..;;');
       }
-    }).catch((error) => {
+    } catch(error) {
       console.log('ㅋㅋ..ㅈㅅ!!ㅎㅎ..');
-    });
+    }
   }
 
   /**

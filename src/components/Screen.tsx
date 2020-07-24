@@ -112,19 +112,12 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
      * 리액트 컴포넌트 클래스 기본 함수
      * @memberof Screen
      */
-    componentDidMount() {
+    async componentDidMount() {
       this.ctx = this.canvas.current!.getContext('2d')!;
-      let promises : Promise<void>[] = [];
-      for (let i=0; i<this.views.length; i++) {
-        promises.push(this.views[i].calculator.load());
-      }
-      this.views.forEach((view) => {
-        promises.push(view.calculator.load());
-      })
 
-      Promise.all(promises).then(() => {
-        this.drawCanvas();
-      });
+      await Promise.all(this.views.map(view => view.calculator.load()));
+
+      this.drawCanvas();
     }
 
     drawCanvas = () => {
