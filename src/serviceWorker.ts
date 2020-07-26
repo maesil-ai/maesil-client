@@ -110,7 +110,7 @@ async function registerValidSW(swUrl: string, config?: Config) {
         }
       };
     };
-  } catch(error) {
+  } catch (error) {
     console.error('Error during service worker registration:', error);
   }
 }
@@ -141,7 +141,7 @@ async function checkValidServiceWorker(swUrl: string, config?: Config) {
       // Service worker found. Proceed as normal.
       registerValidSW(swUrl, config);
     }
-  } catch(e) {
+  } catch (e) {
     console.log('No internet connection found. App is running in offline mode.');
   }
 }
