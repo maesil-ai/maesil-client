@@ -23,31 +23,66 @@ const color = 'aqua';
 const boundingBoxColor = 'red';
 const lineWidth = 1;
 
+/**
+ * 접속한 기기가 Android인지 판단
+ * @return {boolean} Android면 true 반환
+ */
 function isAndroid() {
-     return /Android/i.test(navigator.userAgent);
-}
-
-function isiOS() {
-    return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-export function isMobile() {
-    return isAndroid() || isiOS();
-}
-
-function toTuple(pos : any) : [number, number] {
-    return [pos.y, pos.x];
-}
-
-export function drawPoint(ctx, y, x, r, color) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = color;
-    ctx.fill();
+  return /Android/i.test(navigator.userAgent);
 }
 
 /**
- * Draws a line on a canvas, i.e. a joint
+ * 접속한 기기가 iOS인지 판단
+ * @return {boolean} iOS면 true 반환
+ */
+function isiOS() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+/**
+ * 접속한 기기가 모바일인지 판단
+ * @export
+ * @return {boolean} 모바일이면 true 반환
+ */
+export function isMobile() {
+  return isAndroid() || isiOS();
+}
+
+/**
+ * pos를 받아서 튜블로 변환
+ * @param {*} pos
+ * @return {[number, number]}
+ */
+function toTuple(pos : any) : [number, number] {
+  return [pos.y, pos.x];
+}
+
+/**
+ * 주어진 keypoint를 점으로 찍어주는 함수
+ * @export
+ * @param {*} ctx 캔버스
+ * @param {*} y y
+ * @param {*} x x
+ * @param {*} r r
+ * @param {*} color color
+ */
+export function drawPoint(ctx, y, x, r, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+/**
+ * 주어진 점을 바탕으로 키포인트를 이어 캔버스에 선을 그려주는 함수(관절)
+ * @export
+ * @param {*} ay ay
+ * @param {*} by by
+ * @param {any} color 색
+ * @param {any} ctx 캔버스
+ * @param {number} [scale=1] 크기
+ * @param {any} offsetx 시작 x
+ * @param {any} offsety 시작 y
  */
 export function drawSegment(
     [ay, ax],
@@ -57,19 +92,24 @@ export function drawSegment(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    ctx.beginPath();
-    ctx.moveTo(ax * scale + offsetx, ay * scale + offsety);
-    ctx.lineTo(bx * scale + offsetx, by * scale + offsety);
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = color;
-    ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(ax * scale + offsetx, ay * scale + offsety);
+  ctx.lineTo(bx * scale + offsetx, by * scale + offsety);
+  ctx.lineWidth = lineWidth;
+  ctx.strokeStyle = color;
+  ctx.stroke();
 }
 
 /**
  * Draws a pose skeleton by looking up all adjacent keypoints/joints
+ * @export
+ * @param {posenet.Keypoint[]} keypoints
+ * @param {number} minConfidence
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} [scale=1]
+ * @param {*} offsetx
+ * @param {*} offsety
  */
-
- 
 export function drawSkeleton(
     keypoints: posenet.Keypoint[],
     minConfidence: number,
@@ -77,23 +117,30 @@ export function drawSkeleton(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-        keypoints,
-        minConfidence,
-    );
+  const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
+      keypoints,
+      minConfidence,
+  );
 
-    adjacentKeyPoints.forEach((keypoints) => drawSegment(
-        toTuple(keypoints[0].position),
-        toTuple(keypoints[1].position),
-        color,
-        ctx,
-        scale,
-        [offsetx, offsety])
-    );
+  adjacentKeyPoints.forEach((keypoints) => drawSegment(
+      toTuple(keypoints[0].position),
+      toTuple(keypoints[1].position),
+      color,
+      ctx,
+      scale,
+      [offsetx, offsety]),
+  );
 }
 
 /**
  * Draw pose keypoints onto a canvas
+ * @export
+ * @param {posenet.Keypoint[]} keypoints
+ * @param {number} minConfidence
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} [scale=1]
+ * @param {*} offsetx default=0
+ * @param {*} offsety default=0
  */
 export function drawKeypoints(
     keypoints: posenet.Keypoint[],
@@ -102,22 +149,28 @@ export function drawKeypoints(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    for (let i = 0; i < keypoints.length; i++) {
-        const keypoint = keypoints[i];
+  for (let i = 0; i < keypoints.length; i++) {
+    const keypoint = keypoints[i];
 
-        if (keypoint.score < minConfidence) {
-        continue;
-        }
-
-        const {y, x} = keypoint.position;
-        drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+    if (keypoint.score < minConfidence) {
+      continue;
     }
+
+    const {y, x} = keypoint.position;
+    drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+  }
 }
 
 /**
  * Draw the bounding box of a pose. For example, for a whole person standing
  * in an image, the bounding box will begin at the nose and extend to one of
  * ankles
+ * @export
+ * @param {posenet.Keypoint[]} keypoints
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} [scale=1]
+ * @param {*} offsetx default=0
+ * @param {*} offsety default=0
  */
 export function drawBoundingBox(
     keypoints: posenet.Keypoint[],
@@ -125,21 +178,23 @@ export function drawBoundingBox(
     scale = 1,
     [offsetx, offsety] = [0, 0],
 ) {
-    const boundingBox = posenet.getBoundingBox(keypoints);
+  const boundingBox = posenet.getBoundingBox(keypoints);
 
-    ctx.rect(
-        scale * boundingBox.minX + offsetx,
-        scale * boundingBox.minY + offsety,
-        scale * (boundingBox.maxX - boundingBox.minX),
-        scale * (boundingBox.maxY - boundingBox.minY),
-    );
+  ctx.rect(
+      scale * boundingBox.minX + offsetx,
+      scale * boundingBox.minY + offsety,
+      scale * (boundingBox.maxX - boundingBox.minX),
+      scale * (boundingBox.maxY - boundingBox.minY),
+  );
 
-    ctx.strokeStyle = boundingBoxColor;
-    ctx.stroke();
+  ctx.strokeStyle = boundingBoxColor;
+  ctx.stroke();
 }
-
 /**
  * Converts an arary of pixel data into an ImageData object
+ * @export
+ * @param {*} a
+ * @param {*} ctx
  */
 export async function renderToCanvas(a, ctx) {
   const [height, width] = a.shape;
@@ -162,6 +217,10 @@ export async function renderToCanvas(a, ctx) {
 
 /**
  * Draw an image on a canvas
+ * @export
+ * @param {*} image
+ * @param {*} size
+ * @param {*} canvas
  */
 export function renderImageToCanvas(image, size, canvas) {
   canvas.width = size[0];
@@ -175,6 +234,10 @@ export function renderImageToCanvas(image, size, canvas) {
  * Draw heatmap values, one of the model outputs, on to the canvas
  * Read our blog post for a description of PoseNet's heatmap outputs
  * https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5
+ * @export
+ * @param {*} heatMapValues
+ * @param {*} outputStride
+ * @param {*} canvas
  */
 export function drawHeatMapValues(heatMapValues, outputStride, canvas) {
   const ctx = canvas.getContext('2d');
@@ -187,6 +250,10 @@ export function drawHeatMapValues(heatMapValues, outputStride, canvas) {
 /**
  * Used by the drawHeatMapValues method to draw heatmap points on to
  * the canvas
+ * @param {*} ctx
+ * @param {*} points
+ * @param {*} radius
+ * @param {*} color
  */
 function drawPoints(ctx, points, radius, color) {
   const data = points.buffer().values;
@@ -203,42 +270,3 @@ function drawPoints(ctx, points, radius, color) {
     }
   }
 }
-
-/**
- * Draw offset vector values, one of the model outputs, on to the canvas
- * Read our blog post for a description of PoseNet's offset vector outputs
- * https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5
- */
-/*
-export function drawOffsetVectors(
-    heatMapValues,
-    offsets,
-    outputStride,
-    ctx,
-    scale = 1,
-) {
-  const offsetPoints = posenet.singlePose.getOffsetPoints(
-      heatMapValues,
-      outputStride,
-      offsets,
-  );
-
-  const heatmapData = heatMapValues.buffer().values;
-  const offsetPointsData = offsetPoints.buffer().values;
-
-  for (let i = 0; i < heatmapData.length; i += 2) {
-    const heatmapY = heatmapData[i] * outputStride;
-    const heatmapX = heatmapData[i + 1] * outputStride;
-    const offsetPointY = offsetPointsData[i];
-    const offsetPointX = offsetPointsData[i + 1];
-
-    drawSegment(
-        [heatmapY, heatmapX],
-        [offsetPointY, offsetPointX],
-        color,
-        scale,
-        ctx,
-    );
-  }
-}
-*/

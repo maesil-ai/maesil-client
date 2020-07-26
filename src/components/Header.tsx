@@ -2,24 +2,15 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-interface HeaderProps {
-
-};
-
-interface HeaderState {
-
-};
-
-class Header extends React.Component<HeaderProps, HeaderState> {
-    render() {
-        return (
-            <header>
-                <Link to="/">
-                    매실
-                </Link>
-            </header>
-        );
-    }
-};
+function Header() {
+  return (
+    <header>
+        <Link to='/'>
+        <div className={"top-bar-left"}>매실</div>
+        </Link>
+        <div className={"top-bar-right font-effect-fire-animation"}></div>
+    </header>
+  );
+}
 
 export default Header;

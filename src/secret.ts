@@ -1,3 +1,3 @@
-let api_address = "http://13.209.193.142:8080";
+const apiAddress = 'https://api.maesil.ai';
 
-export default api_address;
+export default apiAddress;
