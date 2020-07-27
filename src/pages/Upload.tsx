@@ -7,26 +7,35 @@ import Footer from '../components/Footer';
 import Title from '../components/Title';
 import Loading from '../components/Loading';
 
+import { useDropzone } from 'react-dropzone'
+
+
 interface UploadProps {
     
 };
 
-interface UploadState {
-    
-};
+export function Upload({ } : UploadProps) {
+  const onDrop = React.useCallback(acceptedFiles => {
+    console.log(acceptedFiles);
+  }, []);
 
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
-class Upload extends React.Component<UploadProps, UploadState> {
-
-  render() {
-    return (
-        <>
-            <Header/>
-            <Title title="운동 업로드"/>
-            <Footer/>
-        </>
-    );
-  }
-};
+  return (
+    <>
+      <Header/>
+      <Title title="운동 업로드"/>
+      <div {...getRootProps({className: 'dropzone'})}>
+        <input {...getInputProps()} />
+        {
+          isDragActive ?
+            <p>여기로 파일을 드래그해 주세요.</p> :
+            <p>운동 영상을 드래그하거나, 상자를 눌러서 운동 영상을 올려 주세요.</p>
+        }
+      </div>
+      <Footer/>
+    </>
+  )
+}
 
 export default Upload;
