@@ -28,9 +28,9 @@ interface ViewConfig {
 const defaultViewConfig = {
   flipPoseHorizontal: false,
   showVideo: true,
-  showSkeleton: false,
-  showPoints: false,
-  showBoundingBox: false,
+  showSkeleton: true,
+  showPoints: true,
+  showBoundingBox: true,
   minPoseConfidence: 0.15,
   minPartConfidence: 0.1,
 };
