@@ -1,11 +1,10 @@
-import { } from '../utility/api';
+import { postExercise } from '../utility/api';
 
 import React from 'react';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Title from '../components/Title';
-import Loading from '../components/Loading';
 
 import { useDropzone } from 'react-dropzone'
 
@@ -17,6 +16,11 @@ interface UploadProps {
 export function Upload({ } : UploadProps) {
   const onDrop = React.useCallback(acceptedFiles => {
     console.log(acceptedFiles);
+    postExercise({
+      exercise: acceptedFiles[0],
+      title: "아 배고파",
+      play_time: "00:01:03",
+    })
   }, []);
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})

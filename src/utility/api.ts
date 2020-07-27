@@ -58,3 +58,15 @@ export const postResult = async (id : number, score : number, playTime : number,
     throw new Error('아직 Post를 실패했을 때 어떻게 할 지는 생각 안 해 봤습니다...');
   }
 };
+
+export let postExercise = async (data : object) => {
+  let form = new FormData();
+  
+  for (let [key, value] of Object.entries(data)) 
+    form.append(key, value);
+  
+  console.log(form);
+  const response = await axios.post(`${apiAddress}/upload`, form);
+
+  console.log(response);
+}
