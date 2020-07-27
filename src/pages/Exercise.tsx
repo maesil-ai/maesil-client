@@ -1,13 +1,13 @@
-import apiAddress from '../secret';
+import { getExercise, postResult } from '../utility/api';
 
-// @ts-ignore
-import axios from 'axios';
 import React from 'react';
-import Screen from '../components/Screen';
+import ExerciseScreen from '../components/ExerciseScreen';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Loading from '../components/Loading';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import Title from '../components/Title';
+
 
 interface ExerciseProps {
   videoWidth: number,
@@ -24,39 +24,16 @@ interface Record {
 
 interface ExerciseState {
   isLoading: boolean,
+  isCameraRejected: boolean,
   isFinished: boolean,
   redirectToResult: boolean,
-
   id: number,
-
   record: Record | null,
-
   url?: string,
 };
 
 /**
- * 시간(숫자)을 string으로 변환하는 함수
- * @param {number} time
- * @return {string} 시간을 DB에 저장하기 좋게 string으로 변환
- */
- function timeToString(time : number) {
-   const sec0 = time % 10;
-   time = (time - sec0) / 10;
-   const sec1 = time % 6;
-   time = (time - sec1) / 6;
-   const min0 = time % 10;
-   time = (time - min0) / 10;
-   const min1 = time % 6;
-   time = (time - min1) / 6;
-   const hr0 = time % 10;
-   time = (time - hr0) / 10;
-   const hr1 = time % 10;
-
-   return `${hr1}${hr0}:${min1}${min0}:${sec1}${sec0}`;
-}
-
-/**
- * Excerciese 페이지
+ * Exercise 페이지
  * @class Exercise
  * @extends {React.Component<ExerciseProps, ExerciseState>}
  */
@@ -80,22 +57,12 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
     this.state = {
       isLoading: true,
+      isCameraRejected: false,
       isFinished: false,
       redirectToResult: false,
       id: props.match.params.id,
       record: null,
     };
-  }
-
-
-  /**
-   * id로 서버에 비디오를 요청해서 url을 받아옴
-   * @param {number} id
-   * @return {*} 비디오의 url
-   */
-  loadVideo = async (id : number) => {
-    const response = await axios.get(apiAddress + '/exercises/' + id);
-    return response.data.result.video_url;
   }
 
   loadStream = async () => {
@@ -109,16 +76,19 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         },
       });
     } catch (error) {
-      // TODO: 카메라가 없을때 혹은 유저가 카메라 권한을 거절했을때의 처리가
-      // 여기에 들어가야함
+      this.setState({
+        ...this.state,
+        isCameraRejected: true,
+      });
       console.log(error);
       throw error;
     }
   }
 
+
   componentDidMount = async () => {
-    const [guideSource, userStream] = await Promise.all([
-      this.loadVideo(this.state.id),
+    const [{ video_url: guideSource}, userStream] = await Promise.all([
+      getExercise(this.state.id),
       this.loadStream(),
     ])
 
@@ -129,7 +99,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
     this.userStream = userStream;
 
-    const onBothVideoLoad = new Promise((resolve) => {
+    await new Promise((resolve) => {
       let cnt = 0;
       const incrementCnt = () => {
         cnt += 1;
@@ -138,7 +108,6 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       guideVideo.onloadeddata = incrementCnt;
       userVideo.onloadeddata = incrementCnt;
     });
-    await onBothVideoLoad;
 
     this.setState({
       ...this.state,
@@ -155,27 +124,13 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
   handleExerciseFinish = async (record: Record) => {
-    try {
-      const response = await axios.post(`${apiAddress}/exercises/${this.state.id}/history`, {
-        'score': record.score,
-        'play_time': timeToString(record.playTime),
-        'cal': record.calorie,
-      });
+    await postResult(record.score, record.playTime, record.calorie);
 
-      console.log(response);
-      // response.data.code != 200이면?
-      if (response.data.code === 200) {
-        this.setState({
-          ...this.state,
-          record: record,
-          redirectToResult: true,
-        });
-      } else {
-        console.log('ㅋㅋ..;;');
-      }
-    } catch(error) {
-      console.log('ㅋㅋ..ㅈㅅ!!ㅎㅎ..');
-    }
+    this.setState({
+        ...this.state,
+        record: record,
+        redirectToResult: true,
+    });
   }
 
   /**
@@ -184,6 +139,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
    * @memberof Exercise
    */
   render() {
+    // 운동이 끝나서 결과창으로 보내야 할 때
     if (this.state.redirectToResult) {
       return <Redirect push to={{
         pathname: '/result',
@@ -195,6 +151,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         },
       }}/>;
     }
+
+    // Pose estimation을 수행할 video들.
+    // 유저에게 보이지 않지만 두 <video/>의 스트림이 posenet에 들어간다.
     const videos = (
       <div>
         <video
@@ -214,21 +173,34 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       </div>
     );
 
+    // 시작하기 전, 운동 정보를 로딩 중.
     if (this.state.isLoading) {
       return (
-        <div>
+        <>
           <Header/>
           { videos }
           <Loading/>
           <Footer/>
-        </div>
+        </>
       );
-    } else {
+    }
+    // 카메라 권한을 거절당했을 때...ㅠ
+    else if (this.state.isCameraRejected) {
+      return (
+        <>
+          <Header/>
+          <Title title="운동을 인식하기 위해 카메라가 필요합니다. 카메라 권한을 허용해 주세요."/>
+          <Footer/>
+        </>
+      )
+    }
+    // 정상적인 운동 화면. 운동의 처리는 ExerciseScreen 컴포넌트에서 모두 이루어진다.    
+    else {
       return (
         <div>
           <Header/>
           { videos }
-          <Screen
+          <ExerciseScreen
             onExerciseFinish = { this.handleExerciseFinish }
             videoWidth = { this.props.videoWidth }
             videoHeight = { this.props.videoHeight }

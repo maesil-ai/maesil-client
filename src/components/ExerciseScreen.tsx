@@ -35,7 +35,7 @@ const defaultViewConfig = {
   minPartConfidence: 0.1,
 };
 
-interface ScreenProps {
+interface ExerciseScreenProps {
     videoWidth: number,
     videoHeight: number,
     views: View[],
@@ -44,7 +44,7 @@ interface ScreenProps {
     match?: any,
 };
 
-interface ScreenState {
+interface ExerciseScreenState {
   finishCount: number,
 };
 
@@ -53,10 +53,10 @@ interface ScreenState {
  * Screen 클래스
  * 운동하고 있는 화면을 보여주는 스크린
  * @class Screen
- * @extends {React.Component<ScreenProps, ScreenState>}
+ * @extends {React.Component<ExerciseScreenProps, ExerciseScreenState>}
  */
-class Screen extends React.Component<ScreenProps, ScreenState> {
-    static defaultProps : ScreenProps = {
+class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreenState> {
+    static defaultProps : ExerciseScreenProps = {
       videoWidth: 800,
       videoHeight: 600,
       views: [],
@@ -71,10 +71,10 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
 
     /**
      * Creates an instance of Screen.
-     * @param {ScreenProps} props
+     * @param {ExerciseScreenProps} props
      * @memberof Screen
      */
-    constructor(props: ScreenProps) {
+    constructor(props: ExerciseScreenProps) {
       super(props);
 
       this.canvas = React.createRef<HTMLCanvasElement>();
@@ -207,4 +207,4 @@ class Screen extends React.Component<ScreenProps, ScreenState> {
 }
 
 
-export default Screen;
+export default ExerciseScreen;

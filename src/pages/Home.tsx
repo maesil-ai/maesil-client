@@ -1,7 +1,5 @@
-import apiAddress from '../secret';
+import { getExercises } from '../utility/api';
 
-// @ts-ignore
-import axios from 'axios';
 import React from 'react';
 
 import Header from '../components/Header';
@@ -44,13 +42,6 @@ class Home extends React.Component<HomeProps, HomeState> {
     };
   }
 
-  loadExercises = async () => {
-    let response = await axios.get(
-        apiAddress + '/exercises/',
-    );
-    return response;
-  }
-
   /**
    * 기본 함수
    * @memberof Home
@@ -59,18 +50,15 @@ class Home extends React.Component<HomeProps, HomeState> {
     const defaultImageUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
     const defaultGifImageUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
-    const response = await this.loadExercises();
-    const exerciseData = response.data.result;
-    const exercises : Exercise[] = [];
-    for (const exercise of exerciseData) {
-      exercises.push({
-        id: exercise.exercise_id,
-        name: exercise.title,
-        thumbUrl: exercise.thumb_url ? exercise.thumb_url : defaultImageUrl,
-        thumbGifUrl: defaultGifImageUrl,
-        playTime: exercise.play_time,
-      });
-    }
+    const exerciseData = await getExercises();
+    const exercises : Exercise[] = exerciseData.map((data) => ({
+      id: data.exercise_id,
+      name: data.title,
+      thumbUrl: data.thumb_url ? data.thumb_url : defaultImageUrl,
+      thumbGifUrl: defaultGifImageUrl,
+      playTime: data.play_time,
+    }));
+
     this.setState({
       ...this.state,
       shelfDatas: [

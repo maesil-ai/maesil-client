@@ -1,7 +1,5 @@
-import apiAddress from '../secret';
+import { getExercises, getExercise } from '../utility/api';
 
-// @ts-ignore
-import axios from 'axios';
 import React from 'react';
 
 import Header from '../components/Header';
@@ -57,31 +55,15 @@ class Result extends React.Component<ResultProps, ResultState> {
       nextExercises: [],
     };
   }
-
-
-  loadExercises = async () => {
-    let response = await axios.get(
-        apiAddress + '/exercises/'
-    );
-    return response;
-  }
-
-  loadExercise = async (id: number) => {
-    let response = await axios.get(
-      apiAddress + '/exercises/' + id
-    );
-    return response;
-  }
-
   async componentDidMount() {
     const [responseExercise, responseExercises] = await Promise.all([
-      this.loadExercise(this.state.exerciseId),
-      this.loadExercises(),
+      getExercise(this.state.exerciseId),
+      getExercises(),
     ]);
 
-    const exerciseName = responseExercise.data.result.title;
+    const exerciseName = responseExercise.title;
 
-    const exerciseData = responseExercises.data.result;
+    const exerciseData = responseExercises;
     const exercises : Exercise[] = [];
     for (const exercise of exerciseData) {
       exercises.push({
