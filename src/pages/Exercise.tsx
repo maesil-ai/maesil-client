@@ -124,7 +124,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   }
 
   handleExerciseFinish = async (record: Record) => {
-    await postResult(record.score, record.playTime, record.calorie);
+    await postResult(this.state.id, record.score, record.playTime, record.calorie);
 
     this.setState({
         ...this.state,

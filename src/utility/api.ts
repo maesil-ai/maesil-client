@@ -1,7 +1,6 @@
 
 // @ts-ignore
 import axios from 'axios';
-import { assert } from 'console';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -27,7 +26,8 @@ export type APIDataExercise = {
  * @return {string} 시간을 DB가 읽을 수 있는 string으로 변환
  */
 function secondToString(time : number) {
-    assert(0 <= time && time < 100*60*60);
+    if (!(0 <= time && time < 100*60*60 && Number.isInteger(time))) 
+        throw new Error("시간은 0초에서 360000초 사이여야 합니다.");
 
     const sec = time % 60; time = (time - sec) / 60;
     const min = time % 60; time = (time - min) / 60;
@@ -46,11 +46,13 @@ export let getExercise = async (id : number) => {
     return response.data.result as APIDataExercise;
 }
 
-export let postResult = async (score : number, playTime : number, calorie : number) => {
-    const response = await axios.post(`${apiAddress}/exercises/${this.state.id}/history`, {
+export let postResult = async (id : number, score : number, playTime : number, calorie : number) => {
+    const response = await axios.post(`${apiAddress}/exercises/${id}/history`, {
         'score': score,
         'play_time': secondToString(playTime),
         'cal': calorie,
     });
-    assert(response.data.code == 200, "아직 Post한 결과가 200이 아닐 때는 생각 안 해 봤습니다...");
+
+    if (response.data.code != 200) 
+        throw new Error("아직 Post를 실패했을 때 어떻게 할 지는 생각 안 해 봤습니다...");
 }
