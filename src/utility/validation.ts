@@ -76,9 +76,9 @@ function validateHumanVideo(file) {
  */
 
 export function validA (file: File) {
-  if (!validateVideoFile(file)) return "The format is nor supported";
+  if (!validateVideoFile(file)) return "The format is not supported";
   if (!validateVideoSize(file)) return "Size must less than 2MiB";
-  return "OK";
+  return "ok";
 }
 
 export function validateExcerciseFile(file : File) {
