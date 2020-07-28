@@ -15,10 +15,12 @@ export function Upload({ } : UploadProps) {
   let [phase, setPhase] = React.useState(1);
   let [video, setVideo] = React.useState(null);
 
-  let handleAFinish = (ok : boolean, video : Blob) => {
-    if (ok) {
+  let handleAFinish = (ok : String, video : Blob) => {
+    if (ok == "ok") {
       setVideo(video);
       setPhase(2);
+    } else {
+      alert(ok);
     }
   }
 

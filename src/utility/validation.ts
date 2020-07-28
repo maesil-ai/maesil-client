@@ -1,4 +1,4 @@
-import PoseCalculator from 'poseCalculator';
+import PoseCalculator from './poseCalculator';
 
 function validateVideoFile(file) {
   if (file.type != 'video/mp4') {
@@ -61,8 +61,6 @@ function validateHumanVideo(file) {
 
   executeEveryFrame(() => {calculator.getPoseResult();});
 
-  calculator.result
-  
 
 
   
@@ -76,6 +74,13 @@ function validateHumanVideo(file) {
  * @param {*} file 비디오 파일
  * @return {boolean} true when validation success
  */
+
+export function validA (file: File) {
+  if (!validateVideoFile(file)) return "The format is nor supported";
+  if (!validateVideoSize(file)) return "Size must less than 2MiB";
+  return "OK";
+}
+
 export function validateExcerciseFile(file : File) {
   // 0. 파일을 넘겨준다 가정  
   // 1. 비디오 파일인지 체크

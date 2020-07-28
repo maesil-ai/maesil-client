@@ -1,11 +1,10 @@
 import React from 'react';
-
-import { useDropzone } from 'react-dropzone'
-
+import { useDropzone } from 'react-dropzone';
+import { validA } from '../utility/validation';
 
 interface UploadAProps {
     onFinish : (
-      ok : boolean,
+      ok : String,
       videoFile : Blob,
     ) => void;
 };
@@ -13,7 +12,7 @@ interface UploadAProps {
 export function UploadA({ onFinish } : UploadAProps) {
   const onDrop = React.useCallback(acceptedFiles => {
     const file = acceptedFiles[0];
-    onFinish(true, file);
+    onFinish(validA(file), file);
   }, []);
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
