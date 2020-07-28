@@ -61,7 +61,11 @@ function validateHumanVideo(file) {
 
   executeEveryFrame(() => {calculator.getPoseResult();});
 
-  // calculator.result 에 쌓이는것 같은데 어떻게 하지 
+  calculator.result
+  
+
+
+  
 
   return false;
 }
@@ -72,7 +76,7 @@ function validateHumanVideo(file) {
  * @param {*} file 비디오 파일
  * @return {boolean} true when validation success
  */
-export function validateExcerciseFile(file) {
+export function validateExcerciseFile(file : File) {
   // 0. 파일을 넘겨준다 가정  
   // 1. 비디오 파일인지 체크
   if (!validateVideoFile(file)) 
