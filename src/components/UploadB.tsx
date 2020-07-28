@@ -1,4 +1,5 @@
 import { postExercise } from '../utility/api';
+import { validateVideoLength } from '../utility/validation';
 
 import React from 'react';
 
@@ -10,6 +11,8 @@ export function UploadB({ video } : UploadBProps) {
   let [title, setTitle] = React.useState("아 배고프다.");
   let [description, setDescription] = React.useState("머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다");
   let [message, setMessage] = React.useState("");
+  let videoRef = React.useRef(null);
+
   let videoUrl = URL.createObjectURL(video);
 
   const upload = async () => {
@@ -27,7 +30,12 @@ export function UploadB({ video } : UploadBProps) {
       tag_id: 2,
       level: 4,
     });
-    
+
+    if (!await validateVideoLength(videoRef.current)) {
+      setMessage('비디오는 1초 이상 15초 이하의 길이로 올려');
+      return ;
+    }
+
     const success = await postExercise({
       exercise: video,
       title: title,
@@ -48,7 +56,7 @@ export function UploadB({ video } : UploadBProps) {
 
   return (
       <div style={{display: 'flex', justifyContent: 'center', width: 1200}}>
-        <video src={videoUrl} loop autoPlay controls className='previewVideo'/>
+        <video src={videoUrl} loop autoPlay controls className='previewVideo' ref={videoRef}/>
         <div className='configzone'>
           <div>
             제목  
