@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const apiAddress = 'https://api.maesil.ai';
 
-export type APIDataExercise = {
+export type APIGetExerciseData = {
     exercise_id: number,
     title: string,
     description: string,
@@ -19,6 +19,17 @@ export type APIDataExercise = {
     created_at: string,
     updated_at: string,
 };
+
+export type APIPostExerciseForm = {
+  exercise: Blob,
+  title: string,
+  description: string,
+  play_time: number,
+  thumbnail: Blob,
+  reward: number,
+  tag_id: number,
+  level: number,
+}
 
 /**
  * 초 단위로 나타낸 정수 시간을 string으로 변환하는 함수
@@ -39,12 +50,12 @@ function secondToString(time : number) {
 
 export const getExercises = async () => {
   const response = await axios.get(`${apiAddress}/exercises/`);
-  return response.data.result as APIDataExercise[];
+  return response.data.result as APIGetExerciseData[];
 };
 
 export const getExercise = async (id : number) => {
   const response = await axios.get(`${apiAddress}/exercises/${id}`);
-  return response.data.result as APIDataExercise;
+  return response.data.result as APIGetExerciseData;
 };
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
@@ -59,14 +70,33 @@ export const postResult = async (id : number, score : number, playTime : number,
   }
 };
 
-export let postExercise = async (data : object) => {
+export let postExercise = async (data : APIPostExerciseForm) => {
   let form = new FormData();
   
-  for (let [key, value] of Object.entries(data)) 
+  for (let [key, value] of Object.entries(data)) {
+    if (typeof value == 'number') {
+      if (key == "play_time") value = secondToString(value);
+      else value = value.toString();
+    }
     form.append(key, value);
+    console.log(key, value, typeof value);
+  }
   
-  console.log(form);
-  const response = await axios.post(`${apiAddress}/upload`, form);
+  var requestOptions = {
+    method: 'POST',
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: form,
+//    mode: "no-cors" as RequestMode,
+    redirect: "follow" as RequestRedirect,
+  };
 
+  console.log(requestOptions);
+
+  const response = await fetch("https://api.maesil.ai/upload", requestOptions);
+  
   console.log(response);
+
+  return response.status == 200;
 }
