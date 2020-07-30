@@ -21,6 +21,7 @@ interface ViewConfig {
   showSkeleton: boolean,
   showPoints: boolean,
   showBoundingBox: boolean,
+  showProgress: boolean,
   minPoseConfidence: number,
   minPartConfidence: number,
 };
@@ -31,6 +32,7 @@ const defaultViewConfig = {
   showSkeleton: true,
   showPoints: true,
   showBoundingBox: true,
+  showProgress: true,
   minPoseConfidence: 0.15,
   minPartConfidence: 0.1,
 };
@@ -169,13 +171,13 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
        * 매 프레임 마다 다시 콜백으로 자기를 불러서 무한반복으로 실행
        * @param {*} callback 자기자신
        */
-      function executeEveryFrame(callback) {
+      let executeEveryFrame = (callback) => {
         //            stats.begin();
         callback();
         //            stats.end();
 
         requestAnimationFrame(() => {
-          executeEveryFrame(callback);
+          if (this.state.finishCount < 1) executeEveryFrame(callback);
         });
       }
 
@@ -187,6 +189,17 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
               this.views[i].calculator.resultPoses,
               this.views[i].scale,
               this.views[i].offset);
+        }
+        if (this.viewConfig.showProgress) {
+          //const x = 0, y = 0, h = 400, w = 400;
+          const x = 20, y = this.props.videoHeight - 20, h = 10, w = this.props.videoWidth - 40;
+          
+          console.log(x, y, w, h);
+          ctx.fillStyle = "rgb(22, 22, 22)";
+          ctx.fillRect(x, y, w, h);
+
+          ctx.fillStyle = "rgb(222, 22, 22)";
+          ctx.fillRect(x, y, w * this.views[0].video.currentTime / this.views[0].video.duration, h);
         }
       });
     }
