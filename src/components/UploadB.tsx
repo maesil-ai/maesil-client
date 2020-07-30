@@ -18,18 +18,7 @@ export function UploadB({ video } : UploadBProps) {
   const upload = async () => {
     const defaultUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
     const defaultThumbnail = await fetch(defaultUrl, {mode: "no-cors"}).then(r => r.blob());
-    console.log(defaultThumbnail);
     setMessage('업로드 중...');
-    console.log({
-      exercise: video,
-      title: title,
-      description: description,
-      play_time: 63,
-      thumbnail: defaultThumbnail,
-      reward: 103,
-      tag_id: 2,
-      level: 4,
-    });
 
     if (!await validateVideoLength(videoRef.current)) {
       setMessage('비디오는 1초 이상 15초 이하의 길이로 올려');

@@ -79,7 +79,6 @@ export const postExercise = async (data : APIPostExerciseForm) => {
       else value = value.toString();
     }
     form.append(key, value);
-    console.log(key, value, typeof value);
   }
 
   const requestOptions = {
@@ -92,11 +91,8 @@ export const postExercise = async (data : APIPostExerciseForm) => {
     redirect: 'follow' as RequestRedirect,
   };
 
-  console.log(requestOptions);
 
   const response = await fetch('https://api.maesil.ai/upload', requestOptions);
-
-  console.log(response);
 
   return response.status == 200;
 };
