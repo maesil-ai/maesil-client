@@ -69,9 +69,16 @@ class PoseCalculator {
       this.readyToUse = true;
     }
 
+    clearRecord = () => {
+      this.record = [];
+    }
+
     // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
 
     getPoseResult = async () => {
+      if (!this.readyToUse) {
+        return false;
+      }
       if (this.modelInUse) {
         if (this.record.length > 0) this.record.push(this.record[this.record.length-1]);
         return false;
@@ -80,7 +87,7 @@ class PoseCalculator {
       this.modelInUse = true;
 
       let poses : posenet.Pose[] = [];
-
+      
       switch (this.config.algorithm) {
         case 'single-pose':
           const pose = await this.poseNet.estimatePoses(this.video, {

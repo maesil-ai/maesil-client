@@ -22,6 +22,8 @@ interface ViewConfig {
   showPoints: boolean,
   showBoundingBox: boolean,
   showProgress: boolean,
+  showCount: boolean,
+  showScore: boolean,
   minPoseConfidence: number,
   minPartConfidence: number,
 };
@@ -33,6 +35,8 @@ const defaultViewConfig = {
   showPoints: true,
   showBoundingBox: true,
   showProgress: true,
+  showCount: true,
+  showScore: true,
   minPoseConfidence: 0.15,
   minPartConfidence: 0.1,
 };
@@ -43,17 +47,24 @@ interface ExerciseScreenProps {
     views: View[],
     viewConfig: ViewConfig,
     onExerciseFinish: (record: any) => any,
+    repeat: number,
     match?: any,
 };
 
+// Records[view 번호][exercise 번호][frame 번호] => 해당 시점의 Pose
 interface ExerciseScreenState {
-  finishCount: number,
+  count: number,
+  isFinished: boolean,
+  records: Pose[][][],
+  scores: number[],
 };
 
 
 /**
  * Screen 클래스
  * 운동하고 있는 화면을 보여주는 스크린
+ * @param {view} 유저 화면의 구성 계획. 보여줄 비디오와 크기, 위치를 모두 포함하는 오브젝트. 0번 view는 가이드 영상을 보여주어야 한다.
+ * @param {repeat} 운동의 반복 횟수. 0번 view의 영상이 repeat번 반복되면 결과 화면으로 보낸다.
  * @class Screen
  * @extends {React.Component<ExerciseScreenProps, ExerciseScreenState>}
  */
@@ -64,6 +75,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       views: [],
       onExerciseFinish: () => {},
       viewConfig: defaultViewConfig,
+      repeat: 5,
     };
 
     ctx: CanvasRenderingContext2D;
@@ -83,28 +95,55 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       this.viewConfig = this.props.viewConfig;
       this.views = this.props.views;
       this.state = {
-        finishCount: 0,
+        count: 0,
+        isFinished: false,
+        records: [],
+        scores: [],
       };
 
-      for (let i=0; i<this.views.length; i++) {
-        Object.assign(this.views[i], {
-          calculator: new PoseCalculator(this.views[i].video),
+      this.views.forEach((view) => Object.assign(view, {
+        calculator: new PoseCalculator(view.video),
+      }));
+
+      this.views[0].video.onended = () => {
+        const guideRecord = this.views[0].calculator.record;
+        const userRecord = this.views[1].calculator.record;
+
+        let newCount = this.state.count + 1;
+        let newScore = exerciseScore(guideRecord, userRecord);
+
+        this.setState({
+          ...this.state,
+          count: newCount,
+          scores: Array.prototype.concat(this.state.scores, [newScore]),
+        });
+        
+        let records = this.state.records;
+        this.views.forEach((view, i) => {
+          view.calculator.readyToUse = false;
+          records[i] = Array.prototype.concat(records[i], [view.calculator.record]);
+          view.calculator.clearRecord();
         });
 
-        this.views[i].video.onended = () => {
-          let finishCount = this.state.finishCount + 1;
+        if (newCount === this.props.repeat) {
           this.setState({
-            finishCount: finishCount,
+            ...this.state,
+            isFinished: true,
           });
 
-          if (finishCount === 1) {
-            const guideRecord = this.views[0].calculator.record;
-            const userRecord = this.views[1].calculator.record;
-            this.props.onExerciseFinish({
-              score: exerciseScore(guideRecord, userRecord),
-              playTime: guideRecord.length,
-              calorie: exerciseCalorie(guideRecord, userRecord),
-            });
+          const scores = this.state.scores;
+          const averageScore = scores.reduce((x, y) => (x + y), 0) / scores.length;
+          this.props.onExerciseFinish({
+            score: averageScore,
+            playTime: guideRecord.length,
+            calorie: exerciseCalorie(guideRecord, userRecord),
+          });
+        } else {
+          this.views[0].video.load();
+          this.views[0].video.onloadeddata = () => {
+            this.views[0].calculator.readyToUse = true;
+            this.views[1].calculator.readyToUse = true;
+            this.views[0].video.play();
           }
         }
       }
@@ -114,12 +153,16 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
      * 리액트 컴포넌트 클래스 기본 함수
      * @memberof Screen
      */
-    async componentDidMount() {
+    componentDidMount = async () =>  {
       this.ctx = this.canvas.current!.getContext('2d')!;
 
       await Promise.all(this.views.map(view => view.calculator.load()));
 
       this.drawCanvas();
+    }
+
+    componentWillUnmount = () => {
+      this.views.map(view => view.video.remove() );
     }
 
     drawCanvas = () => {
@@ -177,7 +220,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         //            stats.end();
 
         requestAnimationFrame(() => {
-          if (this.state.finishCount < 1) executeEveryFrame(callback);
+          if (!this.state.isFinished) executeEveryFrame(callback);
         });
       }
 
@@ -190,11 +233,28 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
               this.views[i].scale,
               this.views[i].offset);
         }
+        if (this.viewConfig.showCount) {
+          const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
+
+          for (let i=0; i<this.props.repeat; i++) {
+            ctx.fillStyle = (this.state.count > i) ? "rgb(22, 22, 22)" : "rgb(222, 222, 222)";
+            ctx.fillRect(x - 40 * i, y, w, h);
+          }
+        }
+        if (this.viewConfig.showScore) {
+          const x = this.props.videoWidth - 20, y = this.props.videoHeight / 2;
+          ctx.fillStyle = "rgb(22, 22, 22)";
+          ctx.font = "40px arial";
+          ctx.textAlign = "right";
+          if (this.state.scores.length) {
+            const score = this.state.scores[this.state.scores.length-1];
+    
+            ctx.fillText(`${Math.round(score*100)}점`, x, y);
+          }
+        }
         if (this.viewConfig.showProgress) {
-          //const x = 0, y = 0, h = 400, w = 400;
           const x = 20, y = this.props.videoHeight - 20, h = 10, w = this.props.videoWidth - 40;
           
-          console.log(x, y, w, h);
           ctx.fillStyle = "rgb(22, 22, 22)";
           ctx.fillRect(x, y, w, h);
 
