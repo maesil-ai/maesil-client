@@ -102,7 +102,7 @@ yarn test
 프로젝트를 배포 준비 상태로 만듭니다.
 
 ``` sh
-$ yarn build
+yarn build
 ```
 
 ### Pull Request
