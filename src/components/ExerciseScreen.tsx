@@ -59,6 +59,7 @@ interface ExerciseScreenState {
   records: Pose[][][],
   scores: number[],
   viewConfig: ViewConfig,
+  useKalmanFilters: boolean,
 };
 
 
@@ -100,6 +101,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         records: [],
         scores: [],
         viewConfig: this.props.viewConfig,
+        useKalmanFilters: true,
       };
 
       this.views.forEach((view) => Object.assign(view, {
@@ -121,7 +123,6 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         
         let records = this.state.records;
         this.views.forEach((view, i) => {
-          view.calculator.readyToUse = false;
           records[i] = Array.prototype.concat(records[i], [view.calculator.record]);
           view.calculator.clearRecord();
         });
@@ -275,7 +276,17 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           showBoundingBox: checked,
         },
       });
-    }
+    };
+
+    checkKalmanFilters = (event, checked : boolean) => {
+      this.views.forEach((view) => {
+        view.calculator.useFilters = checked;
+      });
+      this.setState({
+        ...this.state,
+        useKalmanFilters: checked,
+      })
+    };
 
     render() {
       return (
@@ -288,8 +299,13 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
             운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
           </canvas>
           <label>
-            <Switch onChange={this.checkSkeleton} checked={this.state.viewConfig.showSkeleton}/>
+            <Switch id="Skeleton" onChange={this.checkSkeleton} checked={this.state.viewConfig.showSkeleton}/>
             운동 가이드 보기
+          </label>
+          <br/>
+          <label>
+            <Switch id="Kalman" onChange={this.checkKalmanFilters} checked={this.state.useKalmanFilters}/>
+            칼만 필터 씌우기 (씌우면 움직임이 더 부드러워진다는 속설이 있습니다.)
           </label>
         </div>
       );
