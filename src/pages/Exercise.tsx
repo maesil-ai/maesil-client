@@ -92,8 +92,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       this.loadStream(),
     ])
 
-    const guideVideo = this.guideVideo.current!;
-    const userVideo = this.userVideo.current!;
+    const guideVideo = this.guideVideo.current;
+    const userVideo = this.userVideo.current;
     guideVideo.src = guideSource;
     userVideo.srcObject = userStream;
 
@@ -115,6 +115,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     });
   };
 
+
+  
   componentWillUnmount = () => {
     if (this.userStream) {
       this.userStream.getTracks().forEach((track) => {
