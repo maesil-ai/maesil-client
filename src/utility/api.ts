@@ -70,33 +70,33 @@ export const postResult = async (id : number, score : number, playTime : number,
   }
 };
 
-export let postExercise = async (data : APIPostExerciseForm) => {
-  let form = new FormData();
-  
+export const postExercise = async (data : APIPostExerciseForm) => {
+  const form = new FormData();
+
   for (let [key, value] of Object.entries(data)) {
     if (typeof value == 'number') {
-      if (key == "play_time") value = secondToString(value);
+      if (key == 'play_time') value = secondToString(value);
       else value = value.toString();
     }
     form.append(key, value);
     console.log(key, value, typeof value);
   }
-  
-  var requestOptions = {
+
+  const requestOptions = {
     method: 'POST',
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      'Access-Control-Allow-Origin': '*',
     },
     body: form,
-//    mode: "no-cors" as RequestMode,
-    redirect: "follow" as RequestRedirect,
+    //    mode: "no-cors" as RequestMode,
+    redirect: 'follow' as RequestRedirect,
   };
 
   console.log(requestOptions);
 
-  const response = await fetch("https://api.maesil.ai/upload", requestOptions);
-  
+  const response = await fetch('https://api.maesil.ai/upload', requestOptions);
+
   console.log(response);
 
   return response.status == 200;
-}
+};

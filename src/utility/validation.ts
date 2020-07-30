@@ -8,12 +8,12 @@ function validateVideoFile(file) {
 }
 
 function getDuration(video :HTMLVideoElement) {
-  let promise = new Promise(function(resolve, reject) {
-    video.addEventListener("loadedmetadata", function() {
+  const promise = new Promise(function(resolve, reject) {
+    video.addEventListener('loadedmetadata', function() {
       resolve(video.duration);
     });
-    video.addEventListener("error", function() {
-      reject(video.error.message + "(" + video.error.code + ")");
+    video.addEventListener('error', function() {
+      reject(video.error.message + '(' + video.error.code + ')');
     });
   });
 
@@ -22,26 +22,28 @@ function getDuration(video :HTMLVideoElement) {
 
 export async function validateVideoLength(video: HTMLVideoElement) {
   const MIN_TIME = 1;
-  const MAX_TIME = 15;  
-  let duration = await getDuration(video);
+  const MAX_TIME = 15;
+  const duration = await getDuration(video);
 
-  if (duration >= MIN_TIME && duration <= MAX_TIME) 
-      return true;
+  if (duration >= MIN_TIME && duration <= MAX_TIME) {
+    return true;
+  }
 
   return false;
 }
 
 function validateVideoSize(file) {
   const MAX_SIZE = 2 * 1024 * 1024; // 2메가 바이트
-  if (file.size > MAX_SIZE) 
+  if (file.size > MAX_SIZE) {
     return false;
+  }
   return true;
 }
 
 function validateHumanVideo(file) {
   const video = document.getElementById('video') as HTMLVideoElement;
 
-  let calculator = new PoseCalculator(video);
+  const calculator = new PoseCalculator(video);
   calculator.load();
   video.play();
 
@@ -53,11 +55,10 @@ function validateHumanVideo(file) {
     });
   }
 
-  executeEveryFrame(() => {calculator.getPoseResult();});
+  executeEveryFrame(() => {
+    calculator.getPoseResult();
+  });
 
-
-
-  
 
   return false;
 }
@@ -68,27 +69,27 @@ function validateHumanVideo(file) {
  * @param {*} file 비디오 파일
  * @return {String} true when validation success
  */
-export function validA (file: File) {
-  if (!validateVideoFile(file)) return "The format is not supported";
-  if (!validateVideoSize(file)) return "Size must less than 2MiB";
-  return "ok";
+export function validA(file: File) {
+  if (!validateVideoFile(file)) return 'The format is not supported';
+  if (!validateVideoSize(file)) return 'Size must less than 2MiB';
+  return 'ok';
 }
 
 // export function validateExcerciseFile(file : File) {
-//   // 0. 파일을 넘겨준다 가정  
+//   // 0. 파일을 넘겨준다 가정
 //   // 1. 비디오 파일인지 체크
-//   if (!validateVideoFile(file)) 
+//   if (!validateVideoFile(file))
 //     return false;
 //   // 2. 비디오 파일의 크기를 체크
-//   if (!validateVideoSize(file)) 
+//   if (!validateVideoSize(file))
 //     return false;
 
 //   // 2. 비디오 파일의 길이를 체크 (길이를 구해서 알려준다?)
-//   if (!validateVideoLength(file)) 
+//   if (!validateVideoLength(file))
 //   return false;
 //   // 3. 비디오 파일에서 사람이 잘 측정되는지 체크 (pose를 구해서 알려준다?)
 //   if (!validateHumanVideo(file))
 //     return false;
-  
+
 //   return true;
 // }
