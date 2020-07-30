@@ -7,6 +7,7 @@ import {
 } from '../utility/draw';
 import { exerciseScore } from '../utility/score';
 import { exerciseCalorie } from '../utility/calorie';
+import { Switch } from '@material-ui/core';
 
 interface View {
     video: HTMLVideoElement,
@@ -57,6 +58,7 @@ interface ExerciseScreenState {
   isFinished: boolean,
   records: Pose[][][],
   scores: number[],
+  viewConfig: ViewConfig,
 };
 
 
@@ -81,7 +83,6 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
     ctx: CanvasRenderingContext2D;
     canvas: React.RefObject<HTMLCanvasElement>;
     views: View[];
-    viewConfig: ViewConfig;
 
     /**
      * Creates an instance of Screen.
@@ -92,13 +93,13 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       super(props);
 
       this.canvas = React.createRef<HTMLCanvasElement>();
-      this.viewConfig = this.props.viewConfig;
       this.views = this.props.views;
       this.state = {
         count: 0,
         isFinished: false,
         records: [],
         scores: [],
+        viewConfig: this.props.viewConfig,
       };
 
       this.views.forEach((view) => Object.assign(view, {
@@ -176,14 +177,14 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           offset: [number, number] = [0, 0]) => {
         const ctx = this.ctx!;
 
-        if (this.viewConfig.showVideo) {
+        if (this.state.viewConfig.showVideo) {
           ctx.save();
-          ctx.translate(this.viewConfig.flipPoseHorizontal ?
+          ctx.translate(this.state.viewConfig.flipPoseHorizontal ?
             (scale * this.props.videoWidth) : 0, 0);
-          ctx.scale(this.viewConfig.flipPoseHorizontal ? -1 : 1, 1);
+          ctx.scale(this.state.viewConfig.flipPoseHorizontal ? -1 : 1, 1);
           ctx.drawImage(
               video,
-              (this.viewConfig.flipPoseHorizontal ? -1 : 1) * offset[0],
+              (this.state.viewConfig.flipPoseHorizontal ? -1 : 1) * offset[0],
               offset[1],
               this.props.videoWidth * scale,
               this.props.videoHeight * scale,
@@ -193,16 +194,16 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
 
         if (poses) {
           poses.forEach(({score, keypoints}) => {
-            if (score >= this.viewConfig.minPoseConfidence) {
-              if (this.viewConfig.showPoints) {
+            if (score >= this.state.viewConfig.minPoseConfidence) {
+              if (this.state.viewConfig.showPoints) {
                 drawKeypoints(keypoints,
-                    this.viewConfig.minPartConfidence, ctx, scale, offset);
+                    this.state.viewConfig.minPartConfidence, ctx, scale, offset);
               }
-              if (this.viewConfig.showSkeleton) {
+              if (this.state.viewConfig.showSkeleton) {
                 drawSkeleton(keypoints,
-                    this.viewConfig.minPartConfidence, ctx, scale, offset);
+                    this.state.viewConfig.minPartConfidence, ctx, scale, offset);
               }
-              if (this.viewConfig.showBoundingBox) {
+              if (this.state.viewConfig.showBoundingBox) {
                 drawBoundingBox(keypoints, ctx, scale, offset);
               }
             }
@@ -233,7 +234,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
               this.views[i].scale,
               this.views[i].offset);
         }
-        if (this.viewConfig.showCount) {
+        if (this.state.viewConfig.showCount) {
           const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
 
           for (let i=0; i<this.props.repeat; i++) {
@@ -241,7 +242,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
             ctx.fillRect(x - 40 * i, y, w, h);
           }
         }
-        if (this.viewConfig.showScore) {
+        if (this.state.viewConfig.showScore) {
           const x = this.props.videoWidth - 20, y = this.props.videoHeight / 2;
           ctx.fillStyle = "rgb(22, 22, 22)";
           ctx.font = "40px arial";
@@ -252,7 +253,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
             ctx.fillText(`${Math.round(score*100)}점`, x, y);
           }
         }
-        if (this.viewConfig.showProgress) {
+        if (this.state.viewConfig.showProgress) {
           const x = 20, y = this.props.videoHeight - 20, h = 10, w = this.props.videoWidth - 40;
           
           ctx.fillStyle = "rgb(22, 22, 22)";
@@ -261,6 +262,18 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           ctx.fillStyle = "rgb(222, 22, 22)";
           ctx.fillRect(x, y, w * this.views[0].video.currentTime / this.views[0].video.duration, h);
         }
+      });
+    }
+
+    checkSkeleton = (event, checked : boolean) => {
+      this.setState({
+        ...this.state,
+        viewConfig: {
+          ...this.state.viewConfig,
+          showSkeleton: checked,
+          showPoints: checked,
+          showBoundingBox: checked,
+        },
       });
     }
 
@@ -274,6 +287,10 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           >
             운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
           </canvas>
+          <label>
+            <Switch onChange={this.checkSkeleton} checked={this.state.viewConfig.showSkeleton}/>
+            운동 가이드 보기
+          </label>
         </div>
       );
     }
