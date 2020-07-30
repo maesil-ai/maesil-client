@@ -14,9 +14,9 @@ interface StatViewProps {
 function StatView({time, calorie, score} : StatViewProps) {
   return (
     <div className={'boxContainer'}>
-      <div className={'box'}> {(time - time%60) / 60}분 {time%60}초 </div>
-      <div className={'box'}> {Math.round(calorie)}칼로리 소모 </div>
-      <div className={'box'}> {Math.round(score*100)}점 </div>
+      <div className={'box'} style={{width: 1200}}> {(time - time%60) / 60}분 {time%60}초 </div>
+      <div className={'box'} style={{width: 1200}}> {Math.round(calorie)} 칼로리 소모 </div>
+      <div className={'box'} style={{width: 1200}}> {Math.round(score*100)}점 </div>
     </div>
   );
 }

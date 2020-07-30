@@ -97,7 +97,7 @@ class Result extends React.Component<ResultProps, ResultState> {
         </>
       );
     } else {
-      let stats = this.state.stats;
+      const stats = this.state.stats;
 
       return (
         <>

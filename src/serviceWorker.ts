@@ -142,7 +142,7 @@ async function checkValidServiceWorker(swUrl: string, config?: Config) {
       registerValidSW(swUrl, config);
     }
   } catch (e) {
-    console.log('No internet connection found. App is running in offline mode.');
+    console.log('No internet connection found. App runs in offline mode.');
   }
 }
 
@@ -155,7 +155,7 @@ export async function unregister() {
     try {
       const registration = await navigator.serviceWorker.ready;
       await registration.unregister();
-    } catch(error) {
+    } catch (error) {
       console.error(error.message);
     }
   }
