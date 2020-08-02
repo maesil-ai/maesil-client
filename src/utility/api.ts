@@ -18,6 +18,7 @@ export type APIGetExerciseData = {
     status: string,
     created_at: string,
     updated_at: string,
+    isLike?: boolean,
 };
 
 export type APIPostExerciseForm = {
@@ -97,3 +98,19 @@ export const postExercise = async (data : APIPostExerciseForm) => {
 
   return response.status == 200;
 };
+
+export const toggleLike = async (id : number, like : boolean) => {
+  console.log(id, like);
+  const response = await axios({
+    method: like ? "POST" : "DELETE",
+    url: `${apiAddress}/likes/${id}`,
+  });
+
+  console.log(response);
+  
+  try {
+    return response.data.code == 200;
+  } catch {
+    return false;
+  }
+}
