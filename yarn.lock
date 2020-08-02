@@ -10009,6 +10009,11 @@ react-is@^16.12.0, react-is@^16.3.1, react-is@^16.6.0, react-is@^16.7.0, react-i
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-kakao-login@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-kakao-login/-/react-kakao-login-1.2.2.tgz#238ba1f329715bec8697a35b1602944d9792ce86"
+  integrity sha512-FCihO3m+Z/N8W0pdwsitvn9fbGa1m7xtbdHvyupJhHBuS9mzS+wzbZUGhNipI2qYmh277umX3HT5/pFxey4GOg==
+
 react-loading-screen@^0.0.17:
   version "0.0.17"
   resolved "https://registry.yarnpkg.com/react-loading-screen/-/react-loading-screen-0.0.17.tgz#e9c5f0e059c8f143ec5c753eb98077b1be5daeb4"
