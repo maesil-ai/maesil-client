@@ -1,4 +1,5 @@
 import * as posenet from '@tensorflow-models/posenet';
+import KalmanFilter from 'kalmanjs';
 
 interface Config {
     algorithm: string,
@@ -46,6 +47,8 @@ class PoseCalculator {
     modelInUse : boolean;
     resultPoses : posenet.Pose[];
     record : posenet.Pose[];
+    filters : KalmanFilter[];
+    useFilters : boolean;
 
     /**
      * Creates an instance of PoseCalculator.
@@ -56,10 +59,10 @@ class PoseCalculator {
     constructor(video : HTMLVideoElement, config = defaultConfig) {
       this.video = video;
       this.config = config;
-      this.modelInUse = true;
-      this.readyToUse = false;
       this.resultPoses = [];
-      this.record = [];
+      this.filters = Array(40);
+      this.useFilters = true;
+      this.clearRecord();
     }
 
     load = async () => {
@@ -70,7 +73,10 @@ class PoseCalculator {
     }
 
     clearRecord = () => {
+      this.readyToUse = false;
       this.record = [];
+      for (let i=0; i<40; i++) 
+        this.filters[i] = new KalmanFilter();
     }
 
     // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
@@ -110,7 +116,15 @@ class PoseCalculator {
           break;
       }
 
-      if (poses[0]) this.record.push(poses[0]);
+      if (poses[0]) {
+        if (this.useFilters) {
+          poses[0].keypoints.forEach((keypoint, i) => {
+            keypoint.position.x = this.filters[2*i].filter(keypoint.position.x);
+            keypoint.position.y = this.filters[2*i+1].filter(keypoint.position.y);          
+          });
+        }
+        this.record.push(poses[0]);
+      }
 
       this.resultPoses = poses;
       this.modelInUse = false;

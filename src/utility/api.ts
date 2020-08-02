@@ -29,6 +29,7 @@ export type APIPostExerciseForm = {
   reward: number,
   tag_id: number,
   level: number,
+  skeleton: string,
 }
 
 /**

@@ -11,7 +11,7 @@ interface UploadProps {
     
 };
 
-export function Upload({ } : UploadProps) {
+function Upload({ } : UploadProps) {
   let [phase, setPhase] = React.useState(1);
   let [video, setVideo] = React.useState(null);
 

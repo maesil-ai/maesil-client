@@ -34,6 +34,7 @@ export function UploadB({ video } : UploadBProps) {
       reward: 103,
       tag_id: 2,
       level: 4,
+      skeleton: '',
     });
 
     if (success) {
