@@ -4,7 +4,7 @@ import {
   drawBoundingBox,
   drawKeypoints,
   drawSkeleton,
-} from '../utility/draw';
+} from 'utility/draw';
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
@@ -132,7 +132,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           this.props.onExerciseFinish({
             score: averageScore,
             time: guideRecord.length,
-            calorie: exerciseCalorie(guideRecord, userRecord),
+            calorie: exerciseCalorie(userRecord, guideRecord.length, {height: 1.758, weight:65.7, age:25}),
           });
         } else {
           this.views[0].video.load();
