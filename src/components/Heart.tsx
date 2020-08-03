@@ -1,7 +1,7 @@
 import React from 'react';
 
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import { toggleLike } from '../utility/api';
+import { toggleLike } from 'utility/api';
 
 interface HeartProps {
     id : number,

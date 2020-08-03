@@ -1,8 +1,8 @@
-import { postExercise } from '../utility/api';
-import { validateVideoLength } from '../utility/validation';
-
 import React from 'react';
-import { fps, extractPoseFromVideo } from '../utility/processVideo';
+
+import { postExercise } from 'utility/api';
+import { validateVideoLength } from 'utility/validation';
+import { fps, extractPoseFromVideo } from 'utility/processVideo';
 
 interface UploadBProps {
     video : File,

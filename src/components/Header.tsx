@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Login from '../pages/Auth';
 import { Link } from 'react-router-dom';
 
 function Header() {

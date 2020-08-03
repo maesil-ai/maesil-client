@@ -1,20 +1,14 @@
 import React from 'react';
-import PoseCalculator, { Pose } from '../utility/poseCalculator';
+import PoseCalculator from 'utility/poseCalculator';
 import {
   drawBoundingBox,
   drawKeypoints,
   drawSkeleton,
 } from '../utility/draw';
-import { exerciseScore } from '../utility/score';
-import { exerciseCalorie } from '../utility/calorie';
+import { exerciseScore } from 'utility/score';
+import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-
-interface View {
-    video: HTMLVideoElement,
-    scale: number,
-    offset: [number, number],
-    calculator?: PoseCalculator,
-};
+import { ScreenView, Pose, PlayRecord } from 'utility/types';
 
 interface ViewConfig {
   flipPoseHorizontal: boolean,
@@ -45,9 +39,9 @@ const defaultViewConfig = {
 interface ExerciseScreenProps {
     videoWidth: number,
     videoHeight: number,
-    views: View[],
+    views: ScreenView[],
     viewConfig: ViewConfig,
-    onExerciseFinish: (record: any) => any,
+    onExerciseFinish: (record: PlayRecord) => any,
     repeat: number,
     match?: any,
 };
@@ -83,7 +77,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
 
     ctx: CanvasRenderingContext2D;
     canvas: React.RefObject<HTMLCanvasElement>;
-    views: View[];
+    views: ScreenView[];
 
     /**
      * Creates an instance of Screen.
@@ -137,7 +131,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           const averageScore = scores.reduce((x, y) => (x + y), 0) / scores.length;
           this.props.onExerciseFinish({
             score: averageScore,
-            playTime: guideRecord.length,
+            time: guideRecord.length,
             calorie: exerciseCalorie(guideRecord, userRecord),
           });
         } else {

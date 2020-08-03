@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Title from './Title';
-import BeatLoader from "react-spinners/BeatLoader";
+import Title from 'components/Title';
+// import BeatLoader from "react-spinners/BeatLoader";
 
 function Loading() {
   return (

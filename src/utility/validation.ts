@@ -1,4 +1,4 @@
-import PoseCalculator from './poseCalculator';
+import PoseCalculator from 'utility/poseCalculator';
 
 function validateVideoFile(file) {
   if (file.type != 'video/mp4') {
@@ -7,7 +7,7 @@ function validateVideoFile(file) {
   return true;
 }
 
-function getDuration(video :HTMLVideoElement) {
+function getDuration(video : HTMLVideoElement) {
   const promise = new Promise(function(resolve, reject) {
     video.addEventListener('loadedmetadata', function() {
       resolve(video.duration);

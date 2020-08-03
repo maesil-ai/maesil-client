@@ -1,18 +1,9 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
+import { PosenetConfig } from 'utility/types';
 
-interface Config {
-    algorithm: string,
-    model: posenet.ModelConfig,
-    flipPoseHorizontal: boolean,
-    multiPose: {
-        maxPoseDetections: number,
-        minPartConfidence: number,
-        nmsRadius: number,
-    }
-};
 
-const defaultConfig : Config = {
+const defaultConfig : PosenetConfig = {
   algorithm: 'single-pose',
   model: {
     architecture: 'MobileNetV1',
@@ -29,8 +20,6 @@ const defaultConfig : Config = {
   },
 };
 
-export type Pose = posenet.Pose;
-
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
 // const defaultResNetInputResolution = 250;
@@ -42,7 +31,7 @@ export type Pose = posenet.Pose;
 class PoseCalculator {
     video : HTMLVideoElement;
     poseNet : posenet.PoseNet;
-    config : Config;
+    config : PosenetConfig;
     readyToUse : boolean;
     modelInUse : boolean;
     resultPoses : posenet.Pose[];

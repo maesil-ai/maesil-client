@@ -3,8 +3,8 @@ import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Title from '../components/Title';
-import UploadA from '../components/UploadA';
-import UploadB from '../components/UploadB';
+import UploadA from 'components/UploadA';
+import UploadB from 'components/UploadB';
 
 
 interface UploadProps {

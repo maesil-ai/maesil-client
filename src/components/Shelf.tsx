@@ -1,20 +1,14 @@
 import React from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import Heart from '../components/Heart';
+import Heart from 'components/Heart';
+import { ExerciseView } from 'utility/types';
 
 
-export interface Exercise {
-    id : number,
-    name : string,
-    thumbUrl : string,
-    thumbGifUrl? : string,
-    playTime : string,
-    heart? : boolean,
-};
+
 
 interface ShelfProps {
-  exercises : Exercise[],
+  exercises : ExerciseView[],
 };
 
 function changeImageFunc(imageUrl : string | undefined) {
