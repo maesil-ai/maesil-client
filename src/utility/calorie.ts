@@ -1,13 +1,15 @@
 import * as posenet from '@tensorflow-models/posenet';
+import { userInfo } from 'os';
 
-function calculateDistance(position1, position2) {
-  return Math.sqrt(
-     Math.pow(position1['x'] - position2['x'], 2) +
-        Math.pow(position1['y'] - position2['y'], 2),
-  );
-}
+let calculateDistance = (position1, position2) =>  
+  Math.sqrt(
+    Math.pow(position1.x - position2.x, 2) 
+  + Math.pow(position1.y - position2.y, 2));
+
 function convertDistanceToMeters(leftShoulderPosition, leftElbowPosition, height) {
   // video height/ width = 500/600
+  const videoHeight = 500;
+  const videoWidth = 600;
   let distance = this.calculateDistance(
      leftShoulderPosition,
      leftElbowPosition,
@@ -15,21 +17,19 @@ function convertDistanceToMeters(leftShoulderPosition, leftElbowPosition, height
   // Shoulder to elbow width in meters
   let shoulderHeight = height * 0.18;
   // Percentage of screen shoulder to elbow takes
-  let percentageHeight = (distance / 500) * 100;
-  let percentageWidth = (distance / 600) * 100;
+  let percentageHeight = (distance / videoHeight) * 100;
+  let percentageWidth = (distance / videoWidth) * 100;
   // Screen size in meters
   let screenHeight = shoulderHeight / percentageHeight;
   let screenWidth = shoulderHeight / percentageWidth;
-  let pixelToMeters = [screenHeight / 500, screenWidth / 600];
+  let pixelToMeters = [screenHeight / videoHeight, screenWidth / videoWidth];
   return pixelToMeters;
 }
 
-function calculateKineticEnergy(distance, mass) {
-  let velocity = distance / 0.07;
-  return Math.pow(0.5 * mass * velocity * velocity, 2);
-}
+let calculateKineticEnergy = (velocity, mass) =>
+  0.5 * mass * velocity * velocity;
 
-function estimateEnergy(userPose : posenet.Pose[], height, weight) {
+function estimateEnergy(userPose : posenet.Pose[], userInfo) {
   let energyBurned = 0;
   let previousPose = null;
   const gravityOfEarth = 9.81;
@@ -37,18 +37,15 @@ function estimateEnergy(userPose : posenet.Pose[], height, weight) {
   userPose.forEach((pose) => {
       const leftShoulder = pose.keypoints[5].position;
       const leftElbow = pose.keypoints[7].position;
-      const metersPerPixel = convertDistanceToMeters(
+      const [yTravel, xTravel] = convertDistanceToMeters(
         leftShoulder,
         leftElbow,
-        height,
+        userInfo.height,
       );
-      const yTravel = metersPerPixel[0];
-      const xTravel = metersPerPixel[1];
 
-      if (!previousPose) {
-        previousPose = pose;
-      } else {
-        for (let i = 4; i < pose.keypoints.length; i++) {
+      if (previousPose) {
+        for (let i = 0; i < pose.keypoints.length; i++) {
+          if (i >= 1 && 1 < 5) continue; // 0은 코 측정, 1~5 양쪽 눈 양쪽 귀는 무시
             let distance =
               calculateDistance(
                   previousPose.keypoints[i].position,
@@ -57,14 +54,14 @@ function estimateEnergy(userPose : posenet.Pose[], height, weight) {
               ((yTravel + xTravel) / 2);
             let kineticEnergy = calculateKineticEnergy(
               distance,
-              weight / pose.keypoints.length,
+              userInfo.weight / pose.keypoints.length,
             );
             let potentialEnergy = Math.abs(
-              weight * gravityOfEarth * pose.keypoints[i].position['y'] * yTravel -
-                  previousPose.keypoints[i].position['y'] *
+              userInfo.weight * gravityOfEarth * pose.keypoints[i].position.y * yTravel -
+                  previousPose.keypoints[i].position.y *
                     yTravel *
                     gravityOfEarth *
-                    weight,
+                    userInfo.weight,
             );
             energyBurned += (kineticEnergy + potentialEnergy) / 4184;
         }
@@ -81,7 +78,6 @@ function energyToMET(energy : number) {
   return log_scale;
 }
 
-export function exerciseCalorie(userPose : posenet.Pose[], second: number, height : number = 173, weight : number = 73) {
-  const energy = estimateEnergy(userPose, height, weight);
-  return (3.5 * energyToMET(energy) * weight * second/60)/1000 * 5; 
+export function exerciseCalorie(userPose : posenet.Pose[], second: number, userInfo) {
+  return (3.5 * energyToMET(estimateEnergy(userPose, userInfo)) * userInfo.weight * second/60)/1000 * 5; 
 }
