@@ -138,7 +138,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           this.props.onExerciseFinish({
             score: averageScore,
             playTime: guideRecord.length,
-            calorie: exerciseCalorie(userRecord, guideRecord.length, {height: 175.8, weight:65.7, age:25}),
+            calorie: exerciseCalorie(userRecord, guideRecord.length, {height: 1.758, weight:65.7, age:25}),
           });
         } else {
           this.views[0].video.load();
