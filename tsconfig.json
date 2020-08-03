@@ -20,8 +20,9 @@
     "jsx": "react",
     "noImplicitAny": false,
     "strictPropertyInitialization": false,
+    "baseUrl": "./src"
   },
   "include": [
-    "src", "src/components/.tsx"
+    "src"
   ]
 }

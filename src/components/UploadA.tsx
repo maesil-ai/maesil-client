@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { validA } from '../utility/validation';
+import { validA } from 'utility/validation';
 
 interface UploadAProps {
     onFinish : (

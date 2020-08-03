@@ -328,7 +328,7 @@ module.exports = function(webpackEnv) {
         // First, run the linter.
         // It's important to do this before Babel processes the JS.
         {
-          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          test: /\.(js|mjs|jsx|ts|tsx).nothing$/,
           enforce: 'pre',
           use: [
             {
@@ -338,6 +338,7 @@ module.exports = function(webpackEnv) {
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
                 emitWarning: true,
+                
               },
               loader: require.resolve('eslint-loader'),
             },

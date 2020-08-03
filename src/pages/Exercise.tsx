@@ -1,12 +1,13 @@
-import { getExercise, postResult } from '../utility/api';
+import { getExercise, postResult } from 'utility/api';
 
 import React from 'react';
-import ExerciseScreen from '../components/ExerciseScreen';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Loading from '../components/Loading';
+import ExerciseScreen from 'components/ExerciseScreen';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import Loading from 'components/Loading';
 import { Redirect } from 'react-router-dom';
-import Title from '../components/Title';
+import Title from 'components/Title';
+import { PlayRecord } from 'utility/types';
 
 
 interface ExerciseProps {
@@ -16,11 +17,6 @@ interface ExerciseProps {
   history?: any,
 };
 
-interface Record {
-  score: number,
-  playTime: number,
-  calorie: number,
-};
 
 interface ExerciseState {
   isLoading: boolean,
@@ -28,7 +24,7 @@ interface ExerciseState {
   isFinished: boolean,
   redirectToResult: boolean,
   id: number,
-  record: Record | null,
+  record: PlayRecord | null,
   url?: string,
 };
 
@@ -125,8 +121,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     }
   }
 
-  handleExerciseFinish = async (record: Record) => {
-    await postResult(this.state.id, record.score, record.playTime, record.calorie);
+  handleExerciseFinish = async (record: PlayRecord) => {
+    await postResult(this.state.id, record.score, record.time, record.calorie);
 
     this.setState({
         ...this.state,
@@ -148,7 +144,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         state: {
           exerciseId: this.state.id,
           score: this.state.record.score,
-          time: this.state.record.playTime,
+          time: this.state.record.time,
           calorie: this.state.record.calorie,
         },
       }}/>;

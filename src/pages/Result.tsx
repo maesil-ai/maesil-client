@@ -1,20 +1,15 @@
-import { getExercises, getExercise } from '../utility/api';
+import { getExercises, getExercise } from 'utility/api';
 
 import React from 'react';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Title from '../components/Title';
-import StatView from '../components/StatView';
-import Loading from '../components/Loading';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import Title from 'components/Title';
+import StatView from 'components/StatView';
+import Loading from 'components/Loading';
 
-import Shelf, { Exercise } from '../components/Shelf';
-
-interface Stats {
-    time: number,
-    calorie: number,
-    score: number,
-};
+import Shelf from 'components/Shelf';
+import { ExerciseView, PlayRecord } from 'utility/types';
 
 interface ResultProps {
     exerciseId : number,
@@ -25,8 +20,8 @@ interface ResultState {
     loading : boolean,
     exerciseId : number,
     exerciseName? : string,
-    stats: Stats,
-    nextExercises: Exercise[],
+    stats: PlayRecord,
+    nextExercises: ExerciseView[],
 };
 
 /**
@@ -64,7 +59,7 @@ class Result extends React.Component<ResultProps, ResultState> {
     const exerciseName = responseExercise.title;
 
     const exerciseData = responseExercises;
-    const exercises : Exercise[] = [];
+    const exercises : ExerciseView[] = [];
     for (const exercise of exerciseData) {
       exercises.push({
         id: exercise.exercise_id,

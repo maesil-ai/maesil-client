@@ -1,16 +1,17 @@
-import { getExercises } from '../utility/api';
+import { getExercises } from 'utility/api';
 
 import React from 'react';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Title from '../components/Title';
-import Loading from '../components/Loading';
-import Shelf, { Exercise } from '../components/Shelf';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import Title from 'components/Title';
+import Loading from 'components/Loading';
+import Shelf from 'components/Shelf';
+import { ExerciseView } from 'utility/types';
 
 interface ShelfData {
   title: string,
-  exercises: Exercise[],
+  exercises: ExerciseView[],
 };
 
 interface HomeProps {
@@ -51,12 +52,13 @@ class Home extends React.Component<HomeProps, HomeState> {
     const defaultGifImageUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
     const exerciseData = await getExercises();
-    const exercises : Exercise[] = exerciseData.map((data) => ({
+    const exercises : ExerciseView[] = exerciseData.map((data) => ({
       id: data.exercise_id,
       name: data.title,
       thumbUrl: data.thumb_url ? data.thumb_url : defaultImageUrl,
       thumbGifUrl: defaultGifImageUrl,
       playTime: data.play_time,
+      heart: data.isLike,
     }));
 
     this.setState({

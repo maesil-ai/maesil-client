@@ -1,21 +1,17 @@
 import React from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import Heart from 'components/Heart';
+import { ExerciseView } from 'utility/types';
 
 
-export interface Exercise {
-    id : number,
-    name : string,
-    thumbUrl : string,
-    thumbGifUrl? : string,
-    playTime : string,
-};
+
 
 interface ShelfProps {
-  exercises : Exercise[],
+  exercises : ExerciseView[],
 };
 
-function changeImage(imageUrl : string | undefined) {
+function changeImageFunc(imageUrl : string | undefined) {
   if (imageUrl) {
     return (event) => {
       event.currentTarget.src = imageUrl;
@@ -37,8 +33,8 @@ function Shelf({exercises} : ShelfProps) {
                   alt={exercise.name} 
                   width={300} 
                   className="hoverHide" 
-                  onMouseOver={changeImage(exercise.thumbGifUrl)} 
-                  onMouseOut={changeImage(exercise.thumbUrl)}
+                  onMouseOver={changeImageFunc(exercise.thumbGifUrl)} 
+                  onMouseOut={changeImageFunc(exercise.thumbUrl)}
                 />
             </Link>
             <GridListTileBar
@@ -48,6 +44,9 @@ function Shelf({exercises} : ShelfProps) {
                 root: 'titleBar',
                 title: 'titleText',
               }}
+              actionIcon={
+                <Heart id={exercise.id} initialStatus={exercise.heart}/>
+              }
             />
         </GridListTile>
       )) }

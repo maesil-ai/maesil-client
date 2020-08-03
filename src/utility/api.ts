@@ -1,36 +1,9 @@
 
 // @ts-ignore
 import axios from 'axios';
+import { APIGetExerciseData, APIPostExerciseForm } from 'utility/types';
 
 const apiAddress = 'https://api.maesil.ai';
-
-export type APIGetExerciseData = {
-    exercise_id: number,
-    title: string,
-    description: string,
-    play_time: string,
-    user_id: number,
-    thumb_url?: string,
-    video_url?: string,
-    reward: number,
-    like_counts: number,
-    view_counts: number,
-    status: string,
-    created_at: string,
-    updated_at: string,
-};
-
-export type APIPostExerciseForm = {
-  exercise: Blob,
-  title: string,
-  description: string,
-  play_time: number,
-  thumbnail: Blob,
-  reward: number,
-  tag_id: number,
-  level: number,
-  skeleton: string,
-}
 
 /**
  * 초 단위로 나타낸 정수 시간을 string으로 변환하는 함수
@@ -97,3 +70,17 @@ export const postExercise = async (data : APIPostExerciseForm) => {
 
   return response.status == 200;
 };
+
+export const toggleLike = async (id : number, like : boolean) => {
+  console.log(id, like);
+  const response = await axios({
+    method: like ? "POST" : "DELETE",
+    url: `${apiAddress}/likes/${id}`,
+  });
+
+  try {
+    return response.data.code == 200;
+  } catch {
+    return false;
+  }
+}
