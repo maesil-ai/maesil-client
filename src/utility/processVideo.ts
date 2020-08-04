@@ -1,36 +1,9 @@
 import * as posenet from '@tensorflow-models/posenet';
-
-interface Config {
-    algorithm: string,
-    model: posenet.ModelConfig,
-    flipPoseHorizontal: boolean,
-    multiPose: {
-        maxPoseDetections: number,
-        minPartConfidence: number,
-        nmsRadius: number,
-    }
-};
-
-const defaultConfig : Config = {
-  algorithm: 'single-pose',
-  model: {
-    architecture: 'MobileNetV1',
-    multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
-    outputStride: 16,
-    inputResolution: 250,
-    quantBytes: 2,
-  },
-  flipPoseHorizontal: false,
-  multiPose: {
-    maxPoseDetections: 5,
-    minPartConfidence: 0.1,
-    nmsRadius: 30.0,
-  },
-};
+import { PosenetConfig, defaultPosenetConfig } from 'utility/types';
 
 export const fps = 10;
 
-export let extractPoseFromVideo = async (videoUrl : string, config : Config = defaultConfig) => {
+export let extractPoseFromVideo = async (videoUrl : string, config : PosenetConfig = defaultPosenetConfig) => {
   let video = document.createElement("video");
   video.src = videoUrl;
   

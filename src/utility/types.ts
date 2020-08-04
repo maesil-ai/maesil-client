@@ -4,6 +4,11 @@ import PoseCalculator from './poseCalculator';
 export type Pose = posenet.Pose;
 export type PosenetModelConfig = posenet.ModelConfig;
 
+export interface PoseData {
+    fps: number,
+    pose: Pose[],
+};
+
 export interface PosenetConfig {
     algorithm: string,
     model: PosenetModelConfig,
@@ -13,6 +18,23 @@ export interface PosenetConfig {
         minPartConfidence: number,
         nmsRadius: number,
     }
+};
+
+export const defaultPosenetConfig : PosenetConfig = {
+    algorithm: 'single-pose',
+    model: {
+      architecture: 'MobileNetV1',
+      multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
+      outputStride: 16,
+      inputResolution: 250,
+      quantBytes: 2,
+    },
+    flipPoseHorizontal: false,
+    multiPose: {
+      maxPoseDetections: 5,
+      minPartConfidence: 0.1,
+      nmsRadius: 30.0,
+    },
 };
 
 export interface ExerciseView {
@@ -34,6 +56,7 @@ export interface ScreenView {
     video: HTMLVideoElement,
     scale: number,
     offset: [number, number],
+    poseData?: PoseData,
     calculator?: PoseCalculator,
 };
 
@@ -45,6 +68,7 @@ export interface APIGetExerciseData {
     user_id: number,
     thumb_url?: string,
     video_url?: string,
+    skeleton?: string,
     reward: number,
     like_counts: number,
     view_counts: number,
