@@ -11,7 +11,8 @@ const apiAddress = 'https://api.maesil.ai';
  * @return {string} 시간을 DB가 읽을 수 있는 string으로 변환
  */
 function secondToString(time : number) {
-  if (!(0 <= time && time < 100*60*60 && Number.isInteger(time))) {
+  time = Math.round(time);
+  if (!(0 <= time && time < 100*60*60)) {
     throw new Error('시간은 0초에서 360000초 사이여야 합니다.');
   }
 

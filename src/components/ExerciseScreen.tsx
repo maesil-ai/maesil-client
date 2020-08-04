@@ -8,7 +8,7 @@ import {
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-import { ScreenView, Pose, PlayRecord, fps } from 'utility/types';
+import { ScreenView, Pose, PlayRecord, fps, PoseData } from 'utility/types';
 
 interface ViewConfig {
   flipPoseHorizontal: boolean,
@@ -41,6 +41,7 @@ interface ExerciseScreenProps {
     videoHeight: number,
     views: ScreenView[],
     viewConfig: ViewConfig,
+    guidePose?: PoseData,
     onExerciseFinish: (record: PlayRecord) => any,
     repeat: number,
     match?: any,
@@ -49,7 +50,7 @@ interface ExerciseScreenProps {
 // Records[view 번호][exercise 번호][frame 번호] => 해당 시점의 Pose
 interface ExerciseScreenState {
   count: number,
-  isFinished: boolean,
+  isPlaying: boolean,
   records: Pose[][][],
   scores: number[],
   viewConfig: ViewConfig,
@@ -91,7 +92,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       this.views = this.props.views;
       this.state = {
         count: 0,
-        isFinished: false,
+        isPlaying: true,
         records: [],
         scores: [],
         viewConfig: this.props.viewConfig,
@@ -124,14 +125,14 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         if (newCount === this.props.repeat) {
           this.setState({
             ...this.state,
-            isFinished: true,
+            isPlaying: false,
           });
 
           const scores = this.state.scores;
           const averageScore = scores.reduce((x, y) => (x + y), 0) / scores.length;
           this.props.onExerciseFinish({
             score: averageScore,
-            time: guideRecord.length,
+            time: guideRecord.length / fps * this.props.repeat,
             calorie: exerciseCalorie(userRecord, guideRecord.length, {height: 1.758, weight:65.7, age:25}),
           });
         } else {
@@ -152,7 +153,9 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
     componentDidMount = async () =>  {
       this.ctx = this.canvas.current!.getContext('2d')!;
 
-      await Promise.all(this.views.map(view => view.calculator.load()));
+      await Promise.all(this.views.map((view, idx) => view.calculator.load(
+        (idx == 0) ? this.props.guidePose : undefined
+      )));
 
       this.drawCanvas();
     }
@@ -190,17 +193,12 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         if (poses) {
           poses.forEach(({score, keypoints}) => {
             if (score >= this.state.viewConfig.minPoseConfidence) {
-              if (this.state.viewConfig.showPoints) {
-                drawKeypoints(keypoints,
-                    this.state.viewConfig.minPartConfidence, ctx, scale, offset);
-              }
-              if (this.state.viewConfig.showSkeleton) {
-                drawSkeleton(keypoints,
-                    this.state.viewConfig.minPartConfidence, ctx, scale, offset);
-              }
-              if (this.state.viewConfig.showBoundingBox) {
+              if (this.state.viewConfig.showPoints) 
+                drawKeypoints(keypoints, this.state.viewConfig.minPartConfidence, ctx, scale, offset);
+              if (this.state.viewConfig.showSkeleton) 
+                drawSkeleton(keypoints, this.state.viewConfig.minPartConfidence, ctx, scale, offset);
+              if (this.state.viewConfig.showBoundingBox) 
                 drawBoundingBox(keypoints, ctx, scale, offset);
-              }
             }
           });
         }
@@ -211,22 +209,17 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
        * @param {*} callback 자기자신
        */
       let executeEveryFrame = (callback) => {
-        //            stats.begin();
         callback();
-        //            stats.end();
 
-        if (!this.state.isFinished) setTimeout(() => executeEveryFrame(callback), 1000/fps);
+        if (this.state.isPlaying) setTimeout(() => executeEveryFrame(callback), 1000/fps);
       }
 
       executeEveryFrame(() => {
         ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
-        for (let i = 0; i < this.views.length; i++) {
-          this.views[i].calculator.getPoseResult();
-          drawVideoPose(this.views[i].video,
-              this.views[i].calculator.resultPoses,
-              this.views[i].scale,
-              this.views[i].offset);
-        }
+        this.views.forEach( (view) => {
+          view.calculator.getPoseResult();
+          drawVideoPose(view.video, view.calculator.resultPoses, view.scale, view.offset);
+        });
         if (this.state.viewConfig.showCount) {
           const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
 

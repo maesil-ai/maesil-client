@@ -8,7 +8,7 @@ export type PosenetModelConfig = posenet.ModelConfig;
 
 export interface PoseData {
     fps: number,
-    pose: Pose[],
+    poses: Pose[],
 };
 
 export interface PosenetConfig {
@@ -28,8 +28,8 @@ export const defaultPosenetConfig : PosenetConfig = {
       architecture: 'MobileNetV1',
       multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
       outputStride: 16,
-      inputResolution: 250,
-      quantBytes: 2,
+      inputResolution: 400,
+      quantBytes: 4,
     },
     flipPoseHorizontal: false,
     multiPose: {

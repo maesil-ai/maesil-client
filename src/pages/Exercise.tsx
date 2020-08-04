@@ -7,7 +7,7 @@ import Footer from 'components/Footer';
 import Loading from 'components/Loading';
 import { Redirect } from 'react-router-dom';
 import Title from 'components/Title';
-import { PlayRecord } from 'utility/types';
+import { PlayRecord, PoseData } from 'utility/types';
 
 
 interface ExerciseProps {
@@ -37,6 +37,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   guideVideo = React.createRef<HTMLVideoElement>();
   userVideo = React.createRef<HTMLVideoElement>();
   userStream : MediaStream | null;
+  guidePose? : PoseData;
   
   static defaultProps = {
     videoWidth: 800,
@@ -83,10 +84,12 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
 
   componentDidMount = async () => {
-    const [{ video_url: guideSource}, userStream] = await Promise.all([
+    const [{ video_url: guideSource, skeleton: guidePose}, userStream] = await Promise.all([
       getExercise(this.state.id),
       this.loadStream(),
     ])
+
+    if (guidePose) this.guidePose = JSON.parse(guidePose) as PoseData;
 
     const guideVideo = this.guideVideo.current;
     const userVideo = this.userVideo.current;
@@ -214,6 +217,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
                 offset: [540, 400],
               },
             ]}
+            guidePose = { this.guidePose }
           />
           <Footer/>
         </div>

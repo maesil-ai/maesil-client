@@ -6,6 +6,8 @@ export const recordFps = fps;
 export let extractPoseFromVideo = async (videoUrl : string, config : PosenetConfig = defaultPosenetConfig) => {
   let video = document.createElement("video");
   video.src = videoUrl;
+  video.width = 800;
+  video.height = 600;
   
   let poseNet = await posenet.load(config.model);
   

@@ -3,13 +3,14 @@ import React from 'react';
 import { postExercise } from 'utility/api';
 import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
+import { PoseData } from 'utility/types';
 
 interface UploadBProps {
     video : File,
 };
 
 export function UploadB({ video } : UploadBProps) {
-  let [title, setTitle] = React.useState("[진짜] 포즈와 함께 업로드되고 있는 영상!");
+  let [title, setTitle] = React.useState("그대 기억이 지난 사랑이 내 안을 파고드는 가시가 되어");
   let [description, setDescription] = React.useState("머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다");
   let [message, setMessage] = React.useState("영상 처리 중...");
   let [poses, setPoses] = React.useState([]);
@@ -50,7 +51,7 @@ export function UploadB({ video } : UploadBProps) {
       skeleton: JSON.stringify({
         fps: recordFps,
         poses: poses,
-      }),
+      } as PoseData),
     });
 
     if (success) {
