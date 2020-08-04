@@ -1,7 +1,7 @@
 import * as posenet from '@tensorflow-models/posenet';
-import { PosenetConfig, defaultPosenetConfig } from 'utility/types';
+import { PosenetConfig, defaultPosenetConfig, fps } from 'utility/types';
 
-export const fps = 10;
+export const recordFps = fps;
 
 export let extractPoseFromVideo = async (videoUrl : string, config : PosenetConfig = defaultPosenetConfig) => {
   let video = document.createElement("video");
@@ -32,7 +32,7 @@ export let extractPoseFromVideo = async (videoUrl : string, config : PosenetConf
       let pose = await extractPose();
       poses.push(pose);
       console.log(time);
-      time += 1 / fps;
+      time += 1 / recordFps;
       if (time < video.duration) video.currentTime = time;
       else {
         video.remove();

@@ -1,24 +1,8 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
-import { PosenetConfig } from 'utility/types';
+import { PosenetConfig, defaultPosenetConfig, PoseData } from 'utility/types';
 
 
-const defaultConfig : PosenetConfig = {
-  algorithm: 'single-pose',
-  model: {
-    architecture: 'MobileNetV1',
-    multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
-    outputStride: 16,
-    inputResolution: 250,
-    quantBytes: 2,
-  },
-  flipPoseHorizontal: false,
-  multiPose: {
-    maxPoseDetections: 5,
-    minPartConfidence: 0.1,
-    nmsRadius: 30.0,
-  },
-};
 
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
@@ -37,15 +21,10 @@ class PoseCalculator {
     resultPoses : posenet.Pose[];
     record : posenet.Pose[];
     filters : KalmanFilter[];
+    poseData? : PoseData;
     useFilters : boolean;
 
-    /**
-     * Creates an instance of PoseCalculator.
-     * @param {HTMLVideoElement} video
-     * @param {*} [config=defaultConfig]
-     * @memberof PoseCalculator
-     */
-    constructor(video : HTMLVideoElement, config = defaultConfig) {
+    constructor(video : HTMLVideoElement, config = defaultPosenetConfig) {
       this.video = video;
       this.config = config;
       this.resultPoses = [];
@@ -54,16 +33,25 @@ class PoseCalculator {
       this.clearRecord();
     }
 
-    load = async () => {
+    load = async (inputPoseData : PoseData | null = null) => {
+      if (inputPoseData) {
+        this.poseData = inputPoseData;
+        return;
+      }
       const poseNet = await posenet.load(this.config.model);
+      
+      for (let i=0; i<40; i++) this.filters[i] = new KalmanFilter();
       this.poseNet = poseNet;
       this.modelInUse = false;
       this.readyToUse = true;
     }
 
     clearRecord = () => {
-      this.readyToUse = false;
       this.record = [];
+      if (this.poseData) 
+        return;
+      
+      this.readyToUse = false;
       for (let i=0; i<40; i++) 
         this.filters[i] = new KalmanFilter();
     }
@@ -77,6 +65,9 @@ class PoseCalculator {
       if (this.modelInUse) {
         if (this.record.length > 0) this.record.push(this.record[this.record.length-1]);
         return false;
+      }
+      if (this.poseData) {
+        
       }
 
       this.modelInUse = true;

@@ -8,7 +8,7 @@ import {
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-import { ScreenView, Pose, PlayRecord } from 'utility/types';
+import { ScreenView, Pose, PlayRecord, fps } from 'utility/types';
 
 interface ViewConfig {
   flipPoseHorizontal: boolean,
@@ -215,9 +215,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
         callback();
         //            stats.end();
 
-        requestAnimationFrame(() => {
-          if (!this.state.isFinished) executeEveryFrame(callback);
-        });
+        if (!this.state.isFinished) setTimeout(() => executeEveryFrame(callback), 1000/fps);
       }
 
       executeEveryFrame(() => {

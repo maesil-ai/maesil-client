@@ -2,7 +2,7 @@ import React from 'react';
 
 import { postExercise } from 'utility/api';
 import { validateVideoLength } from 'utility/validation';
-import { fps, extractPoseFromVideo } from 'utility/processVideo';
+import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
 
 interface UploadBProps {
     video : File,
@@ -48,7 +48,7 @@ export function UploadB({ video } : UploadBProps) {
       tag_id: 2,
       level: 4,
       skeleton: JSON.stringify({
-        fps: fps,
+        fps: recordFps,
         poses: poses,
       }),
     });

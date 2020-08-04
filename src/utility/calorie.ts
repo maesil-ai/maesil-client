@@ -1,5 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
 import { userInfo } from 'os';
+import { fps } from './types';
 
 let calculatePixelDistance = (position1, position2) =>  
   Math.sqrt(
@@ -17,7 +18,6 @@ function estimateEnergy(userPose : posenet.Pose[], userInfo) {
   let energyBurned = 0;
   let previousPose = null;
   const k = 1;
-  const fps = 30;
   
   userPose.forEach((pose) => {
       if (previousPose) {

@@ -1,6 +1,8 @@
 import * as posenet from '@tensorflow-models/posenet';
 import PoseCalculator from './poseCalculator';
 
+export const fps = 30;
+
 export type Pose = posenet.Pose;
 export type PosenetModelConfig = posenet.ModelConfig;
 
