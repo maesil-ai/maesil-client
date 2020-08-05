@@ -108,8 +108,9 @@ export interface APIGetUserInfoData {
 }
 
 export const userInfoHasMetadata = (userInfo : APIGetUserInfoData) => {
-  if (userInfo.nickname && userInfo.gender && userInfo.weight && userInfo.height)
+  if (userInfo.nickname && userInfo.gender && userInfo.weight && userInfo.height) {
     return true;
-  else 
+  } else {
     return false;
-}
+  }
+};

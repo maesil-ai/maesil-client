@@ -45,7 +45,7 @@ export const extractPoseFromVideo = async (videoUrl : string, onProgress : (numb
         const meanScore = (scores[idx] - scores[idx-fps]) / fps;
         if (meanScore < MINIMUM_THRESHOLD) {
           reject();
-          return ;
+          return;
         }
       }
 
