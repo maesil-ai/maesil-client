@@ -67,13 +67,12 @@ export const postExercise = async (data : APIPostExerciseForm) => {
   };
 
 
-  const response = await fetch('https://api.maesil.ai/upload', requestOptions);
+  const response = await fetch(`${apiAddress}/upload`, requestOptions);
 
   return response.status == 200;
 };
 
 export const toggleLike = async (id : number, like : boolean) => {
-  console.log(id, like);
   const response = await axios({
     method: like ? "POST" : "DELETE",
     url: `${apiAddress}/likes/${id}`,
@@ -83,5 +82,21 @@ export const toggleLike = async (id : number, like : boolean) => {
     return response.data.code == 200;
   } catch {
     return false;
+  }
+}
+
+export const login = async (id : number, profileImageUrl : string, accessToken : string) => {
+  const response = await axios.post(`${apiAddress}/users`, {
+    id : id,
+    profile_image_url: profileImageUrl,
+    access_token: accessToken,
+  });
+
+  console.log(response);
+  if (response.data.code == 200 || response.data.code == 201) {
+    return {
+      signedIn: response.data.code == 200,
+      token: response.data.jwt,
+    };
   }
 }

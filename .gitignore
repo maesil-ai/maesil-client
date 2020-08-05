@@ -10,6 +10,7 @@
 
 # production
 /build
+최*.zip
 
 # misc
 .DS_Store
@@ -38,3 +39,5 @@ logs
 **/*.back.*
 
 res
+
+/src/utility/secret.ts

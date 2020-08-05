@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import LoginButton from './LoginButton';
 
 function Header() {
   return (
@@ -19,9 +20,7 @@ function Header() {
               <Link to='/upload'>
                 스튜디오
               </Link>
-              <div>
-                로그아웃
-              </div>
+              <LoginButton/>
             </div>
           </li>
         </ul>

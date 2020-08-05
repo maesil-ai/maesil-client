@@ -1,10 +1,10 @@
 import React from 'react';
-import Home from '../pages/Home';
-import Exercise from '../pages/Exercise';
-import Result from '../pages/Result';
+import Home from 'pages/Home';
+import Exercise from 'pages/Exercise';
+import Result from 'pages/Result';
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
-import Upload from '../pages/Upload';
-import Auth from '../pages/Auth';
+import Upload from 'pages/Upload';
+import Signup from 'pages/Signup';
 
 function Root() {
   return (
@@ -14,7 +14,8 @@ function Root() {
         <Route path="/exercise/:id" component={Exercise} />
         <Route path="/result" component={Result} />
         <Route path="/upload" component={Upload} />
-        <Route path="/auth" component={Auth} />
+        <Route path="/signup" component={Signup} />
+
         <Redirect path="*" to="/" />
       </Switch>
     </BrowserRouter>
