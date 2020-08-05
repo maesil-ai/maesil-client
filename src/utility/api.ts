@@ -1,7 +1,7 @@
 
 // @ts-ignore
 import axios from 'axios';
-import {APIGetExerciseData, APIPostExerciseForm} from 'utility/types';
+import {APIGetExerciseData, APIPostExerciseForm, APIGetUserInfoData} from 'utility/types';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -48,9 +48,8 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data : APIPostExerciseForm) => {
   const form = new FormData();
 
-  for (const [key, value] of Object.entries(data)) {
+  for (const [key, value] of Object.entries(data))
     form.append(key, value);
-  }
 
   const requestOptions = {
     method: 'POST',
@@ -96,6 +95,43 @@ export const login = async (id : number, profileImageUrl : string, accessToken :
   }
 };
 
-export const getUserData = async (token : string) => {
-  return null;
+export const getUserInfo = async (token : string) => {
+  if (!token) return null;
+
+  const response = await axios.get(`${apiAddress}/users`, {
+    headers: {
+      "x-access-token": token,
+    },
+  });
+
+  if (response.data.code == 200) 
+    return response.data.result as APIGetUserInfoData;
 };
+
+export const postUserInfo = async (token : string, nickname : string, gender : string, height : number, weight : number) => {
+  if (!token) return false;
+  
+  const response = await axios.post(`${apiAddress}/users/info`, {
+    nickname: nickname,
+    gender: gender,
+    weight: weight,
+    height: height,
+  }, {
+    headers: {
+      "x-access-token": token,
+    }
+  });
+
+  console.log(response);
+
+  return response.data.code == 200;
+};
+
+export const getAccessToken = () => {
+  console.log(localStorage.getItem('token'));
+  return localStorage.getItem('token');
+}
+
+export const setAccessToken = (token : string) => {
+  localStorage.setItem('token', token);
+}
