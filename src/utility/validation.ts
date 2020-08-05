@@ -33,7 +33,7 @@ export async function validateVideoLength(video: HTMLVideoElement) {
 }
 
 function validateVideoSize(file) {
-  const MAX_SIZE = 2 * 1024 * 1024; // 2메가 바이트
+  const MAX_SIZE = 10 * 1024 * 1024; // 10메가 바이트
   if (file.size > MAX_SIZE) {
     return false;
   }
@@ -71,7 +71,7 @@ function validateHumanVideo(file) {
  */
 export function validA(file: File) {
   if (!validateVideoFile(file)) return 'The format is not supported';
-  if (!validateVideoSize(file)) return 'Size must less than 2MiB';
+  if (!validateVideoSize(file)) return 'Size must less than 10MiB';
   return 'ok';
 }
 

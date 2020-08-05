@@ -27,7 +27,7 @@ export function UploadB({ video } : UploadBProps) {
       setMessage("");
       setPoses(poses);
     }).catch((error) => {
-      setMessage("영상 처리 실패...");
+      setMessage("전신이 나오는 영상을 올려주세요.");
       console.log(error);
     });
   }, []);
