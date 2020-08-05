@@ -7,9 +7,10 @@ import { PoseData, Pose } from 'utility/types';
 
 interface UploadBProps {
     video : File,
+    onFail : () => void,
 };
 
-export function UploadB({ video } : UploadBProps) {
+export function UploadB({ video, onFail } : UploadBProps) {
   let [title, setTitle] = React.useState<string>("그대 기억이 지난 사랑이 내 안을 파고드는 가시가 되어");
   let [description, setDescription] = React.useState<string>("머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다");
   let [message, setMessage] = React.useState<string>("영상 처리 중...");
@@ -58,6 +59,7 @@ export function UploadB({ video } : UploadBProps) {
       setMessage('업로드 성공!');
     } else {
       setMessage('업로드 실패...');
+      onFail();
     }
   }
 
