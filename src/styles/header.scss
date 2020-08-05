@@ -13,21 +13,11 @@ $border-color: #ececec;
 }
 
 header {
-	top: 0;
-	left: 0;
-	right: 0;
-  
-	height: 50px;
-	margin-bottom: 10px;
-	font-size: 30px; 
-	color: #006856;
-	background: #fff;
-	text-align: left;
-	font-weight: 600;
-	padding: 30px;
-	
 	.top-bar{
 		padding: 0;
+		height: inherit;
+		margin: 0px auto;
+		vertical-align: middle;
 		.menu-text{
 			padding: 20px 0 !important;
 			margin: 0 !important;

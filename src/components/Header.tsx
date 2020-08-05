@@ -1,20 +1,30 @@
 import React from 'react';
-
 import { Link } from 'react-router-dom';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
 function Header() {
   return (
     <header>
-        <Link to='/'>
-          <div className={"top-bar-left"}>매실</div>
-        </Link>
-        <Link to='/upload'>
-          <div className={"top-bar-right"}>업로드</div>
-        </Link>
-        <a href='https://api.maesil.ai/kakao'>
-          <div className={"top-bar-right"}>로그인/ </div>
-        </a>
-        <div className={"top-bar-right font-effect-fire-animation"}></div>
+        <ul>
+          <li className="left">
+            <Link to='/' style={{ padding: "32px" }}>
+              매실
+            </Link>
+          </li>
+          <li className="dropdown right">
+            <div style={{ padding: "28.5px" }}>
+              <PermIdentityIcon fontSize="large" />
+            </div>
+            <div className="dropdown-content">
+              <Link to='/upload'>
+                스튜디오
+              </Link>
+              <div>
+                로그아웃
+              </div>
+            </div>
+          </li>
+        </ul>
     </header>
   );
 }
