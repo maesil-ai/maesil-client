@@ -4,7 +4,7 @@
 
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/maesil-ai/maesil-client/pulls)
 
-![매실](https://i.imgur.com/rxQTltJ.png)
+[![매실](https://i.imgur.com/b0YBYnC.png)](https://maesil.ai)
 
 우리 앱을 설명할 수 있는 데모 GIF
 
@@ -111,13 +111,18 @@ PR을 하기 전에는 에러가 없는지 체크를 해야합니다. 그리고 
 
 더 정확한 정보를 위해서는 기여 페이지를 참조하세요.
 
-## 🔗 자세한 설명
+## 🔗 외부 링크
 
-- 프로젝트 소개
-- 팀원 소개
-- 개발 명세
-- API 명세
-- 개발 일지
+- [매실 위키](https://git.swmgit.org/swmaestro/codeblue/-/wikis/home)
+  - [프로젝트 기획](https://git.swmgit.org/swmaestro/codeblue/-/wikis/%EA%B8%B0%ED%9A%8D/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D)
+  - [프로젝트 개발](https://git.swmgit.org/swmaestro/codeblue/-/wikis/%EA%B0%9C%EB%B0%9C/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B0%9C%EB%B0%9C)
+  - [멘토링](https://git.swmgit.org/swmaestro/codeblue/-/wikis/%EB%A9%98%ED%86%A0%EB%A7%81/%EB%A9%98%ED%86%A0%EB%A7%81)
+  - [코드블루](https://git.swmgit.org/swmaestro/codeblue/-/wikis/home#%EC%BD%94%EB%93%9C%EB%B8%94%EB%A3%A8)
+
+- [매실 블로그](https://blog.maesil.ai)
+  - [두 사람의 동작 유사도를 계산하기](https://blog.maesil.ai/2020/08/04/pose-similarity.html)
+
+- [매실 트위터](https://twitter.com/maesil_ai)
 
 ## 📜 라이센스
 
