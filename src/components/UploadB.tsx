@@ -18,8 +18,12 @@ export function UploadB({ video } : UploadBProps) {
 
   let videoUrl = URL.createObjectURL(video);
 
+  const handleExtractProgress = (ratio : number) => {
+    setMessage(`영상 ${Math.round(ratio*100)}% 처리 중...`)
+  }
+
   React.useEffect(() => {
-    extractPoseFromVideo(videoUrl).then((poses) => {
+    extractPoseFromVideo(videoUrl, handleExtractProgress).then((poses) => {
       setMessage("");
       setPoses(poses);
     }).catch((error) => {
@@ -61,6 +65,7 @@ export function UploadB({ video } : UploadBProps) {
   }
 
   return (
+    <>
       <div style={{display: 'flex', justifyContent: 'center', width: 1200}}>
         <video src={videoUrl} loop autoPlay controls className='previewVideo' ref={videoRef}/>
         <div className='configzone'>
@@ -75,7 +80,8 @@ export function UploadB({ video } : UploadBProps) {
           { message ? message : <button onClick={upload}> 올리기! </button> }
         </div>
       </div>
-  )
+    </>
+  );
 }
 
 export default UploadB;
