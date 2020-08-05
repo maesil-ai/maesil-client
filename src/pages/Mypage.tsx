@@ -24,7 +24,10 @@ function Mypage() {
             <Header/>
             <Title title={userInfo.nickname + "님, 오늘도 파이팅!"}/>
             <div className="configzone">
-
+                <div> 현재 {userInfo.level}레벨입니다. </div>
+                <div> 키: {userInfo.height}cm </div>
+                <div> 몸무게: {userInfo.weight}kg </div>
+                <div> 성별: {userInfo.gender} </div>
             </div>
             <Footer/>
         </>
