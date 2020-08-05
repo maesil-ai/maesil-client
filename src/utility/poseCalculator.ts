@@ -1,7 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
-import { PosenetConfig, defaultPosenetConfig, PoseData } from 'utility/types';
-
+import {PosenetConfig, defaultPosenetConfig, PoseData} from 'utility/types';
 
 
 // const defaultResNetMultiplier = 1.0;
@@ -46,20 +45,23 @@ class PoseCalculator {
 
     clearRecord = () => {
       this.record = [];
-      if (this.poseData) 
+      if (this.poseData) {
         return;
-      
+      }
+
       this.readyToUse = false;
-      for (let i=0; i<40; i++) 
+      for (let i=0; i<40; i++) {
         this.filters[i] = new KalmanFilter();
+      }
     }
 
     // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
 
     getPoseResult = async () => {
-      if (!this.readyToUse) 
+      if (!this.readyToUse) {
         return false;
-      
+      }
+
       if (this.modelInUse) {
         if (this.record.length > 0) this.record.push(this.resultPoses[0]);
         return false;
@@ -70,7 +72,7 @@ class PoseCalculator {
         poses = poses.concat(this.poseData.poses[Math.floor(this.video.currentTime * this.poseData.fps)]);
       } else {
         this.modelInUse = true;
-        
+
         switch (this.config.algorithm) {
           case 'single-pose':
             const pose = await this.poseNet.estimatePoses(this.video, {
@@ -96,7 +98,7 @@ class PoseCalculator {
         if (poses[0] && this.useFilters) {
           poses[0].keypoints.forEach((keypoint, i) => {
             keypoint.position.x = this.filters[2*i].filter(keypoint.position.x);
-            keypoint.position.y = this.filters[2*i+1].filter(keypoint.position.y);          
+            keypoint.position.y = this.filters[2*i+1].filter(keypoint.position.y);
           });
         }
 

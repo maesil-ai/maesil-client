@@ -23,20 +23,20 @@ export interface PosenetConfig {
 };
 
 export const defaultPosenetConfig : PosenetConfig = {
-    algorithm: 'single-pose',
-    model: {
-      architecture: 'MobileNetV1',
-      multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
-      outputStride: 16,
-      inputResolution: 400,
-      quantBytes: 4,
-    },
-    flipPoseHorizontal: false,
-    multiPose: {
-      maxPoseDetections: 5,
-      minPartConfidence: 0.1,
-      nmsRadius: 30.0,
-    },
+  algorithm: 'single-pose',
+  model: {
+    architecture: 'MobileNetV1',
+    multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
+    outputStride: 16,
+    inputResolution: 400,
+    quantBytes: 4,
+  },
+  flipPoseHorizontal: false,
+  multiPose: {
+    maxPoseDetections: 5,
+    minPartConfidence: 0.1,
+    nmsRadius: 30.0,
+  },
 };
 
 export interface ExerciseView {

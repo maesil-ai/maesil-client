@@ -1,7 +1,7 @@
 
 // @ts-ignore
 import axios from 'axios';
-import { APIGetExerciseData, APIPostExerciseForm } from 'utility/types';
+import {APIGetExerciseData, APIPostExerciseForm} from 'utility/types';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -48,8 +48,9 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data : APIPostExerciseForm) => {
   const form = new FormData();
 
-  for (let [key, value] of Object.entries(data)) 
+  for (const [key, value] of Object.entries(data)) {
     form.append(key, value);
+  }
 
   const requestOptions = {
     method: 'POST',
@@ -69,7 +70,7 @@ export const postExercise = async (data : APIPostExerciseForm) => {
 
 export const toggleLike = async (id : number, like : boolean) => {
   const response = await axios({
-    method: like ? "POST" : "DELETE",
+    method: like ? 'POST' : 'DELETE',
     url: `${apiAddress}/likes/${id}`,
   });
 
@@ -78,11 +79,11 @@ export const toggleLike = async (id : number, like : boolean) => {
   } catch {
     return false;
   }
-}
+};
 
 export const login = async (id : number, profileImageUrl : string, accessToken : string) => {
   const response = await axios.post(`${apiAddress}/users`, {
-    id : id,
+    id: id,
     profile_image_url: profileImageUrl,
     access_token: accessToken,
   });
@@ -93,8 +94,8 @@ export const login = async (id : number, profileImageUrl : string, accessToken :
       token: response.data.jwt,
     };
   }
-}
+};
 
 export const getUserData = async (token : string) => {
   return null;
-}
+};
