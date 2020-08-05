@@ -21,11 +21,11 @@ const LoginButton = ({ } : LoginButtonProps) => {
             jsKey={kakaoJsKey}
             onSuccess={async (response) => {
                 setStatus(1);
-                const { signedIn, token } = await login(response.profile.id, 
+                const { token } = await login(response.profile.id, 
                     response.profile.kakao_account.profile.profile_image_url, 
                     response.response.access_token);
                 localStorage.setItem('token', token);
-                if (signedIn) setStatus(2);
+                setStatus(2);
             }}
             onFailure={console.log}
             render={(props: any) => (

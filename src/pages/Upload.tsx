@@ -24,16 +24,12 @@ function Upload({ } : UploadProps) {
     }
   }
 
-  let handleBFail = () => {
-    setPhase(1);
-  }
-
   return (
     <>
       <Header/>
       <Title title="운동 업로드"/>
       { phase == 1 && <UploadA onFinish={handleAFinish}/> }
-      { phase == 2 && <UploadB video={video} onFail={handleBFail}/> }  
+      { phase == 2 && <UploadB video={video}/> }  
       <Footer/>
     </>
   )

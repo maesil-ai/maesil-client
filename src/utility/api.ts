@@ -48,13 +48,8 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data : APIPostExerciseForm) => {
   const form = new FormData();
 
-  for (let [key, value] of Object.entries(data)) {
-    if (typeof value == 'number') {
-      if (key == 'play_time') value = secondToString(value);
-      else value = value.toString();
-    }
+  for (let [key, value] of Object.entries(data)) 
     form.append(key, value);
-  }
 
   const requestOptions = {
     method: 'POST',
@@ -95,8 +90,11 @@ export const login = async (id : number, profileImageUrl : string, accessToken :
   console.log(response);
   if (response.data.code == 200 || response.data.code == 201) {
     return {
-      signedIn: response.data.code == 200,
       token: response.data.jwt,
     };
   }
+}
+
+export const getUserData = async (token : string) => {
+  return null;
 }
