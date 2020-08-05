@@ -30,10 +30,25 @@ export const extractPoseFromVideo = async (videoUrl : string, config : PosenetCo
       video.currentTime = time;
     });
 
+    let scores = [];
+    let idx = 0;
+    const MINIMUM_THRESHOLD = 0.5;
+    scores.push(0);
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();
       poses.push(pose);
-      console.log(time);
+      console.log(pose.score);
+      scores.push(pose.score);
+      
+      idx++;
+      scores[idx] += scores[idx-1];
+      if (idx >= fps) {
+        const meanScore = (scores[idx] - scores[idx-fps]) / fps;
+        if (meanScore < MINIMUM_THRESHOLD) {
+          reject();
+        }
+      }
+
       time += 1 / recordFps;
       if (time < video.duration) video.currentTime = time;
       else {
