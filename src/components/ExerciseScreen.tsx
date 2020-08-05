@@ -8,7 +8,8 @@ import {
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-import { ScreenView, Pose, PlayRecord, fps, PoseData } from 'utility/types';
+import { getAccessToken, getUserInfo } from 'utility/api';
+import { APIGetUserInfoData, ScreenView, Pose, PlayRecord, fps, PoseData } from 'utility/types';
 
 interface ViewConfig {
   flipPoseHorizontal: boolean,
@@ -130,10 +131,20 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
 
           const scores = this.state.scores;
           const averageScore = scores.reduce((x, y) => (x + y), 0) / scores.length;
+
+          let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
+
+          React.useEffect(() => {
+            getUserInfo(getAccessToken()).then((info) => {
+              setUserInfo(info);
+              console.log(info);
+            });
+          }, []);
+
           this.props.onExerciseFinish({
             score: averageScore,
             time: guideRecord.length / fps * this.props.repeat,
-            calorie: exerciseCalorie(userRecord, guideRecord.length, {height: 1.758, weight:65.7, age:25}),
+            calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
           });
         } else {
           this.views[0].video.load();
@@ -208,7 +219,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
        * 매 프레임 마다 다시 콜백으로 자기를 불러서 무한반복으로 실행
        * @param {*} callback 자기자신
        */
-      let executeEveryFrame = (callback) => {
+      let executeEveryFrame = (callback: { (): void; (): void; }) => {
         callback();
 
         if (this.state.isPlaying) setTimeout(() => executeEveryFrame(callback), 1000/fps);
@@ -251,7 +262,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       });
     }
 
-    checkSkeleton = (event, checked : boolean) => {
+    checkSkeleton = (_event: any, checked : boolean) => {
       this.setState({
         ...this.state,
         viewConfig: {
@@ -263,7 +274,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
       });
     };
 
-    checkKalmanFilters = (event, checked : boolean) => {
+    checkKalmanFilters = (_event: any, checked : boolean) => {
       this.views.forEach((view) => {
         view.calculator.useFilters = checked;
       });

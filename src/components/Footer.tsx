@@ -1,10 +1,5 @@
 import React from 'react';
 
-
-/**
- * Footer HTML 변환
- * @return {any} Footer HTML
- */
 function Footer() {
   return (
     <footer>

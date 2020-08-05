@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
 import { ExerciseView } from 'utility/types';
 
-
-
-
 interface ShelfProps {
   exercises : ExerciseView[],
 };

@@ -5,6 +5,10 @@ export const fps = 30;
 
 export type Pose = posenet.Pose;
 export type PosenetModelConfig = posenet.ModelConfig;
+export interface Position {
+  x: number,
+  y: number,
+};
 
 export interface PoseData {
     fps: number,

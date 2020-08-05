@@ -9,14 +9,12 @@ import { Redirect } from 'react-router-dom';
 import Title from 'components/Title';
 import { PlayRecord, PoseData } from 'utility/types';
 
-
 interface ExerciseProps {
   videoWidth: number,
   videoHeight: number,
   match?: any,
   history?: any,
 };
-
 
 interface ExerciseState {
   isLoading: boolean,
@@ -134,11 +132,6 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     });
   }
 
-  /**
-   * 운동 페이지를 렌더링 해서 보여줌
-   * @return {any} 운동 페이지 HTML
-   * @memberof Exercise
-   */
   render() {
     // 운동이 끝나서 결과창으로 보내야 할 때
     if (this.state.redirectToResult) {
