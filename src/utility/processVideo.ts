@@ -3,7 +3,7 @@ import {PosenetConfig, defaultPosenetConfig, fps} from 'utility/types';
 
 export const recordFps = fps;
 
-export const extractPoseFromVideo = async (videoUrl : string, config : PosenetConfig = defaultPosenetConfig) => {
+export const extractPoseFromVideo = async (videoUrl : string, onProgress : (number) => void, config : PosenetConfig = defaultPosenetConfig) => {
   const video = document.createElement('video');
   video.src = videoUrl;
   video.width = 800;
@@ -37,7 +37,6 @@ export const extractPoseFromVideo = async (videoUrl : string, config : PosenetCo
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();
       poses.push(pose);
-      console.log(pose.score);
       scores.push(pose.score);
       
       idx++;
@@ -48,6 +47,9 @@ export const extractPoseFromVideo = async (videoUrl : string, config : PosenetCo
           reject();
         }
       }
+
+      console.log(time);
+      onProgress(time / video.duration);
 
       time += 1 / recordFps;
       if (time < video.duration) video.currentTime = time;

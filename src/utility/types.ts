@@ -91,3 +91,25 @@ export interface APIPostExerciseForm {
   level: number,
   skeleton: string,
 }
+
+export interface APIGetUserInfoData {
+  user_id: number,
+  email: string,
+  password: string,
+  nickname: string | null,
+  gender: string | null,
+  weight: number | null,
+  height: number | null,
+  level: number | null,
+  points: number | null,
+  status: string,
+  created_at: string,
+  updated_at: string,
+}
+
+export const userInfoHasMetadata = (userInfo : APIGetUserInfoData) => {
+  if (userInfo.nickname && userInfo.gender && userInfo.weight && userInfo.height)
+    return true;
+  else 
+    return false;
+}

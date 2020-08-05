@@ -5,6 +5,7 @@ import Result from 'pages/Result';
 import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 import Upload from 'pages/Upload';
 import Signup from 'pages/Signup';
+import Mypage from 'pages/Mypage';
 
 function Root() {
   return (
@@ -15,7 +16,7 @@ function Root() {
         <Route path="/result" component={Result} />
         <Route path="/upload" component={Upload} />
         <Route path="/signup" component={Signup} />
-
+        <Route path="/mypage" component={Mypage} />
         <Redirect path="*" to="/" />
       </Switch>
     </BrowserRouter>
