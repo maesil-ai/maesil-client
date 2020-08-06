@@ -77,7 +77,6 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         ...this.state,
         isCameraRejected: true,
       });
-      console.log(error);
       throw error;
     }
   }

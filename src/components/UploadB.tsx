@@ -28,7 +28,6 @@ export function UploadB({ video } : UploadBProps) {
       setPoses(poses);
     }).catch((error) => {
       setMessage("영상 처리 실패...");
-      console.log(error);
     });
   }, []);
 
@@ -75,7 +74,7 @@ export function UploadB({ video } : UploadBProps) {
           </div>
           <div>
             설명  
-            <input className='inputDescription' value={description} onChange={(e) => { setDescription(e.target.value); }}/>
+            <textarea className='inputDescription' value={description} onChange={(e) => { setDescription(e.target.value); }}/>
           </div>
           { message ? message : <button onClick={upload}> 올리기! </button> }
         </div>

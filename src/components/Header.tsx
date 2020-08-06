@@ -11,7 +11,6 @@ function Header() {
   React.useEffect(() => {
     getUserInfo(getAccessToken()).then((info) => {
       setUserInfo(info);
-      console.log(info);
     });
   }, []);
 

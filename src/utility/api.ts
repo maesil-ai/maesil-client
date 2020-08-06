@@ -87,7 +87,6 @@ export const login = async (id : number, profileImageUrl : string, accessToken :
     access_token: accessToken,
   });
 
-  console.log(response);
   if (response.data.code == 200 || response.data.code == 201) {
     return {
       token: response.data.jwt,
@@ -122,16 +121,28 @@ export const postUserInfo = async (token : string, nickname : string, gender : s
     }
   });
 
-  console.log(response);
-
   return response.data.code == 200;
 };
 
 export const getAccessToken = () => {
-  console.log(localStorage.getItem('token'));
   return localStorage.getItem('token');
 }
 
 export const setAccessToken = (token : string) => {
   localStorage.setItem('token', token);
+}
+
+export const getLikes = async (token : string) => {
+  if (!token) return null;
+
+  const response = await axios.get(`${apiAddress}/likes`, {
+    headers: {
+      "x-access-token": token,
+    },
+  });
+
+
+  if (response.data.code == 200) 
+    return response.data.result.map((item) => item.exercise_id) as number[];
+
 }

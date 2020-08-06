@@ -78,64 +78,58 @@ div {
   position: relative;
 }
 
-header {
-	top: 0;
-	left: 0;
-	right: 0;
-  
-	height: 100px;
-	margin-bottom: 25px;
-	font-size: 24px; 
-	color: #00816c;
-	background: #fff;
-	text-align: left;
-  font-weight: 600;
-  
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    overflow: hidden;
-    height: inherit;
 
-    li {
-      height: inherit;
 
-      &.left {
-        float: left;
-      }
+.zone {
+  width: calc(100% - 100px);
+  padding: 20px;
+
+  display: block;
+
+  font-size: 18px;
+  font-weight: 400;
+
+  background-color: white;
+  color: #555;
   
-      &.right {
-        float: right;
-      }
+  letter-spacing: .1rem;
+  text-align: center;
 
-      > * {
-        display: block;
-        text-align: center;
-        text-decoration: none;
-      }
-    }
-    
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      z-index: 1;
-      right: 0;
-      height: calc(100% - 100px);
-      width: 350px;
-      .text {
-        font-size: 20px;
-        font-weight: 400;
-        color: #555;
-      }
-    }
-    
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
+  .fill {
+    display: block;
+    width: 100%;
+  }
+  input, textarea, select, table, tbody {
+    margin: 10px;
+    padding: 5px;
+    font-size: inherit;
+    font-weight: inherit;
+    border: 1px;
+    text-align: left;
+    font-weight: bold;
+    width: inherit;
+    text-align: center;
   }
   
+  input, textarea, select {
+    border-bottom: 2px solid #555;
+    background-color: white;
+    padding: 5px;
+    margin: 10px;
+  }
+
+  button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 700;
+
+    background-color: rgb(87, 87, 87);
+    color: rgb(255, 255, 255);
+
+    letter-spacing: .1rem;
+    text-align: center;
+  }
 }
 
 footer {

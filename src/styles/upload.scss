@@ -30,7 +30,7 @@
     letter-spacing: .1rem;
     text-align: center;
 
-    input {
+    input, textarea {
         margin: 10px;
         padding: 5px;
         font-size: inherit;
@@ -39,10 +39,6 @@
         text-align: left;
         font-weight: bold;
         width: 550px;
-        &.inputDescription {
-            height: 100px;
-            word-break: break-all;
-        }
     }
 
     button {

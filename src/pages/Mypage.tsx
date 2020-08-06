@@ -3,22 +3,48 @@ import React from 'react';
 import Title from 'components/Title';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import { getAccessToken, getUserInfo } from 'utility/api';
-import { APIGetUserInfoData } from 'utility/types';
+import { getAccessToken, getUserInfo, getLikes, getExercise } from 'utility/api';
+import { APIGetUserInfoData, ExerciseView } from 'utility/types';
 import Loading from 'components/Loading';
+import Shelf from 'components/Shelf';
+import { Redirect } from 'react-router-dom';
 
 function Mypage() {
     let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
     let [isLoading, setLoading] = React.useState<boolean>(true);
+    let [likes, setLikes] = React.useState<ExerciseView[]>([]);
 
     React.useEffect(() => {
-      getUserInfo(getAccessToken()).then((info) => {
+      const token = getAccessToken();
+      Promise.all([getUserInfo(token), getLikes(token)]).then(([info, likes]) => {
         setUserInfo(info);
         setLoading(false);
+        return;
+        /*
+        Promise.all(likes.map((id) => getExercise(id))).then((exercises) => {
+          setLikes(exercises.map((exercise) => {
+            return {
+              id: exercise.exercise_id,
+              name: exercise.title,
+              thumbUrl: null,
+              playTime: exercise.play_time,
+            } as ExerciseView;
+          }));
+          setLoading(false);
+        });*/
       });
     }, []);
     
-    if (isLoading) return <Loading/>;
+    if (!getAccessToken()) return (
+      <Redirect to='/'/>
+    );
+    if (isLoading) return (
+      <>
+        <Header/>
+        <Loading/>
+        <Footer/>
+      </>
+    );
     else return (
         <>
             <Header/>

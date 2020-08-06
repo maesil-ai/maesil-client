@@ -33,7 +33,6 @@ export const extractPoseFromVideo = async (videoUrl : string, onProgress : (numb
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();
       poses.push(pose);
-      console.log(time);
       onProgress(time / video.duration);
       time += 1 / recordFps;
       if (time < video.duration) video.currentTime = time;
