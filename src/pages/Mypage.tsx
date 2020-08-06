@@ -17,10 +17,11 @@ function Mypage() {
     React.useEffect(() => {
       Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
         setUserInfo(info);
+
+        console.log(likes);
         setLoading(false);
-        return;
-        /*
-        Promise.all(likes.map((id) => getExercise(id))).then((exercises) => {
+/*        Promise.all(likes.map((id) => getExercise(id))).then((exercises) => {
+          console.log(exercises);
           setLikes(exercises.map((exercise) => {
             return {
               id: exercise.exercise_id,
@@ -30,8 +31,8 @@ function Mypage() {
             } as ExerciseView;
           }));
           setLoading(false);
-        });*/
-      });
+        });
+      */      });
     }, []);
     
     if (!getAccessToken()) return (
@@ -48,7 +49,7 @@ function Mypage() {
         <>
             <Header/>
             <Title title={userInfo.nickname + "님, 오늘도 파이팅!"}/>
-            <div className="configzone">
+            <div className="zone">
                 <div> 현재 {userInfo.level}레벨입니다. </div>
                 <div> 키: {userInfo.height}cm </div>
                 <div> 몸무게: {userInfo.weight}kg </div>
