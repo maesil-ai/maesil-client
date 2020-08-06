@@ -1,16 +1,16 @@
 header {
-	top: 0;
-	left: 0;
-	right: 0;
-  
-	height: 100px;
-	margin-bottom: 25px;
-	font-size: 24px; 
-	color: #00816c;
-	background: #fff;
-	text-align: left;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 100px;
+  margin-bottom: 25px;
+  font-size: 24px;
+  color: #00816c;
+  background: #fff;
+  text-align: left;
   font-weight: 600;
-  
+
   ul {
     margin: 0;
     padding: 0;
@@ -24,7 +24,7 @@ header {
       &.left {
         float: left;
       }
-  
+
       &.right {
         float: right;
       }
@@ -35,7 +35,7 @@ header {
         text-decoration: none;
       }
     }
-    
+
     .dropdown-content {
       display: none;
       position: absolute;
@@ -50,7 +50,7 @@ header {
         color: #555;
       }
     }
-    
+
     .dropdown:hover .dropdown-content {
       display: block;
     }

@@ -4,24 +4,28 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import { toggleLike } from 'utility/api';
 
 interface HeartProps {
-    id : number,
-    initialStatus : boolean,
-    heartCount : number,
-};
+  id: number;
+  initialStatus: boolean;
+  heartCount: number;
+}
 
-function Heart({ id, initialStatus, heartCount } : HeartProps) {
-    let [status, setStatus] = React.useState(initialStatus);
-    let [count, setCount] = React.useState(heartCount);
+function Heart({ id, initialStatus, heartCount }: HeartProps) {
+  let [status, setStatus] = React.useState(initialStatus);
+  let [count, setCount] = React.useState(heartCount);
 
-    let onClick = async () => {
-        let response = await toggleLike(id, !status);
-        setCount(count + (status ? -1 : 1));
-        if (response) setStatus(!status);
-    }
+  let onClick = async () => {
+    let response = await toggleLike(id, !status);
+    setCount(count + (status ? -1 : 1));
+    if (response) setStatus(!status);
+  };
 
-    return (
-        <FavoriteIcon color={status ? "secondary" : "disabled"} fontSize="large" onClick={onClick}/> 
-    );
+  return (
+    <FavoriteIcon
+      color={status ? 'secondary' : 'disabled'}
+      fontSize="large"
+      onClick={onClick}
+    />
+  );
 }
 
 export default Heart;

@@ -20,44 +20,53 @@ function Header() {
     });
     return () => {
       ok = false;
-    }
+    };
   }, [status]);
 
   const handleLoginSuccess = () => {
     setStatus(2);
-  }
+  };
 
   const dropdownMenu = (
     <li className="dropdown right">
-      <div style={{ padding: "28.5px" }}>
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
-        <PermIdentityIcon fontSize="large" opacity="0" />
+      <div style={{ padding: '28.5px' }}>
         <PermIdentityIcon fontSize="large" />
       </div>
       <div className="dropdown-content">
-        { userInfo ? <div className="text"> {userInfo.nickname}님 안녕하세요! </div> : <LoginButton onSuccess={handleLoginSuccess}/> }
-        { userInfo && <div><Link to='/mypage'> 마이페이지 </Link></div> }
-        { userInfo && <div><Link to='/upload'> 운동 업로드 </Link></div> }
-        { userInfo && <div><Link to='/logout'> 로그아웃 </Link></div> }
+        {userInfo ? (
+          <div className="text"> {userInfo.nickname}님 안녕하세요! </div>
+        ) : (
+          <LoginButton onSuccess={handleLoginSuccess} />
+        )}
+        {userInfo && (
+          <div>
+            <Link to="/mypage"> 마이페이지 </Link>
+          </div>
+        )}
+        {userInfo && (
+          <div>
+            <Link to="/upload"> 운동 업로드 </Link>
+          </div>
+        )}
+        {userInfo && (
+          <div>
+            <Link to="/logout"> 로그아웃 </Link>
+          </div>
+        )}
       </div>
     </li>
   );
 
   return (
     <header>
-        <ul>
-          <li className="left">
-            <Link to='/' style={{ padding: "32px" }}>
-              매실
-            </Link>
-          </li>
-          { status ? dropdownMenu : <></> }
-        </ul>
+      <ul>
+        <li className="left">
+          <Link to="/" style={{ padding: '32px' }}>
+            매실
+          </Link>
+        </li>
+        {status ? dropdownMenu : <></>}
+      </ul>
     </header>
   );
 }
