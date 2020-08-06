@@ -31,12 +31,7 @@ interface ResultState {
  */
 class Result extends React.Component<ResultProps, ResultState> {
 
-  /**
-   *Creates an instance of Result.
-    * @param {*} props
-    * @memberof Result
-    */
-  constructor(props) {
+  constructor(props: Readonly<ResultProps>) {
     super(props);
 
     this.state = {
@@ -77,11 +72,6 @@ class Result extends React.Component<ResultProps, ResultState> {
     });
   }
 
-  /**
-   * result페이지를 렌더링 하는 함순
-   * @return {any} 렌더링 될 HTML
-   * @memberof Result
-   */
   render() {
     if (this.state.loading) {
       return (
