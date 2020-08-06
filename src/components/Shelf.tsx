@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
 import { ExerciseView } from 'utility/types';
+import DeleteButton from './DeleteButton';
 
 interface ShelfProps {
   exercises: ExerciseView[];
+  control?: string;
 }
 
 function changeImageFunc(imageUrl: string | undefined) {
@@ -18,10 +20,16 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises }: ShelfProps) {
+function Shelf({ exercises, control = 'heart' }: ShelfProps) {
+  let [currentExercises, setExercises] = React.useState<ExerciseView[]>([]);
+
+  useEffect(() => {
+    setExercises(exercises);
+  }, []);
+
   return (
     <div className={'shelf'}>
-      {exercises.map((exercise) => (
+      {currentExercises.map((exercise) => (
         <GridListTile key={exercise.id} className={'gridList'}>
           <Link to={'/exercise/' + exercise.id}>
             <img
@@ -41,11 +49,24 @@ function Shelf({ exercises }: ShelfProps) {
               title: 'titleText',
             }}
             actionIcon={
-              <Heart
-                id={exercise.id}
-                initialStatus={exercise.heart}
-                heartCount={exercise.heartCount}
-              />
+              control == 'heart' ? (
+                <Heart
+                  id={exercise.id}
+                  initialStatus={exercise.heart}
+                  heartCount={exercise.heartCount}
+                />
+              ) : control == 'remove' ? (
+                <DeleteButton
+                  id={exercise.id}
+                  onClick={() => {
+                    setExercises(
+                      currentExercises.filter((element) => element != exercise)
+                    );
+                  }}
+                />
+              ) : (
+                <></>
+              )
             }
           />
         </GridListTile>

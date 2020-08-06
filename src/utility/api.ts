@@ -38,12 +38,20 @@ export const getExercise = async (id: number) => {
   return response.data.result as APIGetExerciseData;
 };
 
-export const postResult = async (
-  id: number,
-  score: number,
-  playTime: number,
-  calorie: number
-) => {
+export const deleteExercise = async (id : number) => {  
+  const token = getAccessToken();
+  if (!token) return null;
+
+  const response = await axios.delete(`${apiAddress}/exercises/${id}`, {
+    headers: {
+      'x-access-token': token,
+    }
+  });
+  console.log(response);
+  return response.data.code == 200;
+};
+
+export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
   const token = getAccessToken();
   if (!token) return null;
 
@@ -198,3 +206,9 @@ export const getLikes = async () => {
   if (response.data.code == 200)
     return response.data.result.map((item) => item.exercise_id) as number[];
 };
+
+export const getChannel = async (nickname : string) => {
+  const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
+
+  return response.data.result as APIGetExerciseData[];
+}

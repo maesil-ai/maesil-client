@@ -7,6 +7,7 @@ import Upload from 'pages/Upload';
 import Signup from 'pages/Signup';
 import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
+import Userpage from 'pages/User';
 
 function Root() {
   return (
@@ -19,6 +20,7 @@ function Root() {
         <Route path="/signup" component={Signup} />
         <Route path="/mypage" component={Mypage} />
         <Route path="/logout" component={Logout} />
+        <Route path="/user/:name" component={Userpage} />
         <Redirect path="*" to="/" />
       </Switch>
     </BrowserRouter>
