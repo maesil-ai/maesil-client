@@ -6,7 +6,7 @@ import Title from 'components/Title';
 function Loading() {
   return (
     <div>
-      <Title title="불러오는 중..."/>
+      <Title title="불러오는 중..." />
     </div>
   );
 }

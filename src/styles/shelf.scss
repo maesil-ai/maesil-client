@@ -1,10 +1,9 @@
-
 .shelf {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow: auto;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: auto;
+  justify-content: flex-start;
 }
 
 .gridList {
@@ -15,10 +14,10 @@
 }
 
 titleText {
-    font-family: "Noto Sans KR";
-    font-weight: 700;
+  font-family: 'Noto Sans KR';
+  font-weight: 700;
 }
 
 titleBar {
-    background: rgba(100, 100, 100, 0.54);
+  background: rgba(100, 100, 100, 0.54);
 }

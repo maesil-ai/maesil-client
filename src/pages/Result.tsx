@@ -12,17 +12,17 @@ import Shelf from 'components/Shelf';
 import { ExerciseView, PlayRecord } from 'utility/types';
 
 interface ResultProps {
-    exerciseId : number,
-    location: any,
-};
+  exerciseId: number;
+  location: any;
+}
 
 interface ResultState {
-    loading : boolean,
-    exerciseId : number,
-    exerciseName? : string,
-    stats: PlayRecord,
-    nextExercises: ExerciseView[],
-};
+  loading: boolean;
+  exerciseId: number;
+  exerciseName?: string;
+  stats: PlayRecord;
+  nextExercises: ExerciseView[];
+}
 
 /**
  * Result 페이지
@@ -30,7 +30,6 @@ interface ResultState {
  * @extends {React.Component<ResultProps, ResultState>}
  */
 class Result extends React.Component<ResultProps, ResultState> {
-
   constructor(props: Readonly<ResultProps>) {
     super(props);
 
@@ -54,15 +53,17 @@ class Result extends React.Component<ResultProps, ResultState> {
     const exerciseName = responseExercise.title;
 
     const exerciseData = responseExercises;
-    const exercises : ExerciseView[] = [];
+    const exercises: ExerciseView[] = [];
     for (const exercise of exerciseData) {
       exercises.push({
         id: exercise.exercise_id,
         name: exercise.title,
-        thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
+        thumbUrl: exercise.thumb_url
+          ? exercise.thumb_url
+          : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
         playTime: exercise.play_time,
       });
-    };
+    }
 
     this.setState({
       ...this.state,
@@ -76,9 +77,9 @@ class Result extends React.Component<ResultProps, ResultState> {
     if (this.state.loading) {
       return (
         <>
-          <Header/>
-          <Loading/>
-          <Footer/>
+          <Header />
+          <Loading />
+          <Footer />
         </>
       );
     } else {
@@ -86,18 +87,20 @@ class Result extends React.Component<ResultProps, ResultState> {
 
       return (
         <>
-          <Header/>
-          <Title title={ this.state.exerciseName + ' 완료!' } />
-          <StatView time={ stats.time }
-            calorie={ stats.calorie }
-            score={ stats.score } />
-          <Title title={"다음에 할 운동들"} />
+          <Header />
+          <Title title={this.state.exerciseName + ' 완료!'} />
+          <StatView
+            time={stats.time}
+            calorie={stats.calorie}
+            score={stats.score}
+          />
+          <Title title={'다음에 할 운동들'} />
           <Shelf exercises={this.state.nextExercises} />
-          <Footer/>
+          <Footer />
         </>
       );
     }
   }
-};
+}
 
 export default Result;

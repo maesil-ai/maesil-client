@@ -1,25 +1,18 @@
 import React from 'react';
 
-interface VideoInfoProps {
-};
+interface VideoInfoProps {}
 
-interface VideoInfoState {
-};
+interface VideoInfoState {}
 
 class VideoInfo extends React.Component<VideoInfoProps, VideoInfoState> {
-  static defaultProps: VideoInfoProps = {
-
-  };
+  static defaultProps: VideoInfoProps = {};
 
   constructor(props: VideoInfoProps) {
     super(props);
-
   }
 
-  componentDidMount() {
-
-  }
-/*
+  componentDidMount() {}
+  /*
   render() {
     return (
       <div>
@@ -65,6 +58,5 @@ class VideoInfo extends React.Component<VideoInfoProps, VideoInfoState> {
   }
 */
 }
-
 
 export default VideoInfo;
