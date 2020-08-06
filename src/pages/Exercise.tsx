@@ -1,4 +1,4 @@
-import { getExercise, postResult } from 'utility/api';
+import { getExercise, postResult, getUserInfo } from 'utility/api';
 
 import React from 'react';
 import ExerciseScreen from 'components/ExerciseScreen';
@@ -7,7 +7,7 @@ import Footer from 'components/Footer';
 import Loading from 'components/Loading';
 import { Redirect } from 'react-router-dom';
 import Title from 'components/Title';
-import { PlayRecord, PoseData } from 'utility/types';
+import { PlayRecord, PoseData, APIGetUserInfoData } from 'utility/types';
 
 interface ExerciseProps {
   videoWidth: number;
@@ -22,6 +22,7 @@ interface ExerciseState {
   isFinished: boolean;
   redirectToResult: boolean;
   id: number;
+  userInfo?: APIGetUserInfoData;
   record: PlayRecord | null;
   url?: string;
 }
@@ -83,7 +84,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     const [
       { video_url: guideSource, skeleton: guidePose },
       userStream,
-    ] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
+      userInfo,
+    ] = await Promise.all([getExercise(this.state.id), this.loadStream(), getUserInfo()]);
 
     if (guidePose) this.guidePose = JSON.parse(guidePose) as PoseData;
 
@@ -106,6 +108,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
     this.setState({
       ...this.state,
+      userInfo: userInfo,
       isLoading: false,
     });
   };
@@ -199,6 +202,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             onExerciseFinish={this.handleExerciseFinish}
             videoWidth={this.props.videoWidth}
             videoHeight={this.props.videoHeight}
+            userInfo={this.state.userInfo}
             views={[
               {
                 // Guide View

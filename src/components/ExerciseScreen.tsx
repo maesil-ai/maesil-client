@@ -41,6 +41,7 @@ const defaultViewConfig = {
 };
 
 interface ExerciseScreenProps {
+  userInfo?: APIGetUserInfoData;
   videoWidth: number;
   videoHeight: number;
   views: ScreenView[];
@@ -141,19 +142,10 @@ class ExerciseScreen extends React.Component<
         const scores = this.state.scores;
         const averageScore = scores.reduce((x, y) => x + y, 0) / scores.length;
 
-        let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
-
-        React.useEffect(() => {
-          getUserInfo().then((info) => {
-            setUserInfo(info);
-            console.log(info);
-          });
-        }, []);
-
         this.props.onExerciseFinish({
           score: averageScore,
           time: (guideRecord.length / fps) * this.props.repeat,
-          calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
+          calorie: exerciseCalorie(userRecord, guideRecord.length, this.props.userInfo),
         });
       } else {
         this.views[0].video.load();
