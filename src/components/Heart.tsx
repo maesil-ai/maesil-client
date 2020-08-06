@@ -6,20 +6,21 @@ import { toggleLike } from 'utility/api';
 interface HeartProps {
     id : number,
     initialStatus : boolean,
+    heartCount : number,
 };
 
-function Heart({ id, initialStatus } : HeartProps) {
+function Heart({ id, initialStatus, heartCount } : HeartProps) {
     let [status, setStatus] = React.useState(initialStatus);
+    let [count, setCount] = React.useState(heartCount);
 
     let onClick = async () => {
         let response = await toggleLike(id, !status);
+        setCount(count + (status ? -1 : 1));
         if (response) setStatus(!status);
     }
 
     return (
-        <div onClick={onClick}>
-            { status ? <FavoriteIcon color="secondary" fontSize="large"/> : <FavoriteIcon color="disabled" fontSize="large"/> }
-        </div>
+        <FavoriteIcon color={status ? "secondary" : "disabled"} fontSize="large" onClick={onClick}/> 
     );
 }
 

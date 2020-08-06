@@ -59,6 +59,8 @@ class Home extends React.Component<HomeProps, HomeState> {
       thumbGifUrl: defaultGifImageUrl,
       playTime: data.play_time,
       heart: data.isLike,
+      heartCount: data.like_counts,
+      description: data.description,
     }));
 
     this.setState({

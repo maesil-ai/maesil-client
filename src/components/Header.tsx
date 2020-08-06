@@ -30,6 +30,13 @@ function Header() {
   const dropdownMenu = (
     <li className="dropdown right">
       <div style={{ padding: "28.5px" }}>
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
+        <PermIdentityIcon fontSize="large" opacity="0" />
         <PermIdentityIcon fontSize="large" />
       </div>
       <div className="dropdown-content">

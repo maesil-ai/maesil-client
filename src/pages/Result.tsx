@@ -61,6 +61,9 @@ class Result extends React.Component<ResultProps, ResultState> {
         name: exercise.title,
         thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
         playTime: exercise.play_time,
+        heart: exercise.isLike,
+        heartCount: exercise.like_counts,
+        description: exercise.description,
       });
     };
 
