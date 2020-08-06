@@ -50,6 +50,8 @@ export interface ExerciseView {
   thumbGifUrl?: string;
   playTime: string;
   heart?: boolean;
+  heartCount: number;
+  description: string;
 }
 
 export interface PlayRecord {

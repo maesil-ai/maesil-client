@@ -35,13 +35,17 @@ function Shelf({ exercises }: ShelfProps) {
           </Link>
           <GridListTileBar
             title={exercise.name}
-            subtitle={exercise.playTime}
+            subtitle={exercise.description}
             classes={{
               root: 'titleBar',
               title: 'titleText',
             }}
             actionIcon={
-              <Heart id={exercise.id} initialStatus={exercise.heart} />
+              <Heart
+                id={exercise.id}
+                initialStatus={exercise.heart}
+                heartCount={exercise.heartCount}
+              />
             }
           />
         </GridListTile>
