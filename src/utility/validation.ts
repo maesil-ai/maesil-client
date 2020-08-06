@@ -7,12 +7,12 @@ function validateVideoFile(file) {
   return true;
 }
 
-function getDuration(video : HTMLVideoElement) {
-  const promise = new Promise(function(resolve, reject) {
-    video.addEventListener('loadedmetadata', function() {
+function getDuration(video: HTMLVideoElement) {
+  const promise = new Promise(function (resolve, reject) {
+    video.addEventListener('loadedmetadata', function () {
       resolve(video.duration);
     });
-    video.addEventListener('error', function() {
+    video.addEventListener('error', function () {
       reject(video.error.message + '(' + video.error.code + ')');
     });
   });
@@ -58,7 +58,6 @@ function validateHumanVideo(file) {
   executeEveryFrame(() => {
     calculator.getPoseResult();
   });
-
 
   return false;
 }

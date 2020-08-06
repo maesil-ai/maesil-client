@@ -10,13 +10,12 @@ interface ShelfProps {
   control? : string,
 };
 
-function changeImageFunc(imageUrl : string | undefined) {
+function changeImageFunc(imageUrl: string | undefined) {
   if (imageUrl) {
     return (event) => {
       event.currentTarget.src = imageUrl;
     };
-  }
-  else {
+  } else {
     return () => {};
   }
 }
@@ -56,8 +55,24 @@ function Shelf({exercises, control = "heart"} : ShelfProps) {
                 }} /> : <></>
               }
             />
+          </Link>
+          <GridListTileBar
+            title={exercise.name}
+            subtitle={exercise.description}
+            classes={{
+              root: 'titleBar',
+              title: 'titleText',
+            }}
+            actionIcon={
+              <Heart
+                id={exercise.id}
+                initialStatus={exercise.heart}
+                heartCount={exercise.heartCount}
+              />
+            }
+          />
         </GridListTile>
-      )) }
+      ))}
     </div>
   );
 }

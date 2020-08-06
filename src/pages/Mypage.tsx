@@ -3,16 +3,14 @@ import React from 'react';
 import Title from 'components/Title';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import { getAccessToken, getUserInfo, getLikes, getExercise } from 'utility/api';
-import { APIGetUserInfoData, ExerciseView } from 'utility/types';
+import { getAccessToken, getUserInfo, getLikes } from 'utility/api';
+import { APIGetUserInfoData } from 'utility/types';
 import Loading from 'components/Loading';
-import Shelf from 'components/Shelf';
 import { Redirect } from 'react-router-dom';
 
 function Mypage() {
-    let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
-    let [isLoading, setLoading] = React.useState<boolean>(true);
-    let [likes, setLikes] = React.useState<ExerciseView[]>([]);
+  let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
+  let [isLoading, setLoading] = React.useState<boolean>(true);
 
     React.useEffect(() => {
       Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
@@ -40,9 +38,9 @@ function Mypage() {
     );
     if (isLoading) return (
       <>
-        <Header/>
-        <Loading/>
-        <Footer/>
+        <Header />
+        <Loading />
+        <Footer />
       </>
     );
     else return (
