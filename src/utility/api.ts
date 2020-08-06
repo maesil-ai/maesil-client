@@ -34,10 +34,17 @@ export const getExercise = async (id : number) => {
 };
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
+  const token = getAccessToken();
+  if (!token) return null;
+
   const response = await axios.post(`${apiAddress}/exercises/${id}/history`, {
     'score': score,
     'play_time': secondToString(playTime),
     'cal': calorie,
+  }, {
+    headers: {
+      'x-access-token': token,
+    },
   });
 
   if (response.data.code != 200) {
@@ -46,6 +53,9 @@ export const postResult = async (id : number, score : number, playTime : number,
 };
 
 export const postExercise = async (data : APIPostExerciseForm) => {
+  const token = getAccessToken();
+  if (!token) return null;
+
   const form = new FormData();
 
   for (const [key, value] of Object.entries(data)) {
@@ -56,6 +66,7 @@ export const postExercise = async (data : APIPostExerciseForm) => {
     method: 'POST',
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'x-access-token': token,
     },
     body: form,
     //    mode: "no-cors" as RequestMode,
@@ -69,9 +80,15 @@ export const postExercise = async (data : APIPostExerciseForm) => {
 };
 
 export const toggleLike = async (id : number, like : boolean) => {
+  const token = getAccessToken();
+  if (!token) return null;
+
   const response = await axios({
     method: like ? 'POST' : 'DELETE',
     url: `${apiAddress}/likes/${id}`,
+    headers: {
+      'x-access-token': token,
+    },
   });
 
   try {
@@ -95,7 +112,20 @@ export const login = async (id : number, profileImageUrl : string, accessToken :
   }
 };
 
-export const getUserInfo = async (token : string) => {
+export const logout = async () => {
+  localStorage.removeItem('token');
+}
+
+export const getAccessToken = () => {
+  return localStorage.getItem('token');
+};
+
+export const setAccessToken = (token : string) => {
+  localStorage.setItem('token', token);
+};
+
+export const getUserInfo = async () => {
+  const token = getAccessToken();
   if (!token) return null;
 
   const response = await axios.get(`${apiAddress}/users`, {
@@ -104,13 +134,16 @@ export const getUserInfo = async (token : string) => {
     },
   });
 
+  
+
   if (response.data.code == 200) {
     return response.data.result as APIGetUserInfoData;
   }
 };
 
-export const postUserInfo = async (token : string, nickname : string, gender : string, height : number, weight : number) => {
-  if (!token) return false;
+export const postUserInfo = async (nickname : string, gender : string, height : number, weight : number) => {
+  const token = getAccessToken();
+  if (!token) return null;
 
   const response = await axios.post(`${apiAddress}/users/info`, {
     nickname: nickname,
@@ -126,15 +159,8 @@ export const postUserInfo = async (token : string, nickname : string, gender : s
   return response.data.code == 200;
 };
 
-export const getAccessToken = () => {
-  return localStorage.getItem('token');
-};
-
-export const setAccessToken = (token : string) => {
-  localStorage.setItem('token', token);
-};
-
-export const getLikes = async (token : string) => {
+export const getLikes = async () => {
+  const token = getAccessToken();
   if (!token) return null;
 
   const response = await axios.get(`${apiAddress}/likes`, {

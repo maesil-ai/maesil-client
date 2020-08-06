@@ -16,6 +16,15 @@ function Signup() {
 
     const sexList = ['여성', '남성', '기타'].sort(() => Math.random() - 0.5);
 
+    const isParsable = (str: string) => {
+        try {
+            Number.parseInt(str);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     const submit = () => {
         if (name.length < 1) {
             setMessage('이름을 적어 주세요.');
@@ -23,12 +32,12 @@ function Signup() {
             setMessage('이름은 최대 50글자로 해 주세요.');
         } else if (!sexList.find((value) => value == sex)) {
             setMessage('성별을 골라 주세요.');
-        } else if (!Number.isInteger(height) || height.length < 2 || height.length > 5) {
+        } else if (!isParsable(height) || height.length < 2 || height.length > 5) {
             setMessage('키는 10cm에서 99999cm 사이로 적어 주세요.');
-        } else if (!Number.isInteger(weight) || weight.length < 2 || weight.length > 5) {
+        } else if (!isParsable(weight) || weight.length < 2 || weight.length > 5) {
             setMessage('체중은 10kg에서 99999kg 사이로 적어 주세요.');
         } else {
-            postUserInfo(getAccessToken(), name, sex, Number.parseInt(height), Number.parseInt(weight));
+            postUserInfo(name, sex, Number.parseInt(height), Number.parseInt(weight));
             setStatus(1);
         }
     }

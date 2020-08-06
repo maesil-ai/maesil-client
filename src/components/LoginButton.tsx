@@ -6,17 +6,17 @@ import { Redirect } from 'react-router-dom';
 import { userInfoHasMetadata } from 'utility/types';
 
 interface LoginButtonProps {
-
+    onSuccess : () => void
 };
 
-const LoginButton = ({ } : LoginButtonProps) => {
+const LoginButton = ({ onSuccess } : LoginButtonProps) => {
     let [status, setStatus] = React.useState(0);
 
-    if (status == 2) {
-        return (
-            <Redirect to='/signup'/>
-        )
-    }
+    if (status == 2) 
+        return <Redirect to='/signup'/>;
+    
+    
+    
     return (
         <KakaoLogin
             jsKey={kakaoJsKey}
@@ -26,10 +26,12 @@ const LoginButton = ({ } : LoginButtonProps) => {
                     response.profile.kakao_account.profile.profile_image_url, 
                     response.response.access_token);
                 setAccessToken(token);
-                const userInfo = await getUserInfo(token);
+                const userInfo = await getUserInfo();
                 if (!userInfoHasMetadata(userInfo))
                     setStatus(2);
-            }}
+                else
+                    onSuccess();
+                }}
             onFailure={console.log}
             render={(props: any) => (
                 <div onClick={props.onClick}>

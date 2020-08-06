@@ -135,7 +135,7 @@ class ExerciseScreen extends React.Component<ExerciseScreenProps, ExerciseScreen
           let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
 
           React.useEffect(() => {
-            getUserInfo(getAccessToken()).then((info) => {
+            getUserInfo().then((info) => {
               setUserInfo(info);
               console.log(info);
             });

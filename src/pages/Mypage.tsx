@@ -15,8 +15,7 @@ function Mypage() {
     let [likes, setLikes] = React.useState<ExerciseView[]>([]);
 
     React.useEffect(() => {
-      const token = getAccessToken();
-      Promise.all([getUserInfo(token), getLikes(token)]).then(([info, likes]) => {
+      Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
         setUserInfo(info);
         setLoading(false);
         return;
