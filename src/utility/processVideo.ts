@@ -3,7 +3,12 @@ import {PosenetConfig, defaultPosenetConfig, fps} from 'utility/types';
 
 export const recordFps = fps;
 
-export const extractPoseFromVideo = async (videoUrl : string, onProgress : (number) => void, config : PosenetConfig = defaultPosenetConfig) => {
+export const extractPoseFromVideo = async (
+  videoUrl : string, 
+  onProgress : (number) => void, 
+  onAbort : (string) => void, 
+  config : PosenetConfig = defaultPosenetConfig
+  ) => {
   const video = document.createElement('video');
   video.src = videoUrl;
   video.width = 800;
@@ -44,6 +49,7 @@ export const extractPoseFromVideo = async (videoUrl : string, onProgress : (numb
       if (idx >= fps) {
         const meanScore = (scores[idx] - scores[idx-fps]) / fps;
         if (meanScore < MINIMUM_THRESHOLD) {
+          onAbort("영상에는 몸 전체가 나와야 합니다.");
           reject();
           return;
         }

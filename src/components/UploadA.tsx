@@ -18,7 +18,7 @@ export function UploadA({ onFinish } : UploadAProps) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   return (
-    <div {...getRootProps({className: 'dropzone'})}>
+    <div {...getRootProps({className: 'zone'})}>
         <input {...getInputProps()} />
         {
             isDragActive ?

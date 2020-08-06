@@ -14,6 +14,7 @@ export function UploadB({ video } : UploadBProps) {
   let [description, setDescription] = React.useState<string>("머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다");
   let [message, setMessage] = React.useState<string>("영상 처리 중...");
   let [poses, setPoses] = React.useState<Pose[]>([]);
+  let [thumbnail, setThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
 
   let videoUrl = URL.createObjectURL(video);
@@ -22,14 +23,15 @@ export function UploadB({ video } : UploadBProps) {
     setMessage(`영상 ${Math.round(ratio*100)}% 처리 중...`)
   }
 
+  const handleExtractFail = (message : string) => {
+    setMessage(message);
+  }
+
   React.useEffect(() => {
-    extractPoseFromVideo(videoUrl, handleExtractProgress).then((poses) => {
+    extractPoseFromVideo(videoUrl, handleExtractProgress, handleExtractFail).then((poses) => {
       setMessage("");
       setPoses(poses);
-    }).catch((error) => {
-      setMessage('영상에는 몸 전체가 나와야 합니다.');
-      console.log(error);
-    });
+    }).catch(() => {});
   }, []);
 
   const upload = async () => {
@@ -47,7 +49,7 @@ export function UploadB({ video } : UploadBProps) {
       title: title,
       description: description,
       play_time: videoRef.current.duration,
-      thumbnail: defaultThumbnail,
+      thumbnail: thumbnail ? thumbnail : defaultThumbnail,
       reward: 103,
       tag_id: 2,
       level: 4,
@@ -68,15 +70,29 @@ export function UploadB({ video } : UploadBProps) {
     <>
       <div style={{display: 'flex', justifyContent: 'center', width: 1200}}>
         <video src={videoUrl} loop autoPlay controls className='previewVideo' ref={videoRef}/>
-        <div className='configzone'>
-          <div>
-            제목  
-            <input className='inputTitle' value={title} onChange={(e) => { setTitle(e.target.value); }}/> 
-          </div>
-          <div>
-            설명  
-            <textarea className='inputDescription' value={description} onChange={(e) => { setDescription(e.target.value); }}/>
-          </div>
+        <div className='zone'>
+          <table> 
+            <tbody>
+              <tr>
+                <td> 제목 </td>
+                <td className='fill'> 
+                <input className='inputTitle' value={title} onChange={(e) => { setTitle(e.target.value); }}/> 
+                </td>
+              </tr>
+              <tr>
+                <td> 설명 </td>
+                <td className='fill'> 
+                  <textarea className='inputDescription' rows={5} value={description} onChange={(e) => { setDescription(e.target.value); }}/>
+                </td>
+              </tr>
+              <tr>
+                <td> 썸네일 이미지 </td>
+                <td className='fill'>
+                  <input type='file' accept='image/*' required onChange={(e) => setThumbnail(e.target.files[0])}/>
+                </td>
+              </tr>
+            </tbody> 
+          </table>
           { message ? message : <button onClick={upload}> 올리기! </button> }
         </div>
       </div>
