@@ -1,5 +1,4 @@
 import * as posenet from '@tensorflow-models/posenet';
-import { userInfo } from 'os';
 import { fps, Position, APIGetUserInfoData } from './types';
 
 const calculatePixelDistance = (position1: Position, position2: Position) =>

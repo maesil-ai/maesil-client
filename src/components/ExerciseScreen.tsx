@@ -4,7 +4,7 @@ import { drawBoundingBox, drawKeypoints, drawSkeleton } from 'utility/draw';
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-import { getAccessToken, getUserInfo } from 'utility/api';
+import { getUserInfo } from 'utility/api';
 import {
   APIGetUserInfoData,
   ScreenView,
