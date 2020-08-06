@@ -7,7 +7,7 @@ const apiAddress = 'https://api.maesil.ai';
 
 /**
  * 초 단위로 나타낸 정수 시간을 string으로 변환하는 함수
- * @param {number} 시간 (초 단위)
+ * @param {number} time (초 단위)
  * @return {string} 시간을 DB가 읽을 수 있는 string으로 변환
  */
 function secondToString(time : number) {
@@ -48,8 +48,9 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data : APIPostExerciseForm) => {
   const form = new FormData();
 
-  for (const [key, value] of Object.entries(data))
+  for (const [key, value] of Object.entries(data)) {
     form.append(key, value);
+  }
 
   const requestOptions = {
     method: 'POST',
@@ -99,17 +100,18 @@ export const getUserInfo = async (token : string) => {
 
   const response = await axios.get(`${apiAddress}/users`, {
     headers: {
-      "x-access-token": token,
+      'x-access-token': token,
     },
   });
 
-  if (response.data.code == 200) 
+  if (response.data.code == 200) {
     return response.data.result as APIGetUserInfoData;
+  }
 };
 
 export const postUserInfo = async (token : string, nickname : string, gender : string, height : number, weight : number) => {
   if (!token) return false;
-  
+
   const response = await axios.post(`${apiAddress}/users/info`, {
     nickname: nickname,
     gender: gender,
@@ -117,8 +119,8 @@ export const postUserInfo = async (token : string, nickname : string, gender : s
     height: height,
   }, {
     headers: {
-      "x-access-token": token,
-    }
+      'x-access-token': token,
+    },
   });
 
   return response.data.code == 200;
@@ -126,11 +128,11 @@ export const postUserInfo = async (token : string, nickname : string, gender : s
 
 export const getAccessToken = () => {
   return localStorage.getItem('token');
-}
+};
 
 export const setAccessToken = (token : string) => {
   localStorage.setItem('token', token);
-}
+};
 
 export const getLikes = async (token : string) => {
   if (!token) return null;
@@ -141,8 +143,6 @@ export const getLikes = async (token : string) => {
     },
   });
 
-
   if (response.data.code == 200) 
     return response.data.result.map((item) => item.exercise_id) as number[];
-
-}
+};

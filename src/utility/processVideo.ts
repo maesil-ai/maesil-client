@@ -30,10 +30,28 @@ export const extractPoseFromVideo = async (videoUrl : string, onProgress : (numb
       video.currentTime = time;
     });
 
+    const scores = [];
+    let idx = 0;
+    const MINIMUM_THRESHOLD = 0.5;
+    scores.push(0);
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();
       poses.push(pose);
+      scores.push(pose.score);
+      console.log(pose.score);
+      idx++;
+      scores[idx] += scores[idx-1];
+      if (idx >= fps) {
+        const meanScore = (scores[idx] - scores[idx-fps]) / fps;
+        if (meanScore < MINIMUM_THRESHOLD) {
+          reject();
+          return;
+        }
+      }
+
+      console.log(time);
       onProgress(time / video.duration);
+
       time += 1 / recordFps;
       if (time < video.duration) video.currentTime = time;
       else {

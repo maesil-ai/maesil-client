@@ -27,7 +27,8 @@ export function UploadB({ video } : UploadBProps) {
       setMessage("");
       setPoses(poses);
     }).catch((error) => {
-      setMessage("영상 처리 실패...");
+      setMessage('영상에는 몸 전체가 나와야 합니다.');
+      console.log(error);
     });
   }, []);
 

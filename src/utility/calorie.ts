@@ -1,20 +1,21 @@
 import * as posenet from '@tensorflow-models/posenet';
 import {userInfo} from 'os';
-import {fps} from './types';
+import {fps, Position, APIGetUserInfoData} from './types';
 
-const calculatePixelDistance = (position1, position2) =>
+const calculatePixelDistance = (position1 : Position, position2 : Position) =>
   Math.sqrt(
       Math.pow(position1.x - position2.x, 2) +
   Math.pow(position1.y - position2.y, 2));
 
-const calculateVelocity = (position1, position2, time) => calculatePixelDistance(position1, position2) / time;
+const calculateVelocity = (position1 : Position, position2 : Position, time : number) => 
+  calculatePixelDistance(position1, position2) / time;
 
 const convertDistanceToMeters = (distance : number, height : number) => (height - 0.3322) / (4.3 * distance);
 
-const calculateKineticEnergy = (velocity, mass) =>
+const calculateKineticEnergy = (velocity : number, mass : number) =>
   0.5 * mass * velocity * velocity;
 
-function estimateEnergy(userPose : posenet.Pose[], userInfo) {
+function estimateEnergy(userPose : posenet.Pose[], userInfo : APIGetUserInfoData) {
   let energyBurned = 0;
   let previousPose = null;
   const k = 1;
@@ -52,6 +53,6 @@ function energyToMET(energy : number) {
   return log_scale;
 }
 
-export function exerciseCalorie(userPose : posenet.Pose[], second: number, userInfo) {
+export function exerciseCalorie(userPose : posenet.Pose[], second: number, userInfo : APIGetUserInfoData) {
   return (3.5 * energyToMET(estimateEnergy(userPose, userInfo)) * userInfo.weight * second/60)/1000 * 5;
 }
