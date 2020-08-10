@@ -12,6 +12,7 @@ function Header() {
   React.useEffect(() => {
     let ok = true;
     
+    setStatus(1);
     if (getAccessToken()) {
       getUserInfo().then((info) => {
         if (ok) {
@@ -20,8 +21,6 @@ function Header() {
           else setStatus(1);
         }
       });
-    } else {
-      setStatus(1);
     }
     return () => {
       ok = false;
