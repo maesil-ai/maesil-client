@@ -141,19 +141,13 @@ class ExerciseScreen extends React.Component<
         const scores = this.state.scores;
         const averageScore = scores.reduce((x, y) => x + y, 0) / scores.length;
 
-        let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
-
-        React.useEffect(() => {
-          getUserInfo().then((info) => {
-            setUserInfo(info);
-            console.log(info);
-          });
-        }, []);
-
         this.props.onExerciseFinish({
           score: averageScore,
           time: (guideRecord.length / fps) * this.props.repeat,
-          calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
+          calorie: exerciseCalorie(userRecord, guideRecord.length, {
+            weight: 65,
+            height: 1.77,
+          }),
         });
       } else {
         this.views[0].video.load();
