@@ -5,6 +5,11 @@ import {
   APIPostExerciseForm,
   APIGetUserInfoData,
 } from 'utility/types';
+import { useDispatch } from 'react-redux';
+import { UserAction, setUser } from 'actions';
+import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
+import { Dispatch, Store } from 'redux';
+import { RootReducerState } from 'reducers';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -124,7 +129,8 @@ export const toggleLike = async (id: number, like: boolean) => {
 export const login = async (
   id: number,
   profileImageUrl: string,
-  accessToken: string
+  accessToken: string,
+  dispatch?: Dispatch<UserAction>,
 ) => {
   const response = await axios.post(`${apiAddress}/users`, {
     id: id,
@@ -133,14 +139,24 @@ export const login = async (
   });
 
   if (response.data.code == 200 || response.data.code == 201) {
+    const token = response.data.jwt;
+    setAccessToken(token);
+    const userInfo = await getUserInfo();
+    if (dispatch) dispatch({
+      type: SET_USER,
+      userInfo: userInfo,
+    })
     return {
-      token: response.data.jwt,
+      token: token,
     };
   }
 };
 
-export const logout = async () => {
+export const logout = async (dispatch? : Dispatch<UserAction>) => {
   localStorage.removeItem('token');
+  if (dispatch) dispatch({
+    type: CLEAR_USER,
+  });
 };
 
 export const getAccessToken = () => {

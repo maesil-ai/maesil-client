@@ -2,34 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
-import { getUserInfo, getAccessToken } from 'utility/api';
-import { APIGetUserInfoData } from 'utility/types';
+import { useStore, useSelector, TypedUseSelectorHook } from 'react-redux';
+import { RootReducerState } from 'reducers';
 
 function Header() {
-  let [status, setStatus] = React.useState<number>(0);
-  let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
-
-  React.useEffect(() => {
-    let ok = true;
-    
-    setStatus(1);
-    if (getAccessToken()) {
-      getUserInfo().then((info) => {
-        if (ok) {
-          setUserInfo(info);
-          if (info) setStatus(2);
-          else setStatus(1);
-        }
-      });
-    }
-    return () => {
-      ok = false;
-    };
-  }, [status]);
-
-  const handleLoginSuccess = () => {
-    setStatus(2);
-  };
+  let userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 
   const dropdownMenu = (
     <li className="dropdown right">
@@ -40,7 +17,7 @@ function Header() {
         {userInfo ? (
           <div className="text"> {userInfo.nickname}님 안녕하세요! </div>
         ) : (
-          <LoginButton onSuccess={handleLoginSuccess} />
+          <LoginButton />
         )}
         {userInfo && (
           <div>
@@ -69,7 +46,7 @@ function Header() {
             매실
           </Link>
         </li>
-        {status ? dropdownMenu : <></>}
+        { dropdownMenu }
       </ul>
     </header>
   );

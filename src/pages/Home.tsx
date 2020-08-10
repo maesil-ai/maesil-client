@@ -7,7 +7,8 @@ import Footer from 'components/Footer';
 import Title from 'components/Title';
 import Loading from 'components/Loading';
 import Shelf from 'components/Shelf';
-import { ExerciseView } from 'utility/types';
+import { ExerciseView, APIGetExerciseData } from 'utility/types';
+import ExerciseDetail from 'components/ExerciseDetail';
 
 interface ShelfData {
   title: string;
@@ -18,6 +19,7 @@ interface HomeProps {}
 
 interface HomeState {
   shelfDatas: ShelfData[];
+  rawDatas: APIGetExerciseData[];
   loading: boolean;
 }
 
@@ -38,6 +40,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     this.state = {
       shelfDatas: [],
       loading: true,
+      rawDatas: [],
     };
   }
 
@@ -78,6 +81,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         },
       ],
       loading: false,
+      rawDatas: exerciseData,
     });
   }
 
@@ -102,6 +106,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         <>
           <Header />
           {shelfs}
+          <ExerciseDetail rawData={this.state.rawDatas[0]} />
           <Footer />
         </>
       );
