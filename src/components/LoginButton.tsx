@@ -13,8 +13,8 @@ interface LoginButtonProps {
 
 const LoginButton = ({ }: LoginButtonProps) => {
   let [status, setStatus] = React.useState(0);
-  let store = useStore();
-  let userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
+  const store = useStore();
+  const userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 
   if (status == 2) return <Redirect to="/signup" />;
 

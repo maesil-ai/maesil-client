@@ -47,12 +47,24 @@ export interface RawAPIExerciseData {
 }
 
 export const getExercises = async () => {
-  const response = await axios.get(`${apiAddress}/exercises/`);
+  const token = getAccessToken();
+
+  const response = await axios.get(`${apiAddress}/exercises/`, token ? {
+    headers: {
+      'x-access-token': token,
+    },
+  } : {} );
   return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
 export const getExercise = async (id: number) => {
-  const response = await axios.get(`${apiAddress}/exercises/${id}`);
+  const token = getAccessToken();
+
+  const response = await axios.get(`${apiAddress}/exercises/${id}`, token ? {
+    headers: {
+      'x-access-token': token,
+    },
+  } : {});
   return processRawExerciseData(response.data.result as RawAPIExerciseData);
 };
 
@@ -233,7 +245,7 @@ export const getLikes = async () => {
   });
 
   if (response.data.code == 200)
-    return response.data.result.map((item) => item.exercise_id) as number[];
+    return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
 export const getChannel = async (nickname : string) => {

@@ -5,9 +5,11 @@ import Heart from 'components/Heart';
 import { ExerciseData } from 'utility/types';
 import DeleteButton from 'components/DeleteButton';
 import ExerciseDetail from 'components/ExerciseDetail';
+import Title from 'components/Title';
 
 interface ShelfProps {
   exercises: ExerciseData[];
+  title?: string;
   control?: string;
 }
 
@@ -21,7 +23,7 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises: initialExercises, control = 'heart' }: ShelfProps) {
+function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfProps) {
   let [exercises, setExercises] = React.useState<ExerciseData[]>([]);
   let [selected, select] = React.useState<number>(-1);
 
@@ -31,6 +33,7 @@ function Shelf({ exercises: initialExercises, control = 'heart' }: ShelfProps) {
 
   return (
     <>
+      {title && <Title title={title}/>}
       <div className={'shelf'}>
         {exercises.map((exercise, index) => (
           <GridListTile key={exercise.id} className={'gridList'}>

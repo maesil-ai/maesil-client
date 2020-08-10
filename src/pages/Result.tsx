@@ -79,8 +79,7 @@ class Result extends React.Component<ResultProps, ResultState> {
             calorie={stats.calorie}
             score={stats.score}
           />
-          <Title title={'다음에 할 운동들'} />
-          <Shelf exercises={this.state.nextExercises} />
+          <Shelf title="다음에 할 운동들" exercises={this.state.nextExercises} />
           <Footer />
         </>
       );

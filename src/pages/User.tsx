@@ -52,8 +52,7 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
-        <Title title={nickname + '님이 올린 영상입니다.'} />
-        <Shelf exercises={exercises} control="remove" />
+        <Shelf title={`${nickname}님이 올린 영상입니다.`} exercises={exercises} control="remove" />
         <Footer />
       </>
     );
