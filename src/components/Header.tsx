@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
-import { getUserInfo } from 'utility/api';
+import { getUserInfo, getAccessToken } from 'utility/api';
 import { APIGetUserInfoData } from 'utility/types';
 
 function Header() {
@@ -11,13 +11,18 @@ function Header() {
 
   React.useEffect(() => {
     let ok = true;
-    getUserInfo().then((info) => {
-      if (ok) {
-        setUserInfo(info);
-        if (info) setStatus(2);
-        else setStatus(1);
-      }
-    });
+    
+    if (getAccessToken()) {
+      getUserInfo().then((info) => {
+        if (ok) {
+          setUserInfo(info);
+          if (info) setStatus(2);
+          else setStatus(1);
+        }
+      });
+    } else {
+      setStatus(1);
+    }
     return () => {
       ok = false;
     };
