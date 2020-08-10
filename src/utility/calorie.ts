@@ -19,10 +19,7 @@ const convertDistanceToMeters = (distance: number, height: number) =>
 const calculateKineticEnergy = (velocity: number, mass: number) =>
   0.5 * mass * velocity * velocity;
 
-function estimateEnergy(
-  userPose: posenet.Pose[],
-  userInfo: APIGetUserInfoData
-) {
+function estimateEnergy(userPose: posenet.Pose[], userInfo: any) {
   let energyBurned = 0;
   let previousPose = null;
   const k = 1;
@@ -59,7 +56,7 @@ function estimateEnergy(
 
 function energyToMET(energy: number) {
   const log_scale = Math.log10(energy);
-  if (log_scale < 1) return 1;
+  if (log_scale < 1.5) return 1.5;
   if (log_scale > 10) return 10;
   return log_scale;
 }
@@ -67,15 +64,12 @@ function energyToMET(energy: number) {
 export function exerciseCalorie(
   userPose: posenet.Pose[],
   second: number,
-  userInfo: APIGetUserInfoData
+  userInfo: any
 ) {
   return (
-    ((3.5 *
-      energyToMET(estimateEnergy(userPose, userInfo)) *
-      userInfo.weight *
-      second) /
-      60 /
-      1000) *
-    5
+    (17.5 / 60000) *
+    energyToMET(estimateEnergy(userPose, userInfo)) *
+    userInfo.weight *
+    second
   );
 }
