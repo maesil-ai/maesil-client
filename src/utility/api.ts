@@ -170,11 +170,10 @@ export const login = async (
     if (dispatch) dispatch({
       type: SET_USER,
       userInfo: userInfo,
-    })
-    return {
-      token: token,
-    };
+    });
+    return true;
   }
+  return false;
 };
 
 export const logout = async (dispatch? : Dispatch<UserAction>) => {

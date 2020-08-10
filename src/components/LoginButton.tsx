@@ -14,7 +14,6 @@ interface LoginButtonProps {
 const LoginButton = ({ }: LoginButtonProps) => {
   let [status, setStatus] = React.useState(0);
   const store = useStore();
-  const userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 
   if (status == 2) return <Redirect to="/signup" />;
 
@@ -23,13 +22,14 @@ const LoginButton = ({ }: LoginButtonProps) => {
       jsKey={kakaoJsKey}
       onSuccess={async (response) => {
         setStatus(1);
-        const { token } = await login(
+        if (await login(
           response.profile.id,
           response.profile.kakao_account.profile.profile_image_url,
           response.response.access_token,
           store.dispatch,
-        );
-        if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
+        )) {
+          if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
+        }
       }}
       onFailure={console.log}
       render={(props: any) => (

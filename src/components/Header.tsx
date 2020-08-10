@@ -23,7 +23,7 @@ function Header() {
     });
   }, []);
 
-  const dropdownMenu = (
+  const dropdownMenu = React.useMemo(() => (
     <li className="dropdown right">
       <div style={{ padding: '28.5px' }}>
         <PermIdentityIcon fontSize="large" />
@@ -51,7 +51,7 @@ function Header() {
         )}
       </div>
     </li>
-  );
+  ), [userInfo]);
 
   return (
     <header>
