@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import Home from 'pages/Home';
 import Exercise from 'pages/Exercise';
 import Result from 'pages/Result';
@@ -9,7 +9,8 @@ import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
 import Userpage from 'pages/User';
 
-function Root() {
+const Root = () => {
+
   return (
     <BrowserRouter>
       <Switch>

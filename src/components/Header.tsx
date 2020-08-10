@@ -1,33 +1,29 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
+import {  useSelector, useDispatch } from 'react-redux';
+import { RootReducerState } from 'reducers';
+import { UserAction } from 'actions';
 import { getUserInfo } from 'utility/api';
-import { APIGetUserInfoData } from 'utility/types';
+import { SET_USER } from 'actions/ActionTypes';
 
 function Header() {
-  let [status, setStatus] = React.useState<number>(0);
-  let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
+  let userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
+  let dispatch = useDispatch<Dispatch<UserAction>>();
 
   React.useEffect(() => {
-    let ok = true;
-    getUserInfo().then((info) => {
-      if (ok) {
-        setUserInfo(info);
-        if (info) setStatus(2);
-        else setStatus(1);
+    getUserInfo().then((data) => {
+      if (data) {
+        dispatch({
+          type: SET_USER,
+          userInfo: data,
+        });
       }
     });
-    return () => {
-      ok = false;
-    };
-  }, [status]);
+  }, []);
 
-  const handleLoginSuccess = () => {
-    setStatus(2);
-  };
-
-  const dropdownMenu = (
+  const dropdownMenu = React.useMemo(() => (
     <li className="dropdown right">
       <div style={{ padding: '28.5px' }}>
         <PermIdentityIcon fontSize="large" />
@@ -36,7 +32,7 @@ function Header() {
         {userInfo ? (
           <div className="text"> {userInfo.nickname}님 안녕하세요! </div>
         ) : (
-          <LoginButton onSuccess={handleLoginSuccess} />
+          <LoginButton />
         )}
         {userInfo && (
           <div>
@@ -55,7 +51,7 @@ function Header() {
         )}
       </div>
     </li>
-  );
+  ), [userInfo]);
 
   return (
     <header>
@@ -65,7 +61,7 @@ function Header() {
             매실
           </Link>
         </li>
-        {status ? dropdownMenu : <></>}
+        { dropdownMenu }
       </ul>
     </header>
   );

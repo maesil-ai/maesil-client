@@ -1,10 +1,23 @@
 .title {
   margin: 45px auto;
   padding-left: 30px;
-  font-size: 32px;
+  font-size: 25px;
   font-weight: 500;
 
   height: 40px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 700;
+
+  background-color: rgb(87, 87, 87);
+  color: rgb(255, 255, 255);
+
+  letter-spacing: 0.1rem;
+  text-align: center;
 }
 
 .box {
@@ -77,67 +90,6 @@ div {
   position: relative;
 }
 
-.zone {
-  width: calc(100% - 100px);
-  padding: 20px;
-
-  display: block;
-
-  font-size: 18px;
-  font-weight: 400;
-
-  background-color: white;
-  color: #555;
-
-  letter-spacing: 0.1rem;
-  text-align: center;
-
-  .fill {
-    display: block;
-    width: 100%;
-  }
-  input,
-  textarea,
-  select,
-  table,
-  tbody {
-    margin: 10px;
-    padding: 5px;
-    font-size: inherit;
-    font-weight: inherit;
-    border: 1px;
-    text-align: left;
-    font-weight: bold;
-    width: inherit;
-    text-align: center;
-  }
-
-  input,
-  textarea,
-  select {
-    border-bottom: 2px solid #555;
-    background-color: white;
-    padding: 5px;
-    margin: 10px;
-  }
-
-  textarea {
-    resize: none;
-  }
-
-  button {
-    margin: 10px;
-    padding: 10px;
-    font-size: 18px;
-    font-weight: 700;
-
-    background-color: rgb(87, 87, 87);
-    color: rgb(255, 255, 255);
-
-    letter-spacing: 0.1rem;
-    text-align: center;
-  }
-}
 
 footer {
   height: 100px;
@@ -149,4 +101,13 @@ footer {
   background-color: #353535;
   text-align: left;
   color: rgb(236, 236, 236);
+}
+
+video.previewVideo {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0px auto;
+  position: relative;
 }

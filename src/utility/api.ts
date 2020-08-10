@@ -1,18 +1,16 @@
 // @ts-ignore
 import axios from 'axios';
 import {
-  APIGetExerciseData,
+  ExerciseData,
   APIPostExerciseForm,
   APIGetUserInfoData,
 } from 'utility/types';
+import { UserAction, setUser } from 'actions';
+import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
+import { Dispatch } from 'redux';
 
 const apiAddress = 'https://api.maesil.ai';
 
-/**
- * 초 단위로 나타낸 정수 시간을 string으로 변환하는 함수
- * @param {number} time (초 단위)
- * @return {string} 시간을 DB가 읽을 수 있는 string으로 변환
- */
 function secondToString(time: number) {
   time = Math.round(time);
   if (!(0 <= time && time < 100 * 60 * 60)) {
@@ -28,14 +26,45 @@ function secondToString(time: number) {
   return `${hr}:${min}:${sec}`;
 }
 
+export interface RawAPIExerciseData {
+  exercise_id: number;
+  title: string;
+  description: string;
+  play_time: string;
+  user_id: number;
+  "user.nickname": string;
+  thumb_url?: string;
+  video_url?: string;
+  skeleton?: string;
+  reward: number;
+  like_counts: number;
+  view_counts: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  isLike?: boolean;
+}
+
 export const getExercises = async () => {
-  const response = await axios.get(`${apiAddress}/exercises/`);
-  return response.data.result as APIGetExerciseData[];
+  const token = getAccessToken();
+
+  const response = await axios.get(`${apiAddress}/exercises/`, token ? {
+    headers: {
+      'x-access-token': token,
+    },
+  } : {} );
+  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
 export const getExercise = async (id: number) => {
-  const response = await axios.get(`${apiAddress}/exercises/${id}`);
-  return response.data.result as APIGetExerciseData;
+  const token = getAccessToken();
+
+  const response = await axios.get(`${apiAddress}/exercises/${id}`, token ? {
+    headers: {
+      'x-access-token': token,
+    },
+  } : {});
+  return processRawExerciseData(response.data.result as RawAPIExerciseData);
 };
 
 export const deleteExercise = async (id : number) => {  
@@ -124,7 +153,8 @@ export const toggleLike = async (id: number, like: boolean) => {
 export const login = async (
   id: number,
   profileImageUrl: string,
-  accessToken: string
+  accessToken: string,
+  dispatch?: Dispatch<UserAction>,
 ) => {
   const response = await axios.post(`${apiAddress}/users`, {
     id: id,
@@ -133,14 +163,23 @@ export const login = async (
   });
 
   if (response.data.code == 200 || response.data.code == 201) {
-    return {
-      token: response.data.jwt,
-    };
+    const token = response.data.jwt;
+    setAccessToken(token);
+    const userInfo = await getUserInfo();
+    if (dispatch) dispatch({
+      type: SET_USER,
+      userInfo: userInfo,
+    });
+    return true;
   }
+  return false;
 };
 
-export const logout = async () => {
+export const logout = async (dispatch? : Dispatch<UserAction>) => {
   localStorage.removeItem('token');
+  if (dispatch) dispatch({
+    type: CLEAR_USER,
+  });
 };
 
 export const getAccessToken = () => {
@@ -204,11 +243,32 @@ export const getLikes = async () => {
   });
 
   if (response.data.code == 200)
-    return response.data.result.map((item) => item.exercise_id) as number[];
+    return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
 export const getChannel = async (nickname : string) => {
   const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
 
-  return response.data.result as APIGetExerciseData[];
+  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
+}
+
+const processRawExerciseData = (rawData : RawAPIExerciseData) => {
+  return {
+      id: rawData.exercise_id,
+      name: rawData.title,
+      description: rawData.description,
+      playTime: rawData.play_time,
+      userId: rawData.user_id,
+      userName: rawData["user.nickname"],
+      thumbUrl: rawData.thumb_url,
+      videoUrl: rawData.video_url,
+      skeleton: rawData.skeleton,
+      reward: rawData.reward,
+      heartCount: rawData.like_counts,
+      viewCount: rawData.view_counts,
+      status: rawData.status,
+      createdAt: rawData.created_at,
+      updatedAt: rawData.updated_at,
+      heart: rawData.isLike,
+  } as ExerciseData;
 }

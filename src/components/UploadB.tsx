@@ -21,7 +21,7 @@ export function UploadB({ video }: UploadBProps) {
   let [thumbnail, setThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
 
-  let videoUrl = URL.createObjectURL(video);
+  let [videoUrl, setVideoUrl] = React.useState<string>(URL.createObjectURL(video));
 
   const handleExtractProgress = (ratio: number) => {
     setMessage(`영상 ${Math.round(ratio * 100)}% 처리 중...`);
@@ -39,6 +39,17 @@ export function UploadB({ video }: UploadBProps) {
       })
       .catch(() => {});
   }, []);
+
+  const guideVideo = React.useMemo(() => (
+    <video
+      src={videoUrl}
+      loop
+      autoPlay
+      controls
+      className="previewVideo"
+      ref={videoRef}
+    />
+  ), [videoUrl]);
 
   const upload = async () => {
     const defaultThumbnailUrl =
@@ -78,14 +89,7 @@ export function UploadB({ video }: UploadBProps) {
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'center', width: 1200 }}>
-        <video
-          src={videoUrl}
-          loop
-          autoPlay
-          controls
-          className="previewVideo"
-          ref={videoRef}
-        />
+        { guideVideo }
         <div className="zone">
           <table>
             <tbody>

@@ -12,36 +12,30 @@ import {
 } from 'utility/api';
 import {
   APIGetUserInfoData,
-  ExerciseView,
-  APIGetExerciseData,
+  ExerciseData,
 } from 'utility/types';
 import Loading from 'components/Loading';
 import Shelf from 'components/Shelf';
+import UserIntroduce from 'components/UserIntroduce';
+import { useSelector } from 'react-redux';
+import { RootReducerState } from 'reducers';
 
 interface UserpageProps {
   match?: any;
 }
 
 function Userpage({ match }: UserpageProps) {
-  const nickname = match.params.name;
-  let [exercises, setExercises] = React.useState<ExerciseView[]>();
+  let [nickname, setNickname] = React.useState<string>(match.params.name);
+  let [exercises, setExercises] = React.useState<ExerciseData[]>();
   let [isLoading, setLoading] = React.useState<boolean>(true);
+  let myUserInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 
   useEffect(() => {
     let ok = 1;
     getChannel(nickname).then((exerciseData) => {
       if (!ok) return;
-      setExercises(
-        exerciseData.map((data) => ({
-          id: data.exercise_id,
-          name: data.title,
-          thumbUrl: data.thumb_url,
-          playTime: data.play_time,
-          heart: data.isLike,
-          heartCount: data.like_counts,
-          description: data.description,
-        }))
-      );
+      console.log(exerciseData);
+      setExercises(exerciseData);
       setLoading(false);
     });
     return () => {
@@ -61,8 +55,8 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
-        <Title title={nickname + '님이 올린 영상입니다.'} />
-        <Shelf exercises={exercises} control="remove" />
+        <UserIntroduce name={nickname} />
+        <Shelf title={`${nickname}님이 올린 영상들`} exercises={exercises} control={ myUserInfo.nickname == nickname ? "remove" : "" } />
         <Footer />
       </>
     );

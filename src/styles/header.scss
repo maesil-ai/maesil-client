@@ -4,7 +4,7 @@ header {
   right: 0;
 
   height: 100px;
-  margin-bottom: 25px;
+//  margin-bottom: 25px;
   font-size: 24px;
   color: #00816c;
   background: #fff;
@@ -37,17 +37,22 @@ header {
     }
 
     .dropdown-content {
+      text-align: left;
+      padding: 30px;
       display: none;
       position: absolute;
       background-color: #f9f9f9;
       z-index: 1;
       right: 0;
       height: calc(100% - 100px);
-      width: 350px;
+      width: 300px;
       .text {
         font-size: 20px;
         font-weight: 400;
         color: #555;
+      }
+      > * {
+        padding-bottom: 10px;
       }
     }
 

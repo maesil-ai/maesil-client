@@ -2,11 +2,14 @@ import React, { useEffect } from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
-import { ExerciseView } from 'utility/types';
-import DeleteButton from './DeleteButton';
+import { ExerciseData } from 'utility/types';
+import DeleteButton from 'components/DeleteButton';
+import ExerciseDetail from 'components/ExerciseDetail';
+import Title from 'components/Title';
 
 interface ShelfProps {
-  exercises: ExerciseView[];
+  exercises: ExerciseData[];
+  title?: string;
   control?: string;
 }
 
@@ -20,58 +23,66 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises, control = 'heart' }: ShelfProps) {
-  let [currentExercises, setExercises] = React.useState<ExerciseView[]>([]);
+function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfProps) {
+  let [exercises, setExercises] = React.useState<ExerciseData[]>([]);
+  let [selected, select] = React.useState<number>(-1);
 
   useEffect(() => {
-    setExercises(exercises);
+    setExercises(initialExercises);
+    console.log(initialExercises);
   }, []);
 
   return (
-    <div className={'shelf'}>
-      {currentExercises.map((exercise) => (
-        <GridListTile key={exercise.id} className={'gridList'}>
-          <Link to={'/exercise/' + exercise.id}>
+    <>
+      {title && <Title title={title}/>}
+      <div className={'shelf'}>
+        {exercises.map((exercise, index) => (
+          <GridListTile key={exercise.id} className={'gridList'}>
             <img
-              src={exercise.thumbUrl}
-              alt={exercise.name}
-              width={300}
-              className="hoverHide"
-              onMouseOver={changeImageFunc(exercise.thumbGifUrl)}
-              onMouseOut={changeImageFunc(exercise.thumbUrl)}
+                src={exercise.thumbUrl}
+                alt={exercise.name}
+                width={300}
+                className="hoverHide MuiGridListTile-imgFullHeight"
+                onMouseOver={changeImageFunc(exercise.thumbGifUrl)}
+                onMouseOut={changeImageFunc(exercise.thumbUrl)}
+                onClick={() => {
+                  if (selected != index) select(index);
+                  else select(-1);
+                }}
             />
-          </Link>
-          <GridListTileBar
-            title={exercise.name}
-            subtitle={exercise.description}
-            classes={{
-              root: 'titleBar',
-              title: 'titleText',
-            }}
-            actionIcon={
-              control == 'heart' ? (
-                <Heart
-                  id={exercise.id}
-                  initialStatus={exercise.heart}
-                  heartCount={exercise.heartCount}
-                />
-              ) : control == 'remove' ? (
-                <DeleteButton
-                  id={exercise.id}
-                  onClick={() => {
-                    setExercises(
-                      currentExercises.filter((element) => element != exercise)
-                    );
-                  }}
-                />
-              ) : (
-                <></>
-              )
-            }
-          />
-        </GridListTile>
-      ))}
-    </div>
+            <GridListTileBar
+              title={exercise.name}
+              subtitle={exercise.description}
+              classes={{
+                root: 'titleBar',
+                title: 'titleText',
+              }}
+              actionIcon={
+                control == 'heart' ? (
+                  <Heart
+                    id={exercise.id}
+                    initialStatus={exercise.heart}
+                    heartCount={exercise.heartCount}
+                  />
+                ) : control == 'remove' ? (
+                  <DeleteButton
+                    id={exercise.id}
+                    onClick={() => {
+                      setExercises(
+                        exercises.filter((element) => element != exercise)
+                      );
+                    }}
+                  />
+                ) : (
+                  <></>
+                )
+              }
+            />
+          </GridListTile>
+        ))}
+      </div>
+      { selected != -1 && exercises[selected] && <ExerciseDetail data={exercises[selected]} /> }
+    </>
   );
 }
 

@@ -43,17 +43,6 @@ export const defaultPosenetConfig: PosenetConfig = {
   },
 };
 
-export interface ExerciseView {
-  id: number;
-  name: string;
-  thumbUrl: string;
-  thumbGifUrl?: string;
-  playTime: string;
-  heart?: boolean;
-  heartCount: number;
-  description: string;
-}
-
 export interface PlayRecord {
   time: number;
   calorie: number;
@@ -68,22 +57,24 @@ export interface ScreenView {
   calculator?: PoseCalculator;
 }
 
-export interface APIGetExerciseData {
-  exercise_id: number;
-  title: string;
+export interface ExerciseData {
+  id: number;
+  name: string;
   description: string;
-  play_time: string;
-  user_id: number;
-  thumb_url?: string;
-  video_url?: string;
+  playTime: string;
+  userId: number;
+  userName: string;
+  thumbUrl?: string;
+  thumbGifUrl?: string;
+  videoUrl?: string;
   skeleton?: string;
   reward: number;
-  like_counts: number;
-  view_counts: number;
+  heartCount: number;
+  viewCount: number;
   status: string;
-  created_at: string;
-  updated_at: string;
-  isLike?: boolean;
+  createdAt: string;
+  updatedAt: string;
+  heart?: boolean;
 }
 
 export interface APIPostExerciseForm {

@@ -2,12 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.scss';
 import Root from './routes/index';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import * as serviceWorker from './serviceWorker';
+import rootReducer from 'reducers';
+
+const store = createStore(rootReducer);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <React.StrictMode>
+      <Root />
+    </React.StrictMode>
+  </Provider>
+  ,
   document.getElementById('root')
 );
 
