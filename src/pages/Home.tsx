@@ -8,7 +8,6 @@ import Title from 'components/Title';
 import Loading from 'components/Loading';
 import Shelf from 'components/Shelf';
 import { ExerciseData } from 'utility/types';
-import ExerciseDetail from 'components/ExerciseDetail';
 
 interface ShelfData {
   title: string;
@@ -101,7 +100,6 @@ class Home extends React.Component<HomeProps, HomeState> {
         <>
           <Header />
           {shelfs}
-          <ExerciseDetail data={this.state.exerciseDatas[0]} />
           <Footer />
         </>
       );

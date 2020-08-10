@@ -3,8 +3,8 @@ import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
 import { ExerciseData } from 'utility/types';
-import DeleteButton from './DeleteButton';
-import ExerciseDetail from './ExerciseDetail';
+import DeleteButton from 'components/DeleteButton';
+import ExerciseDetail from 'components/ExerciseDetail';
 
 interface ShelfProps {
   exercises: ExerciseData[];
@@ -21,28 +21,31 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises, control = 'heart' }: ShelfProps) {
-  let [currentExercises, setExercises] = React.useState<ExerciseData[]>([]);
+function Shelf({ exercises: initialExercises, control = 'heart' }: ShelfProps) {
+  let [exercises, setExercises] = React.useState<ExerciseData[]>([]);
+  let [selected, select] = React.useState<number>(-1);
 
   useEffect(() => {
-    setExercises(exercises);
+    setExercises(initialExercises);
   }, []);
 
   return (
     <>
       <div className={'shelf'}>
-        {currentExercises.map((exercise) => (
+        {exercises.map((exercise, index) => (
           <GridListTile key={exercise.id} className={'gridList'}>
-            <Link to={'/exercise/' + exercise.id}>
-              <img
+            <img
                 src={exercise.thumbUrl}
                 alt={exercise.name}
                 width={300}
                 className="hoverHide"
                 onMouseOver={changeImageFunc(exercise.thumbGifUrl)}
                 onMouseOut={changeImageFunc(exercise.thumbUrl)}
-              />
-            </Link>
+                onClick={() => {
+                  if (selected != index) select(index);
+                  else select(-1);
+                }}
+            />
             <GridListTileBar
               title={exercise.name}
               subtitle={exercise.description}
@@ -62,7 +65,7 @@ function Shelf({ exercises, control = 'heart' }: ShelfProps) {
                     id={exercise.id}
                     onClick={() => {
                       setExercises(
-                        currentExercises.filter((element) => element != exercise)
+                        exercises.filter((element) => element != exercise)
                       );
                     }}
                   />
@@ -74,6 +77,7 @@ function Shelf({ exercises, control = 'heart' }: ShelfProps) {
           </GridListTile>
         ))}
       </div>
+      { selected != -1 && exercises[selected] && <ExerciseDetail data={exercises[selected]} /> }
     </>
   );
 }
