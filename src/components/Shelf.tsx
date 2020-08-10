@@ -29,6 +29,7 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
 
   useEffect(() => {
     setExercises(initialExercises);
+    console.log(initialExercises);
   }, []);
 
   return (

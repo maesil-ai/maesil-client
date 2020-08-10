@@ -249,7 +249,7 @@ export const getLikes = async () => {
 export const getChannel = async (nickname : string) => {
   const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
 
-  return response.data.result as ExerciseData[];
+  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 }
 
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {
