@@ -1,4 +1,4 @@
-import {poseSimilarity} from 'posenet-similarity';
+import { poseSimilarity } from 'posenet-similarity';
 import * as posenet from '@tensorflow-models/posenet';
 /**
  * view에서 포즈를 추출하는 함수
@@ -29,11 +29,13 @@ export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
   // 0일수록 비슷 0~2사이 값
   // return poseSimilarity(modelPose, userPose, {strategy: 'cosineDistance'});
   // -1~1 사이 값, -1이면 방향 완전 반대, 1이면 완전 똑같음
-  
+
   const weight = 1 / (1 - bias);
-  const similarity = poseSimilarity(modelPose, userPose, {strategy: 'cosineSimilarity'});
+  const similarity = poseSimilarity(modelPose, userPose, {
+    strategy: 'cosineSimilarity',
+  });
   if (typeof similarity == 'number') {
-    return (((1+similarity)/2) - bias) * weight;
+    return ((1 + similarity) / 2 - bias) * weight;
   }
   return 0;
 }
@@ -46,7 +48,7 @@ export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
  */
 export async function scorePoseSimilarity(views) {
   if (views.length !== 2) return -1;
-  const modelPose= extractPose(views[0]);
+  const modelPose = extractPose(views[0]);
   const userPose = extractPose(views[1]);
   if (modelPose == null) return -1;
   if (userPose == null) return 0;
@@ -61,12 +63,16 @@ export async function scorePoseSimilarity(views) {
  * @param {*} userPose posenet.Pose[]
  * @return {*} score
  */
-export function exerciseScore(modelPose: posenet.Pose[],
-    userPose: posenet.Pose[]) {
+export function exerciseScore(
+  modelPose: posenet.Pose[],
+  userPose: posenet.Pose[]
+) {
   let score = 0;
 
-  const scoreMatrix = Array.from(Array(modelPose.length),
-      () => new Array(userPose.length));
+  const scoreMatrix = Array.from(
+    Array(modelPose.length),
+    () => new Array(userPose.length)
+  );
 
   const minimumCoverage = 0.9;
   for (let i = 0; i < modelPose.length; i++) {
@@ -78,12 +84,12 @@ export function exerciseScore(modelPose: posenet.Pose[],
   // 대각선으로 보면서 평균 Sim이 제일 높은 얘를 찾음
   let startY = modelPose.length - 1;
   let startX = 0;
-  for (; startX < userPose.length; (startY > 0 ? startY-- : startX++)) {
+  for (; startX < userPose.length; startY > 0 ? startY-- : startX++) {
     let x = startX;
     let y = startY;
     let scoreSum = 0;
     const diagonalCnt = modelPose.length - startY;
-    if (diagonalCnt / (modelPose.length) < minimumCoverage) {
+    if (diagonalCnt / modelPose.length < minimumCoverage) {
       continue;
     }
 
@@ -97,7 +103,6 @@ export function exerciseScore(modelPose: posenet.Pose[],
   return score;
 }
 
-
 /**
  *
  * @export
@@ -105,10 +110,12 @@ export function exerciseScore(modelPose: posenet.Pose[],
  * @param {posenet.Pose[]} userPose
  * @return s
  */
-export function checkOneTime(modelPose: posenet.Pose[],
-  userPose: posenet.Pose[]) {
-    const minScore = 0.7;
-    const similarity = exerciseScore(modelPose, userPose);
-    if (similarity < minScore) return true;
-    return false;
+export function checkOneTime(
+  modelPose: posenet.Pose[],
+  userPose: posenet.Pose[]
+) {
+  const minScore = 0.7;
+  const similarity = exerciseScore(modelPose, userPose);
+  if (similarity < minScore) return true;
+  return false;
 }

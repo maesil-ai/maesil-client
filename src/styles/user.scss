@@ -1,0 +1,23 @@
+.userIntroduce {
+    text-align: left;
+    .userName {
+        margin: 10px;
+        padding-left: 30px;
+        font-size: 30px;
+        font-weight: 500;
+    }
+
+    .backgroundImage {
+        margin: 0;
+        width: 100%;
+        height: 200px;
+        background: white;
+    }
+
+    .information {
+        margin-top: -80px;
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: left;
+    }
+}

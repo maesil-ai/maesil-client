@@ -1,11 +1,11 @@
-
 .shelf {
-    width: 1200px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow: auto;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: auto;
+  justify-content: flex-start;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .gridList {
@@ -16,10 +16,31 @@
 }
 
 titleText {
-    font-family: "Noto Sans KR";
-    font-weight: 700;
+  font-family: 'Noto Sans KR';
+  font-weight: 700;
 }
 
 titleBar {
-    background: rgba(100, 100, 100, 0.54);
+  background: rgba(100, 100, 100, 0.54);
+}
+
+.detail {
+  width: calc(100% - 100px);
+  padding: 20px;
+
+  display: block;
+
+  font-size: 18px;
+  font-weight: 400;
+
+  background-color: white;
+  color: #555;
+
+  letter-spacing: 0.1rem;
+  text-align: left;
+
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+  }
 }

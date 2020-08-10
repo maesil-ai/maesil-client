@@ -1,34 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
-
-interface Config {
-    algorithm: string,
-    model: posenet.ModelConfig,
-    flipPoseHorizontal: boolean,
-    multiPose: {
-        maxPoseDetections: number,
-        minPartConfidence: number,
-        nmsRadius: number,
-    }
-};
-
-const defaultConfig : Config = {
-  algorithm: 'single-pose',
-  model: {
-    architecture: 'MobileNetV1',
-    multiplier: 0.75, // isMobile() ? 0.5 : 0.75,
-    outputStride: 16,
-    inputResolution: 250,
-    quantBytes: 2,
-  },
-  flipPoseHorizontal: false,
-  multiPose: {
-    maxPoseDetections: 5,
-    minPartConfidence: 0.1,
-    nmsRadius: 30.0,
-  },
-};
-
-export type Pose = posenet.Pose;
+import KalmanFilter from 'kalmanjs';
+import { PosenetConfig, defaultPosenetConfig, PoseData } from 'utility/types';
 
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
@@ -39,47 +11,70 @@ export type Pose = posenet.Pose;
  * @class PoseCalculator
  */
 class PoseCalculator {
-    video : HTMLVideoElement;
-    poseNet : posenet.PoseNet;
-    config : Config;
-    readyToUse : boolean;
-    modelInUse : boolean;
-    resultPoses : posenet.Pose[];
-    record : posenet.Pose[];
+  video: HTMLVideoElement;
+  poseNet: posenet.PoseNet;
+  config: PosenetConfig;
+  readyToUse: boolean;
+  modelInUse: boolean;
+  resultPoses: posenet.Pose[];
+  record: posenet.Pose[];
+  filters: KalmanFilter[];
+  poseData?: PoseData;
+  useFilters: boolean;
 
-    /**
-     * Creates an instance of PoseCalculator.
-     * @param {HTMLVideoElement} video
-     * @param {*} [config=defaultConfig]
-     * @memberof PoseCalculator
-     */
-    constructor(video : HTMLVideoElement, config = defaultConfig) {
-      this.video = video;
-      this.config = config;
-      this.modelInUse = true;
-      this.readyToUse = false;
-      this.resultPoses = [];
-      this.record = [];
+  constructor(video: HTMLVideoElement, config = defaultPosenetConfig) {
+    this.video = video;
+    this.config = config;
+    this.resultPoses = [];
+    this.filters = Array(40);
+    this.useFilters = true;
+    this.clearRecord();
+  }
+
+  load = async (inputPoseData: PoseData | null = null) => {
+    if (inputPoseData) {
+      this.poseData = inputPoseData;
+    } else {
+      this.poseNet = await posenet.load(this.config.model);
+      for (let i = 0; i < 40; i++) this.filters[i] = new KalmanFilter();
+    }
+    this.modelInUse = false;
+    this.readyToUse = true;
+  };
+
+  clearRecord = () => {
+    this.record = [];
+    if (this.poseData) {
+      return;
     }
 
-    load = async () => {
-      const poseNet = await posenet.load(this.config.model);
-      this.poseNet = poseNet;
-      this.modelInUse = false;
-      this.readyToUse = true;
+    this.readyToUse = false;
+    for (let i = 0; i < 40; i++) {
+      this.filters[i] = new KalmanFilter();
+    }
+  };
+
+  // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
+
+  getPoseResult = async () => {
+    if (!this.readyToUse) {
+      return false;
     }
 
-    // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
+    if (this.modelInUse) {
+      if (this.record.length > 0) this.record.push(this.resultPoses[0]);
+      return false;
+    }
+    let poses: posenet.Pose[] = [];
 
-    getPoseResult = async () => {
-      if (this.modelInUse) {
-        if (this.record.length > 0) this.record.push(this.record[this.record.length-1]);
-        return false;
-      }
-
+    if (this.poseData) {
+      poses = poses.concat(
+        this.poseData.poses[
+          Math.floor(this.video.currentTime * this.poseData.fps)
+        ]
+      );
+    } else {
       this.modelInUse = true;
-
-      let poses : posenet.Pose[] = [];
 
       switch (this.config.algorithm) {
         case 'single-pose':
@@ -103,13 +98,21 @@ class PoseCalculator {
           break;
       }
 
-      if (poses[0]) this.record.push(poses[0]);
+      if (poses[0] && this.useFilters) {
+        poses[0].keypoints.forEach((keypoint, i) => {
+          keypoint.position.x = this.filters[2 * i].filter(keypoint.position.x);
+          keypoint.position.y = this.filters[2 * i + 1].filter(
+            keypoint.position.y
+          );
+        });
+      }
 
-      this.resultPoses = poses;
       this.modelInUse = false;
-
-      return true;
     }
-};
+    if (poses[0]) this.record.push(poses[0]);
+    this.resultPoses = poses;
+    return true;
+  };
+}
 
 export default PoseCalculator;

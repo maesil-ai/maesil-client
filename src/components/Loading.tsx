@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Title from './Title';
-import BeatLoader from "react-spinners/BeatLoader";
+import Title from 'components/Title';
+// import BeatLoader from "react-spinners/BeatLoader";
 
 function Loading() {
   return (
     <div>
-      <Title title="불러오는 중..."/>
+      <Title title="불러오는 중..." />
     </div>
   );
 }

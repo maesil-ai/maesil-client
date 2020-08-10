@@ -1,35 +1,28 @@
-import apiAddress from '../secret';
+import { getExercises, getExercise } from 'utility/api';
 
-// @ts-ignore
-import axios from 'axios';
 import React from 'react';
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Title from '../components/Title';
-import StatView from '../components/StatView';
-import Loading from '../components/Loading';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+import Title from 'components/Title';
+import StatView from 'components/StatView';
+import Loading from 'components/Loading';
 
-import Shelf, { Exercise } from '../components/Shelf';
-
-interface Stats {
-    time: number,
-    calorie: number,
-    score: number,
-};
+import Shelf from 'components/Shelf';
+import { ExerciseData, PlayRecord } from 'utility/types';
 
 interface ResultProps {
-    exerciseId : number,
-    location: any,
-};
+  exerciseId: number;
+  location: any;
+}
 
 interface ResultState {
-    loading : boolean,
-    exerciseId : number,
-    exerciseName? : string,
-    stats: Stats,
-    nextExercises: Exercise[],
-};
+  loading: boolean;
+  exerciseId: number;
+  exerciseName?: string;
+  stats: PlayRecord;
+  nextExercises: ExerciseData[];
+}
 
 /**
  * Result 페이지
@@ -37,13 +30,7 @@ interface ResultState {
  * @extends {React.Component<ResultProps, ResultState>}
  */
 class Result extends React.Component<ResultProps, ResultState> {
-
-  /**
-   *Creates an instance of Result.
-    * @param {*} props
-    * @memberof Result
-    */
-  constructor(props) {
+  constructor(props: Readonly<ResultProps>) {
     super(props);
 
     this.state = {
@@ -57,80 +44,47 @@ class Result extends React.Component<ResultProps, ResultState> {
       nextExercises: [],
     };
   }
-
-
-  loadExercises = async () => {
-    let response = await axios.get(
-        apiAddress + '/exercises/'
-    );
-    return response;
-  }
-
-  loadExercise = async (id: number) => {
-    let response = await axios.get(
-      apiAddress + '/exercises/' + id
-    );
-    return response;
-  }
-
   async componentDidMount() {
-    const [responseExercise, responseExercises] = await Promise.all([
-      this.loadExercise(this.state.exerciseId),
-      this.loadExercises(),
+    const [exercise, exercises] = await Promise.all([
+      getExercise(this.state.exerciseId),
+      getExercises(),
     ]);
-
-    const exerciseName = responseExercise.data.result.title;
-
-    const exerciseData = responseExercises.data.result;
-    const exercises : Exercise[] = [];
-    for (const exercise of exerciseData) {
-      exercises.push({
-        id: exercise.exercise_id,
-        name: exercise.title,
-        thumbUrl: exercise.thumb_url ? exercise.thumb_url : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
-        playTime: exercise.play_time,
-      });
-    };
 
     this.setState({
       ...this.state,
       nextExercises: exercises,
-      exerciseName: exerciseName,
+      exerciseName: exercise.name,
       loading: false,
     });
   }
 
-  /**
-   * result페이지를 렌더링 하는 함순
-   * @return {any} 렌더링 될 HTML
-   * @memberof Result
-   */
   render() {
     if (this.state.loading) {
       return (
         <>
-          <Header/>
-          <Loading/>
-          <Footer/>
+          <Header />
+          <Loading />
+          <Footer />
         </>
       );
     } else {
-      let stats = this.state.stats;
+      const stats = this.state.stats;
 
       return (
         <>
-          <Header/>
-          <Title title={ this.state.exerciseName + ' 완료!' } />
-          <StatView time={ stats.time }
-            calorie={ stats.calorie }
-            score={ stats.score } />
-          <Title title={"다음에 할 운동들"} />
-          <Shelf exercises={this.state.nextExercises} />
-          <Footer/>
+          <Header />
+          <Title title={this.state.exerciseName + ' 완료!'} />
+          <StatView
+            time={stats.time}
+            calorie={stats.calorie}
+            score={stats.score}
+          />
+          <Shelf title="다음에 할 운동들" exercises={this.state.nextExercises} />
+          <Footer />
         </>
       );
     }
   }
-};
+}
 
 export default Result;
