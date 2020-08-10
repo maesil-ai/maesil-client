@@ -29,7 +29,7 @@ const LoginButton = ({ }: LoginButtonProps) => {
           response.response.access_token,
           store.dispatch,
         );
-        if (!userInfoHasMetadata(userInfo)) setStatus(2);
+        if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
       }}
       onFailure={console.log}
       render={(props: any) => (
