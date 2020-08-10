@@ -4,6 +4,8 @@
   flex-wrap: nowrap;
   overflow: auto;
   justify-content: flex-start;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .gridList {
@@ -20,4 +22,38 @@ titleText {
 
 titleBar {
   background: rgba(100, 100, 100, 0.54);
+}
+
+.detail {
+  width: calc(100% - 100px);
+  padding: 20px;
+
+  display: block;
+
+  font-size: 18px;
+  font-weight: 400;
+
+  background-color: white;
+  color: #555;
+
+  letter-spacing: 0.1rem;
+  text-align: left;
+
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+  }
+  
+  button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 700;
+
+    background-color: rgb(87, 87, 87);
+    color: rgb(255, 255, 255);
+
+    letter-spacing: 0.1rem;
+    text-align: center;
+  }
 }

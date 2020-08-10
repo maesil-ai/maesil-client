@@ -150,3 +150,12 @@ footer {
   text-align: left;
   color: rgb(236, 236, 236);
 }
+
+video.previewVideo {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0px auto;
+  position: relative;
+}

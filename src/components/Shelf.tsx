@@ -41,7 +41,7 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
                 src={exercise.thumbUrl}
                 alt={exercise.name}
                 width={300}
-                className="hoverHide"
+                className="hoverHide MuiGridListTile-imgFullHeight"
                 onMouseOver={changeImageFunc(exercise.thumbGifUrl)}
                 onMouseOut={changeImageFunc(exercise.thumbUrl)}
                 onClick={() => {
