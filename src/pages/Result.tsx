@@ -9,7 +9,7 @@ import StatView from 'components/StatView';
 import Loading from 'components/Loading';
 
 import Shelf from 'components/Shelf';
-import { ExerciseView, PlayRecord } from 'utility/types';
+import { ExerciseData, PlayRecord } from 'utility/types';
 
 interface ResultProps {
   exerciseId: number;
@@ -21,7 +21,7 @@ interface ResultState {
   exerciseId: number;
   exerciseName?: string;
   stats: PlayRecord;
-  nextExercises: ExerciseView[];
+  nextExercises: ExerciseData[];
 }
 
 /**
@@ -45,33 +45,15 @@ class Result extends React.Component<ResultProps, ResultState> {
     };
   }
   async componentDidMount() {
-    const [responseExercise, responseExercises] = await Promise.all([
+    const [exercise, exercises] = await Promise.all([
       getExercise(this.state.exerciseId),
       getExercises(),
     ]);
 
-    const exerciseName = responseExercise.title;
-
-    const exerciseData = responseExercises;
-    const exercises: ExerciseView[] = [];
-    for (const exercise of exerciseData) {
-      exercises.push({
-        id: exercise.exercise_id,
-        name: exercise.title,
-        thumbUrl: exercise.thumb_url
-          ? exercise.thumb_url
-          : 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg',
-        playTime: exercise.play_time,
-        heart: exercise.isLike,
-        heartCount: exercise.like_counts,
-        description: exercise.description,
-      });
-    }
-
     this.setState({
       ...this.state,
       nextExercises: exercises,
-      exerciseName: exerciseName,
+      exerciseName: exercise.name,
       loading: false,
     });
   }

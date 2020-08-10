@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
-import { ExerciseView } from 'utility/types';
+import { ExerciseData } from 'utility/types';
 import DeleteButton from './DeleteButton';
 import ExerciseDetail from './ExerciseDetail';
 
 interface ShelfProps {
-  exercises: ExerciseView[];
+  exercises: ExerciseData[];
   control?: string;
 }
 
@@ -22,7 +22,7 @@ function changeImageFunc(imageUrl: string | undefined) {
 }
 
 function Shelf({ exercises, control = 'heart' }: ShelfProps) {
-  let [currentExercises, setExercises] = React.useState<ExerciseView[]>([]);
+  let [currentExercises, setExercises] = React.useState<ExerciseData[]>([]);
 
   useEffect(() => {
     setExercises(exercises);

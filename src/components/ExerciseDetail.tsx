@@ -1,18 +1,18 @@
 import React from 'react';
-import { APIGetExerciseData } from 'utility/types';
+import { ExerciseData } from 'utility/types';
 
 interface ExerciseDetailProps {
-  rawData : APIGetExerciseData;
+  data : ExerciseData;
 };
 
-function ExerciseDetail({ rawData }: ExerciseDetailProps) {
+function ExerciseDetail({ data }: ExerciseDetailProps) {
   return (
     <div className='zone'>
-        <div> { `${rawData.exercise_id} ${rawData.title}` } </div>
-        <div> { `${rawData.user_id}번 유저 만듦` } </div>
-        <div> { `${rawData.play_time}초` } </div>
-        <div> { `조회수 ${rawData.view_counts} 좋아요 ${rawData.like_counts}` } </div>
-        <div> { `${rawData.description}` } </div>
+        <div> { `${data.id} ${data.name}` } </div>
+        <div> { `${data.userId}번 유저 만듦` } </div>
+        <div> { `${data.playTime}초` } </div>
+        <div> { `조회수 ${data.viewCount} 좋아요 ${data.heartCount}` } </div>
+        <div> { `${data.description}` } </div>
     </div>
   );
 }

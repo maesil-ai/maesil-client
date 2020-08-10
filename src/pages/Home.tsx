@@ -7,19 +7,19 @@ import Footer from 'components/Footer';
 import Title from 'components/Title';
 import Loading from 'components/Loading';
 import Shelf from 'components/Shelf';
-import { ExerciseView, APIGetExerciseData } from 'utility/types';
+import { ExerciseData } from 'utility/types';
 import ExerciseDetail from 'components/ExerciseDetail';
 
 interface ShelfData {
   title: string;
-  exercises: ExerciseView[];
+  exercises: ExerciseData[];
 }
 
 interface HomeProps {}
 
 interface HomeState {
   shelfDatas: ShelfData[];
-  rawDatas: APIGetExerciseData[];
+  exerciseDatas: ExerciseData[];
   loading: boolean;
 }
 
@@ -40,7 +40,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     this.state = {
       shelfDatas: [],
       loading: true,
-      rawDatas: [],
+      exerciseDatas: [],
     };
   }
 
@@ -55,15 +55,10 @@ class Home extends React.Component<HomeProps, HomeState> {
       'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
     const exerciseData = await getExercises();
-    const exercises: ExerciseView[] = exerciseData.map((data) => ({
-      id: data.exercise_id,
-      name: data.title,
-      thumbUrl: data.thumb_url ? data.thumb_url : defaultImageUrl,
+    const exercises: ExerciseData[] = exerciseData.map((data) => ({
+      ...data,
+      thumbUrl: data.thumbUrl ? data.thumbUrl : defaultImageUrl,
       thumbGifUrl: defaultGifImageUrl,
-      playTime: data.play_time,
-      heart: data.isLike,
-      heartCount: data.like_counts,
-      description: data.description,
     }));
 
     this.setState({
@@ -81,7 +76,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         },
       ],
       loading: false,
-      rawDatas: exerciseData,
+      exerciseDatas: exerciseData,
     });
   }
 
@@ -106,7 +101,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         <>
           <Header />
           {shelfs}
-          <ExerciseDetail rawData={this.state.rawDatas[0]} />
+          <ExerciseDetail data={this.state.exerciseDatas[0]} />
           <Footer />
         </>
       );

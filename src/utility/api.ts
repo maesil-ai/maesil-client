@@ -1,7 +1,7 @@
 // @ts-ignore
 import axios from 'axios';
 import {
-  APIGetExerciseData,
+  ExerciseData,
   APIPostExerciseForm,
   APIGetUserInfoData,
 } from 'utility/types';
@@ -13,11 +13,6 @@ import { RootReducerState } from 'reducers';
 
 const apiAddress = 'https://api.maesil.ai';
 
-/**
- * 초 단위로 나타낸 정수 시간을 string으로 변환하는 함수
- * @param {number} time (초 단위)
- * @return {string} 시간을 DB가 읽을 수 있는 string으로 변환
- */
 function secondToString(time: number) {
   time = Math.round(time);
   if (!(0 <= time && time < 100 * 60 * 60)) {
@@ -33,14 +28,32 @@ function secondToString(time: number) {
   return `${hr}:${min}:${sec}`;
 }
 
+export interface RawAPIExerciseData {
+  exercise_id: number;
+  title: string;
+  description: string;
+  play_time: string;
+  user_id: number;
+  thumb_url?: string;
+  video_url?: string;
+  skeleton?: string;
+  reward: number;
+  like_counts: number;
+  view_counts: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  isLike?: boolean;
+}
+
 export const getExercises = async () => {
   const response = await axios.get(`${apiAddress}/exercises/`);
-  return response.data.result as APIGetExerciseData[];
+  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
 export const getExercise = async (id: number) => {
   const response = await axios.get(`${apiAddress}/exercises/${id}`);
-  return response.data.result as APIGetExerciseData;
+  return processRawExerciseData(response.data.result as RawAPIExerciseData);
 };
 
 export const deleteExercise = async (id : number) => {  
@@ -226,5 +239,25 @@ export const getLikes = async () => {
 export const getChannel = async (nickname : string) => {
   const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
 
-  return response.data.result as APIGetExerciseData[];
+  return response.data.result as ExerciseData[];
+}
+
+const processRawExerciseData = (rawData : RawAPIExerciseData) => {
+  return {
+      id: rawData.exercise_id,
+      name: rawData.title,
+      description: rawData.description,
+      playTime: rawData.play_time,
+      userId: rawData.user_id,
+      thumbUrl: rawData.thumb_url,
+      videoUrl: rawData.video_url,
+      skeleton: rawData.skeleton,
+      reward: rawData.reward,
+      heartCount: rawData.like_counts,
+      viewCount: rawData.view_counts,
+      status: rawData.status,
+      createdAt: rawData.created_at,
+      updatedAt: rawData.updated_at,
+      heart: rawData.isLike,
+  } as ExerciseData;
 }

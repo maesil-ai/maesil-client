@@ -18,19 +18,6 @@ function Mypage() {
 
       console.log(likes);
       setLoading(false);
-      /*        Promise.all(likes.map((id) => getExercise(id))).then((exercises) => {
-          console.log(exercises);
-          setLikes(exercises.map((exercise) => {
-            return {
-              id: exercise.exercise_id,
-              name: exercise.title,
-              thumbUrl: null,
-              playTime: exercise.play_time,
-            } as ExerciseView;
-          }));
-          setLoading(false);
-        });
-      */
     });
   }, []);
 
