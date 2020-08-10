@@ -16,13 +16,14 @@ import {
 } from 'utility/types';
 import Loading from 'components/Loading';
 import Shelf from 'components/Shelf';
+import UserIntroduce from 'components/UserIntroduce';
 
 interface UserpageProps {
   match?: any;
 }
 
 function Userpage({ match }: UserpageProps) {
-  const nickname = match.params.name;
+  let [nickname, setNickname] = React.useState<string>(match.params.name);
   let [exercises, setExercises] = React.useState<ExerciseData[]>();
   let [isLoading, setLoading] = React.useState<boolean>(true);
 
@@ -52,7 +53,8 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
-        <Shelf title={`${nickname}님이 올린 영상입니다.`} exercises={exercises} control="remove" />
+        <UserIntroduce name={nickname} />
+        <Shelf title={`${nickname}님이 올린 영상들`} exercises={exercises} control="remove" />
         <Footer />
       </>
     );

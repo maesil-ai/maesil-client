@@ -5,11 +5,9 @@ import {
   APIPostExerciseForm,
   APIGetUserInfoData,
 } from 'utility/types';
-import { useDispatch } from 'react-redux';
 import { UserAction, setUser } from 'actions';
 import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
-import { Dispatch, Store } from 'redux';
-import { RootReducerState } from 'reducers';
+import { Dispatch } from 'redux';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -34,6 +32,7 @@ export interface RawAPIExerciseData {
   description: string;
   play_time: string;
   user_id: number;
+  "user.nickname": string;
   thumb_url?: string;
   video_url?: string;
   skeleton?: string;
@@ -260,6 +259,7 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       description: rawData.description,
       playTime: rawData.play_time,
       userId: rawData.user_id,
+      userName: rawData["user.nickname"],
       thumbUrl: rawData.thumb_url,
       videoUrl: rawData.video_url,
       skeleton: rawData.skeleton,

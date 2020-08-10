@@ -63,6 +63,7 @@ export interface ExerciseData {
   description: string;
   playTime: string;
   userId: number;
+  userName: string;
   thumbUrl?: string;
   thumbGifUrl?: string;
   videoUrl?: string;
