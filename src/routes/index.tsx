@@ -9,7 +9,28 @@ import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
 import Userpage from 'pages/User';
 
+import { getUserInfo } from 'utility/api';
+import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
+import { useDispatch } from 'react-redux';
+import { UserAction } from 'actions';
+
+
 const Root = () => {
+  const dispatch = useDispatch<Dispatch<UserAction>>();
+  React.useEffect(() => {
+    getUserInfo().then((data) => {
+      if (data) {
+        dispatch({
+          type: SET_USER,
+          userInfo: data,
+        });
+      } else {
+        dispatch({
+          type: CLEAR_USER,
+        });
+      }
+    });
+  }, []);
 
   return (
     <BrowserRouter>

@@ -19,7 +19,6 @@ function Mypage() {
       setUserInfo(info);
 
       setLikes(likes);
-      console.log(likes);
       setLoading(false);
     });
   }, []);

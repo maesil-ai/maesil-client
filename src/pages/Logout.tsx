@@ -14,9 +14,8 @@ function Logout({}: LogoutProps) {
   let dispatch = useDispatch<Dispatch<UserAction>>();
 
   useEffect(() => {
-    logout(dispatch).then(() => {
-      setStatus(1);
-    });
+    logout();
+    setStatus(1);
   }, []);
 
   if (status) return <Redirect to="/" />;

@@ -34,7 +34,6 @@ function Userpage({ match }: UserpageProps) {
     let ok = 1;
     getChannel(nickname).then((exerciseData) => {
       if (!ok) return;
-      console.log(exerciseData);
       setExercises(exerciseData);
       setLoading(false);
     });

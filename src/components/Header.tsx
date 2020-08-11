@@ -4,24 +4,9 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
 import {  useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
-import { UserAction } from 'actions';
-import { getUserInfo } from 'utility/api';
-import { SET_USER } from 'actions/ActionTypes';
 
 function Header() {
   let userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
-  let dispatch = useDispatch<Dispatch<UserAction>>();
-
-  React.useEffect(() => {
-    getUserInfo().then((data) => {
-      if (data) {
-        dispatch({
-          type: SET_USER,
-          userInfo: data,
-        });
-      }
-    });
-  }, []);
 
   const dropdownMenu = React.useMemo(() => (
     <li className="dropdown right">

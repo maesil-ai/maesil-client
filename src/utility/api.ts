@@ -5,9 +5,8 @@ import {
   APIPostExerciseForm,
   APIGetUserInfoData,
 } from 'utility/types';
-import { UserAction, setUser } from 'actions';
 import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
-import { Dispatch } from 'redux';
+import store from 'store';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -46,7 +45,7 @@ export interface RawAPIExerciseData {
 }
 
 export const getExercises = async () => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
 
   const response = await axios.get(`${apiAddress}/exercises/`, token ? {
     headers: {
@@ -57,7 +56,7 @@ export const getExercises = async () => {
 };
 
 export const getExercise = async (id: number) => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
 
   const response = await axios.get(`${apiAddress}/exercises/${id}`, token ? {
     headers: {
@@ -68,7 +67,7 @@ export const getExercise = async (id: number) => {
 };
 
 export const deleteExercise = async (id : number) => {  
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios.delete(`${apiAddress}/exercises/${id}`, {
@@ -76,12 +75,11 @@ export const deleteExercise = async (id : number) => {
       'x-access-token': token,
     }
   });
-  console.log(response);
   return response.data.code == 200;
 };
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios.post(
@@ -106,7 +104,7 @@ export const postResult = async (id : number, score : number, playTime : number,
 };
 
 export const postExercise = async (data: APIPostExerciseForm) => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const form = new FormData();
@@ -132,7 +130,7 @@ export const postExercise = async (data: APIPostExerciseForm) => {
 };
 
 export const toggleLike = async (id: number, like: boolean) => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios({
@@ -154,7 +152,6 @@ export const login = async (
   id: number,
   profileImageUrl: string,
   accessToken: string,
-  dispatch?: Dispatch<UserAction>,
 ) => {
   const response = await axios.post(`${apiAddress}/users`, {
     id: id,
@@ -166,7 +163,8 @@ export const login = async (
     const token = response.data.jwt;
     setAccessToken(token);
     const userInfo = await getUserInfo();
-    if (dispatch) dispatch({
+    
+    store.dispatch({
       type: SET_USER,
       userInfo: userInfo,
     });
@@ -175,15 +173,28 @@ export const login = async (
   return false;
 };
 
-export const logout = async (dispatch? : Dispatch<UserAction>) => {
+export const logout = () => {
   localStorage.removeItem('token');
-  if (dispatch) dispatch({
+  store.dispatch({
     type: CLEAR_USER,
   });
 };
 
-export const getAccessToken = () => {
-  return localStorage.getItem('token');
+export const getAccessToken = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) return token;
+
+  try {
+    await axios.get(`${apiAddress}/users`, {
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    return token;
+  } catch (error) {
+    logout();
+    return null;
+  }
 };
 
 export const setAccessToken = (token: string) => {
@@ -191,7 +202,7 @@ export const setAccessToken = (token: string) => {
 };
 
 export const getUserInfo = async () => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios.get(`${apiAddress}/users`, {
@@ -211,7 +222,7 @@ export const postUserInfo = async (
   height: number,
   weight: number
 ) => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios.post(
@@ -233,7 +244,7 @@ export const postUserInfo = async (
 };
 
 export const getLikes = async () => {
-  const token = getAccessToken();
+  const token = await getAccessToken();
   if (!token) return null;
 
   const response = await axios.get(`${apiAddress}/likes`, {

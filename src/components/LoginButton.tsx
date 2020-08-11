@@ -26,7 +26,6 @@ const LoginButton = ({ }: LoginButtonProps) => {
           response.profile.id,
           response.profile.kakao_account.profile.profile_image_url,
           response.response.access_token,
-          store.dispatch,
         )) {
           if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
         }
