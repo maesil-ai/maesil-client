@@ -26,6 +26,11 @@ function Header() {
         )}
         {userInfo && (
           <div>
+            <Link to={`/user/${userInfo.nickname}`}> 내 채널 </Link>
+          </div>
+        )}
+        {userInfo && (
+          <div>
             <Link to="/upload"> 운동 업로드 </Link>
           </div>
         )}
