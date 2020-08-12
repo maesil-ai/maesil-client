@@ -36,6 +36,11 @@ function Header() {
         )}
         {userInfo && (
           <div>
+            <Link to="/setting"> 설정 </Link>
+          </div>
+        )}
+        {userInfo && (
+          <div>
             <Link to="/logout"> 로그아웃 </Link>
           </div>
         )}
