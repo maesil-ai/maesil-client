@@ -14,6 +14,7 @@ import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
 import { useDispatch } from 'react-redux';
 import { UserAction } from 'actions';
 import Modify from 'pages/Modify';
+import Course from 'pages/Course';
 
 
 const Root = () => {
@@ -42,6 +43,7 @@ const Root = () => {
         <Route path="/upload" component={Upload} />
         <Route path="/signup" component={Signup} />
         <Route path="/mypage" component={Mypage} />
+        <Route path="/happy" component={Course} />
         <Route path="/logout" component={Logout} />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />

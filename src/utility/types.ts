@@ -49,6 +49,13 @@ export interface PlayRecord {
   score: number;
 }
 
+export interface CourseContent {
+  phase: 'exercise' | 'break';
+  id: number;
+  repeat: number;
+  message: string;
+};
+
 export interface ScreenView {
   video: HTMLVideoElement;
   scale: number;
