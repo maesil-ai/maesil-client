@@ -263,6 +263,21 @@ export const getChannel = async (nickname : string) => {
   return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 }
 
+export const toggleSubscribe = async (id : number, subscribe : boolean) => {
+  const token = await getAccessToken();
+  if (!token) return null;
+ 
+  const response = await axios({
+    method: subscribe ? 'POST' : 'DELETE',
+    url: `${apiAddress}/channel/${id}`,
+    headers: {
+      'x-access-token': token,
+    },
+  });
+
+  return response.data.code == 200;
+}
+
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {
   return {
       id: rawData.exercise_id,
