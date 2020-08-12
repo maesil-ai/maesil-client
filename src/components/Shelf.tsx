@@ -26,6 +26,8 @@ function changeImageFunc(imageUrl: string | undefined) {
 function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfProps) {
   let [exercises, setExercises] = React.useState<ExerciseData[]>([]);
   let [selected, select] = React.useState<number>(-1);
+  const defaultThumbUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
+  const defaultThumbGifUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
   useEffect(() => {
     setExercises(initialExercises);
@@ -38,12 +40,12 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
         {exercises.map((exercise, index) => (
           <GridListTile key={exercise.id} className={'gridList'}>
             <img
-                src={exercise.thumbUrl}
+                src={exercise.thumbUrl ? exercise.thumbUrl : defaultThumbUrl}
                 alt={exercise.name}
                 width={300}
                 className="hoverHide MuiGridListTile-imgFullHeight"
-                onMouseOver={changeImageFunc(exercise.thumbGifUrl)}
-                onMouseOut={changeImageFunc(exercise.thumbUrl)}
+                onMouseOver={changeImageFunc(exercise.thumbGifUrl ? exercise.thumbGifUrl : defaultThumbGifUrl)}
+                onMouseOut={changeImageFunc(exercise.thumbUrl ? exercise.thumbUrl : defaultThumbUrl)}
                 onClick={() => {
                   if (selected != index) select(index);
                   else select(-1);

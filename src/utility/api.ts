@@ -32,9 +32,10 @@ export interface RawAPIExerciseData {
   play_time: string;
   user_id: number;
   "user.nickname": string;
-  thumb_url?: string;
-  video_url?: string;
-  skeleton?: string;
+  thumb_url: string;
+  thumb_gif_url: string;
+  video_url: string;
+  skeleton: string;
   reward: number;
   like_counts: number;
   view_counts: number;
@@ -287,6 +288,7 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       userId: rawData.user_id,
       userName: rawData["user.nickname"],
       thumbUrl: rawData.thumb_url,
+      thumbGifUrl: rawData.thumb_gif_url,
       videoUrl: rawData.video_url,
       skeleton: rawData.skeleton,
       reward: rawData.reward,

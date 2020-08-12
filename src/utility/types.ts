@@ -64,9 +64,9 @@ export interface ExerciseData {
   playTime: string;
   userId: number;
   userName: string;
-  thumbUrl?: string;
-  thumbGifUrl?: string;
-  videoUrl?: string;
+  thumbUrl: string;
+  thumbGifUrl: string;
+  videoUrl: string;
   skeleton?: string;
   reward: number;
   heartCount: number;

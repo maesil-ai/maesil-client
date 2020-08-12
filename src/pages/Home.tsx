@@ -48,18 +48,7 @@ class Home extends React.Component<HomeProps, HomeState> {
    * @memberof Home
    */
   async componentDidMount() {
-    const defaultImageUrl =
-      'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
-    const defaultGifImageUrl =
-      'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
-
-    const exerciseData = await getExercises();
-    const exercises: ExerciseData[] = exerciseData.map((data) => ({
-      ...data,
-      thumbUrl: data.thumbUrl ? data.thumbUrl : defaultImageUrl,
-      thumbGifUrl: defaultGifImageUrl,
-    }));
-
+    const exercises = await getExercises();
     this.setState({
       ...this.state,
       shelfDatas: [
@@ -75,7 +64,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         },
       ],
       loading: false,
-      exerciseDatas: exerciseData,
+      exerciseDatas: exercises,
     });
   }
 
