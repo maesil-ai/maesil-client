@@ -20,7 +20,6 @@ jobs:
         run: |
           yarn
           yarn build
-          yarn test
         env:
           CI: true
           KAKAO_JS_KEY: ${ secrets.KAKAO_JS_KEY }
