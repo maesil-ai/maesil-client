@@ -9,6 +9,7 @@ import {
   getLikes,
   getExercises,
   getChannel,
+  getId,
 } from 'utility/api';
 import {
   APIGetUserInfoData,
@@ -25,18 +26,23 @@ interface UserpageProps {
 }
 
 function Userpage({ match }: UserpageProps) {
-  let [nickname, setNickname] = React.useState<string>(match.params.name);
+  let [name, setName] = React.useState<string>(match.params.name);
+  let [id, setId] = React.useState<number>();
   let [exercises, setExercises] = React.useState<ExerciseData[]>();
   let [isLoading, setLoading] = React.useState<boolean>(true);
   let myUserInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 
   useEffect(() => {
     let ok = 1;
-    getChannel(nickname).then((exerciseData) => {
-      if (!ok) return;
-      setExercises(exerciseData);
-      setLoading(false);
-    });
+    getId(name).then((id) => {
+      setId(id);
+      getChannel(id).then((exerciseData) => {
+        if (!ok) return;
+        setExercises(exerciseData);
+        setLoading(false);
+      });
+    })
+    
     return () => {
       ok = 0;
     };
@@ -54,8 +60,8 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
-        <UserIntroduce name={nickname} />
-        <Shelf title={`${nickname}님이 올린 영상들`} exercises={exercises} control={ myUserInfo.nickname == nickname ? "remove" : "" } />
+        <UserIntroduce name={name} id={id} />
+        <Shelf title={`${name}님이 올린 영상들`} exercises={exercises} control={ myUserInfo?.nickname == name ? "remove" : "" } />
         <Footer />
       </>
     );

@@ -1,10 +1,11 @@
 import * as types from 'actions/ActionTypes';
-import { APIGetUserInfoData } from 'utility/types';
+import { APIGetUserInfoData, Channel } from 'utility/types';
 
-export const setUser = (userInfo: APIGetUserInfoData) => {
+export const setUser = (userInfo: APIGetUserInfoData, subscribes: Channel[]) => {
   return {
     type: types.SET_USER,
     userInfo: userInfo,
+    subscribes: subscribes,
   };
 }
 
@@ -14,6 +15,15 @@ export const clearUser = () => {
   }
 }
 
+export const subscribe = (channel: Channel, ok: boolean) => {
+  return {
+    type: types.SUBSCRIBE,
+    channel: channel,
+    ok: ok,
+  };
+}
+
 export type UserAction = 
   | ReturnType<typeof setUser>
-  | ReturnType<typeof clearUser>;
+  | ReturnType<typeof clearUser>
+  | ReturnType<typeof subscribe>;

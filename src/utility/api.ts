@@ -4,9 +4,11 @@ import {
   ExerciseData,
   APIPostExerciseForm,
   APIGetUserInfoData,
+  Channel,
 } from 'utility/types';
-import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
+import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
+import { UserAction } from 'actions';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -163,12 +165,13 @@ export const login = async (
   if (response.data.code == 200 || response.data.code == 201) {
     const token = response.data.jwt;
     setAccessToken(token);
-    const userInfo = await getUserInfo();
+    const [userInfo, subscribes] = [await getUserInfo(), await getSubscribes()];
     
     store.dispatch({
       type: SET_USER,
       userInfo: userInfo,
-    });
+      subscribes: subscribes,
+    } as UserAction);
     return true;
   }
   return false;
@@ -178,7 +181,7 @@ export const logout = () => {
   localStorage.removeItem('token');
   store.dispatch({
     type: CLEAR_USER,
-  });
+  } as UserAction);
 };
 
 export const getAccessToken = async () => {
@@ -258,16 +261,16 @@ export const getLikes = async () => {
     return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 };
 
-export const getChannel = async (nickname : string) => {
-  const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
+export const getChannel = async (id: number) => {
+  const response = await axios.get(`${apiAddress}/channel/${id}`);
 
   return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
 }
 
-export const toggleSubscribe = async (id : number, subscribe : boolean) => {
+export const toggleSubscribe = async (id : number, name : string, subscribe : boolean) => {
   const token = await getAccessToken();
   if (!token) return null;
- 
+
   const response = await axios({
     method: subscribe ? 'POST' : 'DELETE',
     url: `${apiAddress}/channel/${id}`,
@@ -276,7 +279,56 @@ export const toggleSubscribe = async (id : number, subscribe : boolean) => {
     },
   });
 
-  return response.data.code == 200;
+  const ok = response.data.code == 200;
+
+  if (ok) {
+    store.dispatch({
+      type: SUBSCRIBE,
+      channel: {
+        id: id,
+        name: name,
+      },
+      ok: subscribe,
+    } as UserAction);
+  }
+  return ok;
+}
+
+export const getSubscribes = async () => {
+  const token = await getAccessToken();
+  if (!token) return null;
+
+  const response = await axios.get(`${apiAddress}/users/subscribes`, {
+    headers: {
+      'x-access-token': token,
+    }
+  });
+
+  return response.data.result.map((data) => {
+    return {
+      id: data.user_id,
+      name: data.nickname,
+    } as Channel;
+  }) as Channel[];
+}
+
+export const getSubscribed = async (id : number) => {
+  const token = await getAccessToken();
+  if (!token) return null;
+
+  const response = await axios.get(`${apiAddress}/channel/${id}/subscribeInfo`, {
+    headers: {
+      'x-access-token': token,
+    }
+  });
+
+  return response.data.result.isLike === 1;
+}
+
+export const getId = async (name: string) => {
+  const response = await axios.get(`${apiAddress}/users/id?nickname=${name}`);
+
+  return response.data.result.user_id as number;
 }
 
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {

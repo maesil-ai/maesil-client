@@ -26,6 +26,11 @@ export interface PosenetConfig {
   };
 }
 
+export interface Channel {
+  id: number;
+  name: string;
+}
+
 export const defaultPosenetConfig: PosenetConfig = {
   algorithm: 'single-pose',
   model: {

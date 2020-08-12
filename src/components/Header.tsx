@@ -6,7 +6,7 @@ import {  useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
 
 function Header() {
-  let userInfo = useSelector((state : RootReducerState) => state.user.userInfo );
+  let user = useSelector((state : RootReducerState) => state.user );
 
   const dropdownMenu = React.useMemo(() => (
     <li className="dropdown right">
@@ -14,39 +14,45 @@ function Header() {
         <PermIdentityIcon fontSize="large" />
       </div>
       <div className="dropdown-content">
-        {userInfo ? (
-          <div className="text"> {userInfo.nickname}님 안녕하세요! </div>
+        {user.loggedIn ? (
+          <div className="text"> {user.userInfo.nickname}님 안녕하세요! </div>
         ) : (
           <LoginButton />
         )}
-        {userInfo && (
+        {user.loggedIn && (
           <div>
             <Link to="/mypage"> 마이페이지 </Link>
           </div>
         )}
-        {userInfo && (
+        {user.loggedIn && (
           <div>
-            <Link to={`/user/${userInfo.nickname}`}> 내 채널 </Link>
+            <Link to={`/user/${user.userInfo.nickname}`}> 내 채널 </Link>
           </div>
         )}
-        {userInfo && (
+        {user.loggedIn && (
           <div>
             <Link to="/upload"> 운동 업로드 </Link>
           </div>
         )}
-        {userInfo && (
+        {user.loggedIn && (
           <div>
             <Link to="/setting"> 설정 </Link>
           </div>
         )}
-        {userInfo && (
+        {user.loggedIn && (
           <div>
             <Link to="/logout"> 로그아웃 </Link>
           </div>
         )}
+        <div/>
+        {user.loggedIn && user.subscribes.map((channel) => (
+          <div key={channel.id}>
+            <Link to={`/user/${channel.name}`}> {channel.name} </Link>
+          </div>
+        ))}
       </div>
     </li>
-  ), [userInfo]);
+  ), [user]);
 
   return (
     <header>

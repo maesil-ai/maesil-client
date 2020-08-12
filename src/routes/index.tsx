@@ -9,22 +9,24 @@ import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
 import Userpage from 'pages/User';
 
-import { getUserInfo } from 'utility/api';
+import { getUserInfo, getSubscribes } from 'utility/api';
 import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
 import { useDispatch } from 'react-redux';
 import { UserAction } from 'actions';
 import Modify from 'pages/Modify';
 import Course from 'pages/Course';
+import Fuck from 'pages/AccessToken';
 
 
 const Root = () => {
   const dispatch = useDispatch<Dispatch<UserAction>>();
   React.useEffect(() => {
-    getUserInfo().then((data) => {
-      if (data) {
+    Promise.all([getUserInfo(), getSubscribes()]).then(([userInfo, subscribes]) => {
+      if (userInfo && subscribes) {
         dispatch({
           type: SET_USER,
-          userInfo: data,
+          userInfo: userInfo,
+          subscribes: subscribes,
         });
       } else {
         dispatch({
@@ -47,6 +49,7 @@ const Root = () => {
         <Route path="/logout" component={Logout} />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />
+        <Route path="/fuck" component={Fuck} />
         <Redirect path="/setting/*" to="/setting/info" />
         <Redirect path="/setting" to="/setting/info" />
         <Redirect path="*" to="/" />
