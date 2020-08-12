@@ -5,13 +5,11 @@ import { login, getUserInfo, setAccessToken } from 'utility/api';
 import { Redirect } from 'react-router-dom';
 import { userInfoHasMetadata } from 'utility/types';
 import { useSelector, useStore } from 'react-redux';
-import { RootReducerState as RootReducerState } from 'reducers';
+import { RootReducerState } from 'reducers';
 
-interface LoginButtonProps {
+interface LoginButtonProps {}
 
-}
-
-const LoginButton = ({ }: LoginButtonProps) => {
+const LoginButton = ({}: LoginButtonProps) => {
   let [status, setStatus] = React.useState(0);
   const store = useStore();
 
@@ -19,14 +17,16 @@ const LoginButton = ({ }: LoginButtonProps) => {
 
   return (
     <KakaoLogin
-      jsKey={kakaoJsKey}
+      jsKey={process.env.KAKAO_JS_KEY}
       onSuccess={async (response) => {
         setStatus(1);
-        if (await login(
-          response.profile.id,
-          response.profile.kakao_account.profile.profile_image_url,
-          response.response.access_token,
-        )) {
+        if (
+          await login(
+            response.profile.id,
+            response.profile.kakao_account.profile.profile_image_url,
+            response.response.access_token
+          )
+        ) {
           if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
         }
       }}
