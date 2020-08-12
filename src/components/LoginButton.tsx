@@ -1,5 +1,5 @@
 import KakaoLogin from 'react-kakao-login';
-import { kakaoJsKey } from 'utility/secret';
+// import { kakaoJsKey } from 'utility/secret';
 import React from 'react';
 import { login, getUserInfo, setAccessToken } from 'utility/api';
 import { Redirect } from 'react-router-dom';
