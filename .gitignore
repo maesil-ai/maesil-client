@@ -43,3 +43,4 @@ res
 /src/utility/secret.ts
 .env
 .env.development
+.env.production
