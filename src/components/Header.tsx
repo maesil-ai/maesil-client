@@ -46,7 +46,7 @@ function Header() {
       <ul>
         <li className="left">
           <Link to="/" style={{ padding: '32px' }}>
-            새실
+            매실
           </Link>
         </li>
         {dropdownMenu}
