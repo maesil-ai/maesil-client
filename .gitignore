@@ -41,3 +41,4 @@ logs
 res
 
 /src/utility/secret.ts
+.env
