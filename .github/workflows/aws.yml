@@ -3,7 +3,8 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - master
+      - develop
+      - workflow-ci
 
 jobs:
   deploy:
