@@ -286,12 +286,17 @@ export const getSubscribed = async (id : number) => {
 }
 
 export const getId = async (name: string) => {
-  let [code, result] = await callAxios<any>({
+  let [code, result] = await callAxios<APIGetUserInfoData>({
     method: 'GET',
     url: `${apiAddress}/users/id?nickname=${name}`,
   });
 
-  return result.user_id as number;
+  if (result == null) {
+    store.dispatch(raiseError("존재하지 않는 유저를 검색하려 했습니다."));
+    return null;
+  }
+
+  return result.user_id;
 }
 
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {
