@@ -5,7 +5,7 @@ import ExerciseScreen from "components/ExerciseScreen";
 import Footer from "components/Footer";
 import usePromise from "utility/usePromise";
 import Loading from "pages/Loading";
-import { ExerciseData, PoseData, PlayRecord, CourseContent } from "utility/types";
+import { ContentData, PoseData, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult } from "utility/api";
 import { Redirect } from "react-router-dom";
 
@@ -63,7 +63,7 @@ function Course({} : CourseProps) {
     let [contents, setContents] = React.useState<CourseContent[]>(defaultContents);
     let [progress, setProgress] = React.useState<number>(0);
 
-    let [currentExercise, setCurrentExercise] = React.useState<ExerciseData>();
+    let [currentExercise, setCurrentExercise] = React.useState<ContentData>();
     let [phase, setPhase] = React.useState<string>('');
     let [message, setMessage] = React.useState<string>('');
     let [repeat, setRepeat] = React.useState<number>(100);
@@ -101,7 +101,7 @@ function Course({} : CourseProps) {
     useEffect(() => {
         if (currentExercise) {
             guideVideo.src = currentExercise.videoUrl;
-            setGuidePose(JSON.parse(currentExercise.skeleton));
+            setGuidePose(JSON.parse(currentExercise.innerData));
 
             new Promise((resolve) => {
                 guideVideo.onloadeddata = resolve;

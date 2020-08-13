@@ -4,7 +4,7 @@ import Title from 'components/Title';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { getAccessToken, getUserInfo, getLikes } from 'utility/api';
-import { APIGetUserInfoData, ExerciseData } from 'utility/types';
+import { APIGetUserInfoData, ContentData } from 'utility/types';
 import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Shelf from 'components/Shelf';
@@ -12,7 +12,7 @@ import Shelf from 'components/Shelf';
 function Mypage() {
   let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
   let [isLoading, setLoading] = React.useState<boolean>(true);
-  let [likes, setLikes] = React.useState<ExerciseData[]>([]);
+  let [likes, setLikes] = React.useState<ContentData[]>([]);
 
   React.useEffect(() => {
     Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {

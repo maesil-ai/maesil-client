@@ -81,7 +81,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
   componentDidMount = async () => {
     const [
-      { videoUrl: guideSource, skeleton: guidePose },
+      { videoUrl: guideSource, innerData: guidePose },
       userStream,
     ] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
 

@@ -9,7 +9,7 @@ import StatView from 'components/StatView';
 import Loading from 'pages/Loading';
 
 import Shelf from 'components/Shelf';
-import { ExerciseData, PlayRecord } from 'utility/types';
+import { ContentData, PlayRecord } from 'utility/types';
 
 interface ResultProps {
   exerciseId: number;
@@ -21,7 +21,7 @@ interface ResultState {
   exerciseId: number;
   exerciseName?: string;
   stats: PlayRecord;
-  nextExercises: ExerciseData[];
+  nextExercises: ContentData[];
 }
 
 /**

@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { GridListTile, GridListTileBar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
-import { ExerciseData } from 'utility/types';
+import { ContentData } from 'utility/types';
 import DeleteButton from 'components/DeleteButton';
-import ExerciseDetail from 'components/ExerciseDetail';
+import ContentDetail from 'components/ContentDetail';
 import Title from 'components/Title';
 
 interface ShelfProps {
-  exercises: ExerciseData[];
+  exercises: ContentData[];
   title?: string;
   control?: string;
 }
@@ -24,7 +24,7 @@ function changeImageFunc(imageUrl: string | undefined) {
 }
 
 function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfProps) {
-  let [exercises, setExercises] = React.useState<ExerciseData[]>([]);
+  let [exercises, setExercises] = React.useState<ContentData[]>([]);
   let [selected, select] = React.useState<number>(-1);
   const defaultThumbUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
   const defaultThumbGifUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
@@ -82,7 +82,7 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
           </GridListTile>
         ))}
       </div>
-      { selected != -1 && exercises[selected] && <ExerciseDetail data={exercises[selected]} /> }
+      { selected != -1 && exercises[selected] && <ContentDetail data={exercises[selected]} /> }
     </>
   );
 }

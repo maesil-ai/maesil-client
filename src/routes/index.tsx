@@ -3,7 +3,7 @@ import Home from 'pages/Home';
 import Exercise from 'pages/Exercise';
 import Result from 'pages/Result';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
-import Upload from 'pages/Upload';
+import UploadExercise from 'pages/UploadExercise';
 import Signup from 'pages/Signup';
 import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
@@ -18,6 +18,7 @@ import Fuck from 'pages/AccessToken';
 import Loading from 'pages/Loading';
 import { RootReducerState } from 'reducers';
 import Error from 'pages/Error';
+import UploadCourse from 'pages/UploadCourse';
 
 
 const Root = () => {
@@ -46,20 +47,23 @@ const Root = () => {
     <BrowserRouter>
       <Switch>
         { system.error && <Route path="*" component={Error} /> }
-        { loading && <Route path="*" component={Loading} /> }
+        { loading && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
         <Route exact path="/" component={Home} />
         <Route path="/exercise/:id" component={Exercise} />
         <Route path="/result" component={Result} />
-        <Route path="/upload" component={Upload} />
+        <Route path="/upload/exercise" component={UploadExercise} />
+        <Route path="/upload/course" component={UploadCourse} />
+        <Redirect path="/upload/*" to="/upload/exercise" />
+        <Redirect path="/upload" to="/upload/exercise" />
         <Route path="/signup" component={Signup} />
         <Route path="/mypage" component={Mypage} />
         <Route path="/happy" component={Course} />
         <Route path="/logout" component={Logout} />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />
-        <Route path="/fuck" component={Fuck} />
         <Redirect path="/setting/*" to="/setting/info" />
         <Redirect path="/setting" to="/setting/info" />
+        <Route path="/fuck" component={Fuck} />
         <Redirect path="*" to="/" />
       </Switch>
     </BrowserRouter>

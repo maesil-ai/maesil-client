@@ -13,7 +13,7 @@ import {
 } from 'utility/api';
 import {
   APIGetUserInfoData,
-  ExerciseData,
+  ContentData,
 } from 'utility/types';
 import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
@@ -28,7 +28,7 @@ interface UserpageProps {
 function Userpage({ match }: UserpageProps) {
   let [name, setName] = React.useState<string>(match.params.name);
   let [id, setId] = React.useState<number>();
-  let [exercises, setExercises] = React.useState<ExerciseData[]>();
+  let [exercises, setExercises] = React.useState<ContentData[]>();
   let [isLoading, setLoading] = React.useState<boolean>(true);
   let myUserInfo = useSelector((state : RootReducerState) => state.user.userInfo );
 

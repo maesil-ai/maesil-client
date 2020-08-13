@@ -69,7 +69,8 @@ export interface ScreenView {
   calculator?: PoseCalculator;
 }
 
-export interface ExerciseData {
+export interface ContentData {
+  type: 'exercise' | 'course';
   id: number;
   name: string;
   description: string;
@@ -79,7 +80,7 @@ export interface ExerciseData {
   thumbUrl: string;
   thumbGifUrl: string;
   videoUrl: string;
-  skeleton?: string;
+  innerData?: string;
   reward: number;
   heartCount: number;
   viewCount: number;
@@ -99,6 +100,18 @@ export interface APIPostExerciseForm {
   tag_id: number;
   level: number;
   skeleton: string;
+}
+
+export interface APIPostCourseForm {
+  description: string;
+  play_time: number;
+  thumbnail: Blob;
+  reward: number;
+  level: number;
+  course_name: string;
+  gif_thumbnail: Blob;
+  exercise_list: string;
+  tag_id: number;
 }
 
 export interface APIGetUserInfoData {

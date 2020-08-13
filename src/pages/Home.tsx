@@ -1,4 +1,4 @@
-import { getExercises } from 'utility/api';
+import { getExercises, getCourses } from 'utility/api';
 
 import React from 'react';
 
@@ -7,18 +7,18 @@ import Footer from 'components/Footer';
 import Title from 'components/Title';
 import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
-import { ExerciseData } from 'utility/types';
+import { ContentData } from 'utility/types';
 
 interface ShelfData {
   title: string;
-  exercises: ExerciseData[];
+  contents: ContentData[];
 }
 
 interface HomeProps {}
 
 interface HomeState {
   shelfDatas: ShelfData[];
-  exerciseDatas: ExerciseData[];
+  contentDatas: ContentData[];
   loading: boolean;
 }
 
@@ -39,7 +39,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     this.state = {
       shelfDatas: [],
       loading: true,
-      exerciseDatas: [],
+      contentDatas: [],
     };
   }
 
@@ -49,22 +49,22 @@ class Home extends React.Component<HomeProps, HomeState> {
    */
   async componentDidMount() {
     const exercises = await getExercises();
+    const courses = await getCourses();
+    
     this.setState({
       ...this.state,
       shelfDatas: [
         {
-          title: '그냥... 모든 운동들',
-          exercises: exercises,
+          title: '모든 운동들',
+          contents: exercises,
         },
         {
-          title: '첫글자 P로 시작하는 운동들!',
-          exercises: exercises.filter((exercise) => {
-            return exercise.name[0] === 'p' || exercise.name[0] === 'P';
-          }),
+          title: '모든 운동 코스들',
+          contents: courses,
         },
       ],
       loading: false,
-      exerciseDatas: exercises,
+      contentDatas: exercises.concat(courses),
     });
   }
 
@@ -72,7 +72,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     if (this.state.loading) return <Loading/>;
     else {
       const shelfs = this.state.shelfDatas.map((data, index) => (
-        <Shelf key={index} title={data.title} exercises={data.exercises} />
+        <Shelf key={index} title={data.title} exercises={data.contents} />
       ));
 
       return (

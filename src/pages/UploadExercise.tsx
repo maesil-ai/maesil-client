@@ -3,12 +3,10 @@ import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Title from '../components/Title';
-import UploadA from 'components/UploadA';
-import UploadB from 'components/UploadB';
+import UploadExerciseA from 'components/UploadExerciseA';
+import UploadExerciseB from 'components/UploadExerciseB';
 
-interface UploadProps {}
-
-function Upload({}: UploadProps) {
+function UploadExercise() {
   let [phase, setPhase] = React.useState(1);
   let [video, setVideo] = React.useState(null);
 
@@ -25,11 +23,11 @@ function Upload({}: UploadProps) {
     <>
       <Header />
       <Title title="운동 업로드" />
-      {phase == 1 && <UploadA onFinish={handleAFinish} />}
-      {phase == 2 && <UploadB video={video} />}
+      {phase == 1 && <UploadExerciseA onFinish={handleAFinish} />}
+      {phase == 2 && <UploadExerciseB video={video} />}
       <Footer />
     </>
   );
 }
 
-export default Upload;
+export default UploadExercise;
