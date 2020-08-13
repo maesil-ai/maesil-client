@@ -2,7 +2,7 @@ import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
-import {  useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
 import store from 'store';
 import { closeError } from 'actions';
@@ -44,7 +44,6 @@ function Header({ real = true } : HeaderProps) {
     </li>
   ), [user]);
 
-
   return (
     <header>
       <ul>
@@ -53,7 +52,7 @@ function Header({ real = true } : HeaderProps) {
             매실
           </Link>
         </li>
-        { dropdownMenu }
+        {dropdownMenu}
       </ul>
     </header>
   );
