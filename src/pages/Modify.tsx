@@ -5,7 +5,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { postUserInfo, getUserInfo } from 'utility/api';
 import InfoForm from 'components/InfoForm';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 import usePromise from 'utility/usePromise';
 import { APIGetUserInfoData } from 'utility/types';
 
@@ -18,13 +18,7 @@ function Modify() {
     else setMessage('수정 실패...');
   }
 
-  if (loading) return (
-    <>
-      <Header />
-      <Loading />
-      <Footer />
-    </>
-  );
+  if (loading) return <Loading/>;
   else if (error) return (
     <>
       <Header />

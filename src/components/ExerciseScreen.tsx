@@ -4,7 +4,7 @@ import { drawBoundingBox, drawKeypoints, drawSkeleton } from 'utility/draw';
 import { exerciseScore } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
-import { getAccessToken, getUserInfo } from 'utility/api';
+
 import {
   APIGetUserInfoData,
   ScreenView,
@@ -13,6 +13,7 @@ import {
   fps,
   PoseData,
 } from 'utility/types';
+import store from 'store';
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -41,11 +42,13 @@ const defaultViewConfig = {
 };
 
 interface ExerciseScreenProps {
+  phase: 'exercise' | 'break';
   userInfo?: APIGetUserInfoData;
   videoWidth: number;
   videoHeight: number;
   views: ScreenView[];
   viewConfig: ViewConfig;
+  time?: number;
   guidePose?: PoseData;
   onExerciseFinish: (record: PlayRecord) => any;
   repeat: number;
@@ -58,6 +61,7 @@ interface ExerciseScreenState {
   isPlaying: boolean;
   records: Pose[][][];
   scores: number[];
+  progress: number,
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
 }
@@ -75,23 +79,19 @@ class ExerciseScreen extends React.Component<
   ExerciseScreenState
 > {
   static defaultProps: ExerciseScreenProps = {
+    phase: 'exercise',
     videoWidth: 800,
     videoHeight: 600,
     views: [],
     onExerciseFinish: () => {},
     viewConfig: defaultViewConfig,
-    repeat: 5,
+    repeat: 1,
   };
-
+  
   ctx: CanvasRenderingContext2D;
   canvas: React.RefObject<HTMLCanvasElement>;
   views: ScreenView[];
 
-  /**
-   * Creates an instance of Screen.
-   * @param {ExerciseScreenProps} props
-   * @memberof Screen
-   */
   constructor(props: ExerciseScreenProps) {
     super(props);
 
@@ -100,6 +100,7 @@ class ExerciseScreen extends React.Component<
     this.state = {
       count: 0,
       isPlaying: true,
+      progress: 0,
       records: [],
       scores: [],
       viewConfig: this.props.viewConfig,
@@ -112,7 +113,11 @@ class ExerciseScreen extends React.Component<
       })
     );
 
-    this.views[0].video.onended = () => {
+    if (this.props.phase == 'exercise') this.views[0].video.onended = this.finish;
+  }
+
+  finish = () => {
+    if (this.props.phase == 'exercise') {
       const guideRecord = this.views[0].calculator.record;
       const userRecord = this.views[1].calculator.record;
 
@@ -123,6 +128,7 @@ class ExerciseScreen extends React.Component<
         ...this.state,
         count: newCount,
         scores: Array.prototype.concat(this.state.scores, [newScore]),
+        progress: 0,
       });
 
       let records = this.state.records;
@@ -141,11 +147,13 @@ class ExerciseScreen extends React.Component<
 
         const scores = this.state.scores;
         const averageScore = scores.reduce((x, y) => x + y, 0) / scores.length;
+        
+        const userInfo = store.getState().user.userInfo;
 
         this.props.onExerciseFinish({
           score: averageScore,
           time: (guideRecord.length / fps) * this.props.repeat,
-          calorie: exerciseCalorie(userRecord, guideRecord.length, this.props.userInfo),
+          calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
         });
       } else {
         this.views[0].video.load();
@@ -155,13 +163,31 @@ class ExerciseScreen extends React.Component<
           this.views[0].video.play();
         };
       }
-    };
-  }
+    }
 
-  /**
-   * 리액트 컴포넌트 클래스 기본 함수
-   * @memberof Screen
-   */
+    if (this.props.phase == 'break') {
+      let newCount = this.state.count + 1;
+
+      this.setState({
+        ...this.state,
+        count: newCount,
+        progress: 0,
+      });
+
+      if (newCount === this.props.repeat) {
+        this.setState({
+          ...this.state,
+          isPlaying: false,
+        });
+        this.props.onExerciseFinish({
+          score: 1,
+          time: 0,
+          calorie: 0,
+        });
+      }
+    }
+  };
+
   componentDidMount = async () => {
     this.ctx = this.canvas.current!.getContext('2d')!;
 
@@ -238,16 +264,25 @@ class ExerciseScreen extends React.Component<
       }
     };
 
-    /**
-     * 매 프레임 마다 다시 콜백으로 자기를 불러서 무한반복으로 실행
-     * @param {*} callback 자기자신
-     */
     let executeEveryFrame = (callback: { (): void; (): void }) => {
       callback();
 
       if (this.state.isPlaying)
         setTimeout(() => executeEveryFrame(callback), 1000 / fps);
     };
+
+    executeEveryFrame(() => {
+      this.setState({
+        ...this.state,
+        progress: 
+          this.props.phase == 'exercise' ? this.views[0].video.currentTime / this.views[0].video.duration :
+          this.props.phase == 'break' ? this.state.progress + 1 / 30 / this.props.time : 0,
+      });
+
+      if (this.props.phase == 'break' && this.state.progress >= 1) {
+        this.finish();
+      }
+    })
 
     executeEveryFrame(() => {
       ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
@@ -261,26 +296,21 @@ class ExerciseScreen extends React.Component<
         );
       });
       if (this.state.viewConfig.showCount) {
-        const x = this.props.videoWidth - 40,
-          y = 20,
-          w = 20,
-          h = 20;
+        const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
 
         for (let i = 0; i < this.props.repeat; i++) {
-          ctx.fillStyle =
-            this.state.count > i ? 'rgb(22, 22, 22)' : 'rgb(222, 222, 222)';
+          ctx.fillStyle = this.state.count > i ? 'rgb(22, 22, 22)' : 'rgb(222, 222, 222)';
           ctx.fillRect(x - 40 * i, y, w, h);
         }
       }
       if (this.state.viewConfig.showScore) {
-        const x = this.props.videoWidth - 20,
-          y = this.props.videoHeight / 2;
+        const x = this.props.videoWidth - 20, y = this.props.videoHeight / 2;
+
         ctx.fillStyle = 'rgb(22, 22, 22)';
         ctx.font = '40px arial';
         ctx.textAlign = 'right';
         if (this.state.scores.length) {
           const score = this.state.scores[this.state.scores.length - 1];
-
           ctx.fillText(`${Math.round(score * 100)}점`, x, y);
         }
       }
@@ -294,12 +324,7 @@ class ExerciseScreen extends React.Component<
         ctx.fillRect(x, y, w, h);
 
         ctx.fillStyle = 'rgb(222, 22, 22)';
-        ctx.fillRect(
-          x,
-          y,
-          (w * this.views[0].video.currentTime) / this.views[0].video.duration,
-          h
-        );
+        ctx.fillRect(x, y, w * this.state.progress, h);
       }
     });
   };

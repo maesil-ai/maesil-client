@@ -1,13 +1,21 @@
 import React from 'react';
 
 import Title from 'components/Title';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
 // import BeatLoader from "react-spinners/BeatLoader";
 
-function Loading() {
+interface LoadingProps {
+  headerReal?: boolean;
+};
+
+function Loading({ headerReal = true } : LoadingProps) {
   return (
-    <div>
+    <>
+      <Header real={headerReal}/>
       <Title title="불러오는 중..." />
-    </div>
+      <Footer/>
+    </>
   );
 }
 

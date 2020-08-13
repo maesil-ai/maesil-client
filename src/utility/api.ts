@@ -1,12 +1,15 @@
 // @ts-ignore
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
-  ExerciseData,
+  ContentData,
   APIPostExerciseForm,
   APIGetUserInfoData,
+  Channel,
+  APIPostCourseForm,
 } from 'utility/types';
-import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
+import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
+import { UserAction, setUser, subscribe, clearUser, raiseError } from 'actions';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -32,9 +35,10 @@ export interface RawAPIExerciseData {
   play_time: string;
   user_id: number;
   "user.nickname": string;
-  thumb_url?: string;
-  video_url?: string;
-  skeleton?: string;
+  thumb_url: string;
+  thumb_gif_url: string;
+  video_url: string;
+  skeleton: string;
   reward: number;
   like_counts: number;
   view_counts: number;
@@ -44,63 +48,110 @@ export interface RawAPIExerciseData {
   isLike?: boolean;
 }
 
-export const getExercises = async () => {
-  const token = await getAccessToken();
+export interface RawAPICourseData {
+  course_id: number;
+  course_name: string;
+  description: string;
+  play_time: string;
+  user_id: number;
+  thumb_url: string;
+  thumb_gif_url: string;
+  video_url: string;
+  exercise_list: string;
+  reward: number;
+  like_counts: number;
+  view_counts: number;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  isLike?: boolean;
+}
 
-  const response = await axios.get(`${apiAddress}/exercises/`, token ? {
-    headers: {
-      'x-access-token': token,
-    },
-  } : {} );
-  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
+// 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
+// useToken = 'always': api 호출하기 전 access token을 무조건 가져와서 헤더에 넣음. 없으면 null 반환
+// useToken = 'sometimes': api 호출하기 전 access token이 있으면 가져와서 헤더에 넣음. 없으면 말고 ㅋ
+async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" | "always" | "sometimes" = "never", ifError : "abort" | "ignore" = "abort") : Promise<[number, Type]> {
+  const token = useToken != 'never' && await getAccessToken();
+  if (useToken === 'always' && !token) {
+    if (ifError == 'abort') store.dispatch(raiseError(
+      `로그인해야만 받아올 수 있는 정보를 로그인하지 않고 받아오려 했습니다. 받아오려던 정보: ${config.url}`
+    ));
+    return [null, null];
+  }
+
+  if (token) {
+    Object.assign(config, {
+      headers: {
+        ...config.headers,
+        'x-access-token': token,
+      },
+    })
+  }
+  
+  try {
+    let response = await axios(config);
+    return [response.data.code, response.data.result];
+  } catch (error) {
+    if (ifError == 'abort') store.dispatch(raiseError(
+      `API 서버에서 정보를 받아오는 데에 문제가 생겼습니다. 받아오려던 정보 : ${config.url} 발생한 오류 : ${error}`
+    ));
+    return [null, null];
+  }
+}
+
+export const getExercises = async () => {
+  const [code, result] = await callAxios<RawAPIExerciseData[]>({
+    method: 'GET',
+    url: `${apiAddress}/exercises/`,
+  }, "sometimes");
+
+  return result.map(processRawExerciseData);
 };
 
 export const getExercise = async (id: number) => {
-  const token = await getAccessToken();
+  const [code, result] = await callAxios<RawAPIExerciseData>({
+    method: 'GET',
+    url: `${apiAddress}/exercises/${id}`,
+  }, "sometimes");
 
-  const response = await axios.get(`${apiAddress}/exercises/${id}`, token ? {
-    headers: {
-      'x-access-token': token,
-    },
-  } : {});
-  return processRawExerciseData(response.data.result as RawAPIExerciseData);
+  return processRawExerciseData(result);
 };
 
-export const deleteExercise = async (id : number) => {  
-  const token = await getAccessToken();
-  if (!token) return null;
+export const getCourses = async () => {
+  const [code, result] = await callAxios<RawAPICourseData[]>({
+    method: 'GET',
+    url: `${apiAddress}/courses`,
+  }, "sometimes");
 
-  const response = await axios.delete(`${apiAddress}/exercises/${id}`, {
-    headers: {
-      'x-access-token': token,
-    }
-  });
-  return response.data.code == 200;
+  return result.map(processRawCourseData);
+}
+
+export const getCourse = async (id: number) => {
+  const [code, result] = await callAxios<RawAPICourseData>({
+    method: 'GET',
+    url: `${apiAddress}/courses/${id}`,
+  }, "sometimes");
+
+  return processRawCourseData(result);
+}
+
+export const deleteExercise = async (id : number) => {  
+  await callAxios<void>({
+    method: 'DELETE',
+    url: `${apiAddress}/exercises/${id}`,
+  }, 'always');
 };
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
-  const token = await getAccessToken();
-  if (!token) return null;
-
-  const response = await axios.post(
-    `${apiAddress}/exercises/${id}/history`,
-    {
+  await callAxios<void>({
+    method: 'POST',
+    url: `${apiAddress}/exercises/${id}/history`,
+    data: {
       score: score,
       play_time: secondToString(playTime),
       cal: calorie,
-    },
-    {
-      headers: {
-        'x-access-token': token,
-      },
     }
-  );
-
-  if (response.data.code != 200) {
-    throw new Error(
-      '아직 Post를 실패했을 때 어떻게 할 지는 생각 안 해 봤습니다...'
-    );
-  }
+  }, 'always');
 };
 
 export const postExercise = async (data: APIPostExerciseForm) => {
@@ -129,23 +180,37 @@ export const postExercise = async (data: APIPostExerciseForm) => {
   return response.status == 200;
 };
 
-export const toggleLike = async (id: number, like: boolean) => {
+export const postCourse = async (data: APIPostCourseForm) => {
   const token = await getAccessToken();
   if (!token) return null;
 
-  const response = await axios({
-    method: like ? 'POST' : 'DELETE',
-    url: `${apiAddress}/likes/${id}`,
+  const form = new FormData();
+
+  for (const [key, value] of Object.entries(data)) {
+    form.append(key, value);
+  }
+
+  const requestOptions = {
+    method: 'POST',
     headers: {
+      'Access-Control-Allow-Origin': '*',
       'x-access-token': token,
     },
-  });
+    body: form,
+    //    mode: "no-cors" as RequestMode,
+    redirect: 'follow' as RequestRedirect,
+  };
 
-  try {
-    return response.data.code == 200;
-  } catch {
-    return false;
-  }
+  const response = await fetch(`${apiAddress}/courses`, requestOptions);
+
+  return response.status == 200;
+};
+
+export const toggleLike = async (id: number, like: boolean) => {
+  await callAxios<void>({
+    method: like ? 'POST' : 'DELETE',
+    url: `${apiAddress}/likes/${id}`,
+  }, 'always');
 };
 
 export const login = async (
@@ -162,12 +227,9 @@ export const login = async (
   if (response.data.code == 200 || response.data.code == 201) {
     const token = response.data.jwt;
     setAccessToken(token);
-    const userInfo = await getUserInfo();
+    const [userInfo, subscribes] = [await getUserInfo(), await getSubscribes()];
     
-    store.dispatch({
-      type: SET_USER,
-      userInfo: userInfo,
-    });
+    store.dispatch(setUser(userInfo, subscribes, profileImageUrl));
     return true;
   }
   return false;
@@ -175,9 +237,7 @@ export const login = async (
 
 export const logout = () => {
   localStorage.removeItem('token');
-  store.dispatch({
-    type: CLEAR_USER,
-  });
+  store.dispatch(clearUser());
 };
 
 export const getAccessToken = async () => {
@@ -205,15 +265,12 @@ export const getUserInfo = async () => {
   const token = await getAccessToken();
   if (!token) return null;
 
-  const response = await axios.get(`${apiAddress}/users`, {
-    headers: {
-      'x-access-token': token,
-    },
-  });
-
-  if (response.data.code == 200) {
-    return response.data.result as APIGetUserInfoData;
-  }
+  const [code, result] = await callAxios<APIGetUserInfoData>({
+    method: 'get',
+    url: `${apiAddress}/users`,
+  }, 'always');
+  
+  return result;
 };
 
 export const postUserInfo = async (
@@ -225,61 +282,81 @@ export const postUserInfo = async (
   const token = await getAccessToken();
   if (!token) return null;
 
-  const response = await axios.post(
-    `${apiAddress}/users/info`,
-    {
+  await callAxios({
+    method: 'POST',
+    url: `${apiAddress}/users/info`,
+    data: {
       nickname: nickname,
       gender: gender,
       weight: weight,
       height: height,
     },
-    {
-      headers: {
-        'x-access-token': token,
-      },
-    }
-  );
-
-  return response.data.code == 200;
+  }, 'always');
 };
 
 export const getLikes = async () => {
-  const token = await getAccessToken();
-  if (!token) return null;
+  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+    url: `${apiAddress}/likes`
+  }, 'always');
 
-  const response = await axios.get(`${apiAddress}/likes`, {
-    headers: {
-      'x-access-token': token,
-    },
-  });
-
-  if (response.data.code == 200)
-    return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
+  return result.map(processRawExerciseData);
 };
 
-export const getChannel = async (nickname : string) => {
-  const response = await axios.get(`${apiAddress}/channel?nickname=${nickname}`);
-
-  return (response.data.result as RawAPIExerciseData[]).map(processRawExerciseData);
-}
-
-export const toggleSubscribe = async (id : number, subscribe : boolean) => {
-  const token = await getAccessToken();
-  if (!token) return null;
- 
-  const response = await axios({
-    method: subscribe ? 'POST' : 'DELETE',
+export const getChannel = async (id: number) => {
+  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+    method: 'GET',
     url: `${apiAddress}/channel/${id}`,
-    headers: {
-      'x-access-token': token,
-    },
   });
 
-  return response.data.code == 200;
+  return result.map(processRawExerciseData);
+}
+
+export const toggleSubscribe = async (id : number, name : string, ok : boolean) => {
+  let [code] = await callAxios({
+    method: ok ? 'POST' : 'DELETE',
+    url: `${apiAddress}/channel/${id}`,
+  }, 'always');
+
+  if (code == 200) {
+    store.dispatch(subscribe({id: id, name: name}, ok));
+  }
+}
+
+export const getSubscribes = async () => {
+  const [code, result] = await callAxios<any[]>({
+    method: 'GET',
+    url: `${apiAddress}/users/subscribes`,
+  }, 'always');
+
+  return result.map((data) => {
+    return {
+      id: data.user_id,
+      name: data.nickname,
+    } as Channel;
+  }) as Channel[];
+}
+
+export const getSubscribed = async (id : number) => {
+  const [code, result] = await callAxios<any>({
+    method: 'GET',
+    url: `${apiAddress}/channel/${id}/subscribeInfo`
+  }, 'sometimes');
+
+  return result.isLike === 1;
+}
+
+export const getId = async (name: string) => {
+  let [code, result] = await callAxios<{user_id: number}>({
+    method: 'GET',
+    url: `${apiAddress}/users/id?nickname=${name}`,
+  });
+
+  return result.user_id;
 }
 
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {
   return {
+      type: "exercise",
       id: rawData.exercise_id,
       name: rawData.title,
       description: rawData.description,
@@ -287,8 +364,9 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       userId: rawData.user_id,
       userName: rawData["user.nickname"],
       thumbUrl: rawData.thumb_url,
+      thumbGifUrl: rawData.thumb_gif_url,
       videoUrl: rawData.video_url,
-      skeleton: rawData.skeleton,
+      innerData: rawData.skeleton,
       reward: rawData.reward,
       heartCount: rawData.like_counts,
       viewCount: rawData.view_counts,
@@ -296,5 +374,28 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       createdAt: rawData.created_at,
       updatedAt: rawData.updated_at,
       heart: rawData.isLike,
-  } as ExerciseData;
+  } as ContentData;
+}
+
+const processRawCourseData = (rawData : RawAPICourseData) => {
+  return {
+      type: "course",
+      id: rawData.course_id,
+      name: rawData.course_name,
+      description: rawData.description,
+      playTime: rawData.play_time,
+      userId: rawData.user_id,
+      userName: rawData["user.nickname"],
+      thumbUrl: rawData.thumb_url,
+      thumbGifUrl: rawData.thumb_gif_url,
+      videoUrl: rawData.video_url,
+      innerData: rawData.exercise_list,
+      reward: rawData.reward,
+      heartCount: rawData.like_counts,
+      viewCount: rawData.view_counts,
+      status: rawData.status,
+      createdAt: rawData.created_at,
+      updatedAt: rawData.updated_at,
+      heart: rawData.isLike,
+  } as ContentData;
 }

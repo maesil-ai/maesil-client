@@ -14,9 +14,9 @@ function Heart({ id, initialStatus, heartCount }: HeartProps) {
   let [count, setCount] = React.useState(heartCount);
 
   let onClick = async () => {
-    let response = await toggleLike(id, !status);
+    await toggleLike(id, !status);
     setCount(count + (status ? -1 : 1));
-    if (response) setStatus(!status);
+    setStatus(!status);
   };
 
   return (
