@@ -72,12 +72,13 @@ function UploadCourse() {
   const upload = async () => {
     setMessage('올리는 중...');
     let response = await postCourse({
+      
       description: description,
       play_time: 0,
       thumbnail: thumbnail,
       reward: 103,
       level: 103103,
-      course_name: name,
+      course_name: title,
       gif_thumbnail: thumbnail,
       exercise_list: JSON.stringify(contents),
       tag_id: 0,

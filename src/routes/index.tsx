@@ -50,6 +50,7 @@ const Root = () => {
         { loading && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
         <Route exact path="/" component={Home} />
         <Route path="/exercise/:id" component={Exercise} />
+        <Route path="/course/:id" component={Course} />
         <Route path="/result" component={Result} />
         <Route path="/upload/exercise" component={UploadExercise} />
         <Route path="/upload/course" component={UploadCourse} />
@@ -57,7 +58,6 @@ const Root = () => {
         <Redirect path="/upload" to="/upload/exercise" />
         <Route path="/signup" component={Signup} />
         <Route path="/mypage" component={Mypage} />
-        <Route path="/happy" component={Course} />
         <Route path="/logout" component={Logout} />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />

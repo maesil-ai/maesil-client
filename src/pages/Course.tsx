@@ -6,7 +6,7 @@ import Footer from "components/Footer";
 import usePromise from "utility/usePromise";
 import Loading from "pages/Loading";
 import { ContentData, PoseData, PlayRecord, CourseContent } from "utility/types";
-import { getExercise, postResult } from "utility/api";
+import { getExercise, postResult, getCourse } from "utility/api";
 import { Redirect } from "react-router-dom";
 
 const videoWidth = 800;
@@ -47,21 +47,24 @@ const loadStream = async () => {
 };
 
 interface CourseProps {
-
+    match?: any;
+    history?: any;  
 };
 
-function Course({} : CourseProps) {
+function Course({match, history} : CourseProps) {
+    let [id] = React.useState<number>(match.params.id);
+
     let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);
-
     let [userVideo, setUserVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
     let [guideVideo, setGuideVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
     let [guidePose, setGuidePose] = React.useState<PoseData>();
 
-    let [contents, setContents] = React.useState<CourseContent[]>(defaultContents);
-    let [progress, setProgress] = React.useState<number>(0);
+    let [contents, setContents] = React.useState<CourseContent[]>();
+    let [courseDataLoading, courseData, courseDataError] = usePromise(() => getCourse(id));
+    let [progress, setProgress] = React.useState<number>();
 
     let [currentExercise, setCurrentExercise] = React.useState<ContentData>();
     let [phase, setPhase] = React.useState<string>('');
@@ -77,6 +80,7 @@ function Course({} : CourseProps) {
         userVideo.width = guideVideo.width = videoWidth;
         userVideo.crossOrigin = guideVideo.crossOrigin = 'anonymous';
   
+      
         new Promise((resolve) => {
             userVideo.onloadeddata = resolve;
         }).then(() => {
@@ -97,6 +101,13 @@ function Course({} : CourseProps) {
         userVideo.srcObject = userStream;
     }, [userStream]);
 
+    useEffect(() => {
+        if (courseData) {
+            setContents(JSON.parse(courseData.innerData));
+            setProgress(0);
+        }
+    }, [courseData]);
+
     // 새로운 운동이 로딩되었을 때
     useEffect(() => {
         if (currentExercise) {
@@ -113,6 +124,7 @@ function Course({} : CourseProps) {
 
     // 다음 컨텐츠를 로드해야 할 때
     useEffect(() => {
+        if (!contents) return;
         if (progress == contents.length) {
             finish();
         } else {
@@ -169,7 +181,7 @@ function Course({} : CourseProps) {
             />
         );
     }
-    if (userLoading || guideLoading) return <Loading/>;
+    if (userLoading || guideLoading || courseDataLoading) return <Loading/>;
     return (
         <div>
           <Header />
