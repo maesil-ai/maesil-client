@@ -1,6 +1,7 @@
 
 // reducers/system
 export const RAISE_ERROR = 'RAISE_ERROR' as const;
+export const CLOSE_ERROR = 'CLOSE_ERROR' as const;
 
 // reducers/user
 export const SET_USER = 'SET_USER' as const;

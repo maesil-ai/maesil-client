@@ -19,6 +19,12 @@ export default function system(state = initialState, action : SystemAction) {
         error: true,
         message: action.message,
       }
+    case types.CLOSE_ERROR:
+      return {
+        ...state,
+        error: false,
+        message: "",
+      }
     default:
       return state;
   }

@@ -4,6 +4,8 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LoginButton from './LoginButton';
 import {  useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
+import store from 'store';
+import { closeError } from 'actions';
 
 interface HeaderProps {
   real?: boolean;
@@ -11,6 +13,7 @@ interface HeaderProps {
 
 function Header({ real = true } : HeaderProps) {
   let user = useSelector((state : RootReducerState) => state.user );
+  let system = useSelector((state : RootReducerState) => state.system );
 
   const dropdownMenu = real && React.useMemo(() => (
     <li className="dropdown right">
@@ -45,7 +48,7 @@ function Header({ real = true } : HeaderProps) {
     <header>
       <ul>
         <li className="left">
-          <Link to="/" style={{ padding: '32px' }}>
+          <Link to="/" style={{ padding: '32px' }} onClick={() => { system.error && store.dispatch(closeError()); } }>
             매실
           </Link>
         </li>

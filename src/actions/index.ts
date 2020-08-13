@@ -8,8 +8,15 @@ export const raiseError = (message: string) => {
   };
 };
 
+export const closeError = () => {
+  return {
+    type: types.CLOSE_ERROR,
+  };
+}
+
 export type SystemAction =
-  | ReturnType<typeof raiseError>;
+  | ReturnType<typeof raiseError>
+  | ReturnType<typeof closeError>;
 
 
 export const setUser = (userInfo: APIGetUserInfoData, subscribes: Channel[], profileImageUrl: string) => {
