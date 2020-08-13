@@ -6,7 +6,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Title from 'components/Title';
 import StatView from 'components/StatView';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 
 import Shelf from 'components/Shelf';
 import { ExerciseData, PlayRecord } from 'utility/types';
@@ -59,15 +59,8 @@ class Result extends React.Component<ResultProps, ResultState> {
   }
 
   render() {
-    if (this.state.loading) {
-      return (
-        <>
-          <Header />
-          <Loading />
-          <Footer />
-        </>
-      );
-    } else {
+    if (this.state.loading) return <Loading />;
+    else {
       const stats = this.state.stats;
 
       return (

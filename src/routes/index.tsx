@@ -9,36 +9,44 @@ import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
 import Userpage from 'pages/User';
 
-import { getUserInfo, getSubscribes } from 'utility/api';
-import { SET_USER, CLEAR_USER } from 'actions/ActionTypes';
-import { useDispatch } from 'react-redux';
-import { UserAction } from 'actions';
+import { getUserInfo, getSubscribes, getAccessToken } from 'utility/api';
+import { useDispatch, useStore, useSelector } from 'react-redux';
+import { UserAction, setUser, clearUser } from 'actions';
 import Modify from 'pages/Modify';
 import Course from 'pages/Course';
 import Fuck from 'pages/AccessToken';
+import Loading from 'pages/Loading';
+import { RootReducerState } from 'reducers';
+import Error from 'pages/Error';
 
 
 const Root = () => {
   const dispatch = useDispatch<Dispatch<UserAction>>();
+  const system = useSelector((state: RootReducerState) => state.system);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   React.useEffect(() => {
-    Promise.all([getUserInfo(), getSubscribes()]).then(([userInfo, subscribes]) => {
-      if (userInfo && subscribes) {
-        dispatch({
-          type: SET_USER,
-          userInfo: userInfo,
-          subscribes: subscribes,
-        });
-      } else {
-        dispatch({
-          type: CLEAR_USER,
-        });
+    getAccessToken().then((token) => {
+      if (!token) {
+        setLoading(false);
+        return;
       }
+      Promise.all([getUserInfo(), getSubscribes()]).then(([userInfo, subscribes]) => {
+        if (userInfo && subscribes) {
+          dispatch(setUser(userInfo, subscribes, null));
+        } else {
+          dispatch(clearUser());
+        }
+        setLoading(false);
+      });
     });
   }, []);
 
   return (
     <BrowserRouter>
       <Switch>
+        { system.error && <Route path="*" component={Error} /> }
+        { loading && <Route path="*" component={Loading} /> }
         <Route exact path="/" component={Home} />
         <Route path="/exercise/:id" component={Exercise} />
         <Route path="/result" component={Result} />

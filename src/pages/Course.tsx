@@ -4,7 +4,7 @@ import Header from "components/Header";
 import ExerciseScreen from "components/ExerciseScreen";
 import Footer from "components/Footer";
 import usePromise from "utility/usePromise";
-import Loading from "components/Loading";
+import Loading from "pages/Loading";
 import { ExerciseData, PoseData, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult } from "utility/api";
 import { Redirect } from "react-router-dom";
@@ -169,15 +169,7 @@ function Course({} : CourseProps) {
             />
         );
     }
-    if (userLoading || guideLoading) {
-        return (
-            <>
-                <Header />
-                <Loading />
-                <Footer />
-            </>
-        );
-    }
+    if (userLoading || guideLoading) return <Loading/>;
     return (
         <div>
           <Header />

@@ -5,7 +5,7 @@ import React from 'react';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Title from 'components/Title';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
 import { ExerciseData } from 'utility/types';
 
@@ -69,14 +69,7 @@ class Home extends React.Component<HomeProps, HomeState> {
   }
 
   render() {
-    if (this.state.loading)
-      return (
-        <>
-          <Header />
-          <Loading />
-          <Footer />
-        </>
-      );
+    if (this.state.loading) return <Loading/>;
     else {
       const shelfs = this.state.shelfDatas.map((data, index) => (
         <Shelf key={index} title={data.title} exercises={data.exercises} />

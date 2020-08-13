@@ -4,7 +4,7 @@ import React from 'react';
 import ExerciseScreen from 'components/ExerciseScreen';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Title from 'components/Title';
 import { PlayRecord, PoseData } from 'utility/types';
@@ -172,10 +172,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     if (this.state.isLoading) {
       return (
         <>
-          <Header />
           {videos}
           <Loading />
-          <Footer />
         </>
       );
     }

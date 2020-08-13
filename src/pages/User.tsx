@@ -15,7 +15,7 @@ import {
   APIGetUserInfoData,
   ExerciseData,
 } from 'utility/types';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
 import UserIntroduce from 'components/UserIntroduce';
 import { useSelector } from 'react-redux';
@@ -48,14 +48,7 @@ function Userpage({ match }: UserpageProps) {
     };
   }, []);
 
-  if (isLoading)
-    return (
-      <>
-        <Header />
-        <Loading />
-        <Footer />
-      </>
-    );
+  if (isLoading) return <Loading />;
   else
     return (
       <>

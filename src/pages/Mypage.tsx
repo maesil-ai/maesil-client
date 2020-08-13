@@ -5,7 +5,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { getAccessToken, getUserInfo, getLikes } from 'utility/api';
 import { APIGetUserInfoData, ExerciseData } from 'utility/types';
-import Loading from 'components/Loading';
+import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Shelf from 'components/Shelf';
 
@@ -24,14 +24,7 @@ function Mypage() {
   }, []);
 
   if (!getAccessToken()) return <Redirect to="/" />;
-  if (isLoading)
-    return (
-      <>
-        <Header />
-        <Loading />
-        <Footer />
-      </>
-    );
+  if (isLoading) return <Loading />;
   else
     return (
       <>
