@@ -47,7 +47,7 @@ export interface RawAPIExerciseData {
   isLike?: boolean;
 }
 
-// 현재 postExercise를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
+// 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
 // useToken = 'always': api 호출하기 전 access token을 무조건 가져와서 헤더에 넣음. 없으면 null 반환
 // useToken = 'sometimes': api 호출하기 전 access token이 있으면 가져와서 헤더에 넣음. 없으면 말고 ㅋ
 async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" | "always" | "sometimes" = "never", ifError : "abort" | "ignore" = "abort") : Promise<[number, Type]> {
@@ -70,7 +70,10 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
   
   try {
     let response = await axios(config);
-    return [response.data.code, response.data.result as Type];
+    console.log(config);
+    console.log(response.data.code);
+    console.log(response.data.result);
+    return [response.data.code, response.data.result];
   } catch (error) {
     if (ifError == 'abort') store.dispatch(raiseError(
       `API 서버에서 정보를 받아오는 데에 문제가 생겼습니다. 받아오려던 정보 : ${config.url} 발생한 오류 : ${error}`
@@ -154,18 +157,14 @@ export const login = async (
   profileImageUrl: string,
   accessToken: string,
 ) => {
-  let [code, data] = await callAxios<any>({
-    method: 'POST',
-    url: `${apiAddress}/users`,
-    data: {
-      id: id,
-      profile_image_url: profileImageUrl,
-      access_token: accessToken,
-    }
-  })
+  const response = await axios.post(`${apiAddress}/users`, {
+    id: id,
+    profile_image_url: profileImageUrl,
+    access_token: accessToken,
+  });
 
-  if (code == 200 || code == 201) {
-    const token = data.jwt;
+  if (response.data.code == 200 || response.data.code == 201) {
+    const token = response.data.jwt;
     setAccessToken(token);
     const [userInfo, subscribes] = [await getUserInfo(), await getSubscribes()];
     
@@ -280,21 +279,16 @@ export const getSubscribed = async (id : number) => {
   const [code, result] = await callAxios<any>({
     method: 'GET',
     url: `${apiAddress}/channel/${id}/subscribeInfo`
-  }, 'always');
+  }, 'sometimes');
 
   return result.isLike === 1;
 }
 
 export const getId = async (name: string) => {
-  let [code, result] = await callAxios<APIGetUserInfoData>({
+  let [code, result] = await callAxios<{user_id: number}>({
     method: 'GET',
     url: `${apiAddress}/users/id?nickname=${name}`,
   });
-
-  if (result == null) {
-    store.dispatch(raiseError("존재하지 않는 유저를 검색하려 했습니다."));
-    return null;
-  }
 
   return result.user_id;
 }
