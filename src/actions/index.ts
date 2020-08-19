@@ -42,7 +42,18 @@ export const subscribe = (channel: Channel, ok: boolean) => {
   };
 };
 
+export const changeInfo = (name: string, sex: string, height: number, weight: number) => {
+  return {
+    type: types.CHANGE_INFO,
+    name: name,
+    sex: sex,
+    height: height,
+    weight: weight,
+  };
+}
+
 export type UserAction = 
   | ReturnType<typeof setUser>
   | ReturnType<typeof clearUser>
-  | ReturnType<typeof subscribe>;
+  | ReturnType<typeof subscribe>
+  | ReturnType<typeof changeInfo>;

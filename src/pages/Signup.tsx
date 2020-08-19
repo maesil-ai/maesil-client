@@ -10,8 +10,8 @@ import InfoForm from 'components/InfoForm';
 function Signup() {
   let [status, setStatus] = React.useState<number>(0);
 
-  const handleSubmit = (name: string, sex: string, height: number, weight: number) => {
-    postUserInfo(name, sex, height, weight);
+  const handleSubmit = async (name: string, sex: string, height: number, weight: number) => {
+    await postUserInfo(name, sex, height, weight);
     setStatus(1);
   }
 

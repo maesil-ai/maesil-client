@@ -9,7 +9,7 @@ import {
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
-import { UserAction, setUser, subscribe, clearUser, raiseError } from 'actions';
+import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo } from 'actions';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -292,6 +292,8 @@ export const postUserInfo = async (
       height: height,
     },
   }, 'always');
+
+  store.dispatch(changeInfo(nickname, gender, height, weight));
 };
 
 export const getLikes = async () => {

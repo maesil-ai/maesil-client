@@ -1,22 +1,10 @@
 import KakaoLogin from 'react-kakao-login';
 import { kakaoJsKey } from 'utility/secret';
 import React from 'react';
-import { login, getUserInfo, setAccessToken } from 'utility/api';
-import { Redirect } from 'react-router-dom';
-import { userInfoHasMetadata } from 'utility/types';
-import { useSelector, useStore } from 'react-redux';
-import { RootReducerState as RootReducerState } from 'reducers';
+import { login } from 'utility/api';
 
-interface LoginButtonProps {
-
-}
-
-const LoginButton = ({ }: LoginButtonProps) => {
+const LoginButton = () => {
   let [status, setStatus] = React.useState(0);
-  const store = useStore();
-
-  if (status == 2) return <Redirect to="/signup" />;
-
   return (
     <KakaoLogin
       jsKey={kakaoJsKey}
@@ -24,9 +12,7 @@ const LoginButton = ({ }: LoginButtonProps) => {
         const id = response.profile.id;
         const profileImageUrl = response.profile.kakao_account.profile.profile_image_url;
         const kakaoToken = response.response.access_token;
-        if (await login(id, profileImageUrl, kakaoToken)) {
-          if (!userInfoHasMetadata(await getUserInfo())) setStatus(2);
-        }
+        await login(id, profileImageUrl, kakaoToken);
       }}
       onFailure={console.log}
       render={(props: any) => (
