@@ -26,6 +26,11 @@ export interface PosenetConfig {
   };
 }
 
+export interface Channel {
+  id: number;
+  name: string;
+}
+
 export const defaultPosenetConfig: PosenetConfig = {
   algorithm: 'single-pose',
   model: {
@@ -49,6 +54,13 @@ export interface PlayRecord {
   score: number;
 }
 
+export interface CourseContent {
+  phase: 'exercise' | 'break';
+  id: number;
+  repeat: number;
+  message: string;
+};
+
 export interface ScreenView {
   video: HTMLVideoElement;
   scale: number;
@@ -57,17 +69,18 @@ export interface ScreenView {
   calculator?: PoseCalculator;
 }
 
-export interface ExerciseData {
+export interface ContentData {
+  type: 'exercise' | 'course';
   id: number;
   name: string;
   description: string;
   playTime: string;
   userId: number;
   userName: string;
-  thumbUrl?: string;
-  thumbGifUrl?: string;
-  videoUrl?: string;
-  skeleton?: string;
+  thumbUrl: string;
+  thumbGifUrl: string;
+  videoUrl: string;
+  innerData?: string;
   reward: number;
   heartCount: number;
   viewCount: number;
@@ -87,6 +100,18 @@ export interface APIPostExerciseForm {
   tag_id: number;
   level: number;
   skeleton: string;
+}
+
+export interface APIPostCourseForm {
+  description: string;
+  play_time: number;
+  thumbnail: Blob;
+  reward: number;
+  level: number;
+  course_name: string;
+  gif_thumbnail: Blob;
+  exercise_list: string;
+  tag_id: number;
 }
 
 export interface APIGetUserInfoData {

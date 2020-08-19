@@ -43,7 +43,6 @@ export const extractPoseFromVideo = async (
       const pose = await extractPose();
       poses.push(pose);
       scores.push(pose.score);
-      console.log(pose.score);
       idx++;
       scores[idx] += scores[idx - 1];
       if (idx >= fps) {
@@ -55,7 +54,6 @@ export const extractPoseFromVideo = async (
         }
       }
 
-      console.log(time);
       onProgress(time / video.duration);
 
       time += 1 / recordFps;

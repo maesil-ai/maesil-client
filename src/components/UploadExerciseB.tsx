@@ -5,11 +5,11 @@ import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
 import { PoseData, Pose } from 'utility/types';
 
-interface UploadBProps {
+interface UploadExerciseBProps {
   video: File;
 }
 
-export function UploadB({ video }: UploadBProps) {
+export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [title, setTitle] = React.useState<string>(
     '그대 기억이 지난 사랑이 내 안을 파고드는 가시가 되어'
   );
@@ -138,4 +138,4 @@ export function UploadB({ video }: UploadBProps) {
   );
 }
 
-export default UploadB;
+export default UploadExerciseB;

@@ -2,11 +2,11 @@ import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { validA } from 'utility/validation';
 
-interface UploadAProps {
+interface UploadExerciseAProps {
   onFinish: (ok: String, videoFile: Blob) => void;
 }
 
-export function UploadA({ onFinish }: UploadAProps) {
+export function UploadExerciseA({ onFinish }: UploadExerciseAProps) {
   const onDrop = React.useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
     onFinish(validA(file), file);
@@ -28,4 +28,4 @@ export function UploadA({ onFinish }: UploadAProps) {
   );
 }
 
-export default UploadA;
+export default UploadExerciseA;
