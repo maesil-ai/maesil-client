@@ -53,14 +53,9 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   ), [videoUrl]);
 
   const upload = async () => {
-    const defaultThumbnailUrl =
-      'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
-    const defaultThumbnail = await fetch(defaultThumbnailUrl, {
-      mode: 'no-cors',
-    }).then((r) => r.blob());
     setMessage('올리는 중...');
 
-    if (!(await validateVideoLength(videoRef.current))) {
+    if (!(1 <= videoRef.current.duration || videoRef.current.duration <= 15)) {
       setMessage('영상의 길이는 1초에서 15초 사이여야 합니다.');
       return;
     }
@@ -70,7 +65,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
       title: title,
       description: description,
       play_time: videoRef.current.duration,
-      thumbnail: thumbnail ? thumbnail : defaultThumbnail,
+      thumbnail: thumbnail,
       gif_thumbnail: gifThumbnail,
       reward: 103,
       tag_id: 2,
@@ -132,7 +127,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
                 </td>
               </tr>
               <tr>
-                <td> 움직이는 썸네일 이미지 (선택) </td>
+                <td> 움직이는 썸네일 이미지 </td>
                 <td className="fill">
                   <input
                     type="file"

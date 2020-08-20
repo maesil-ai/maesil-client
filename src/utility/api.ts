@@ -157,7 +157,6 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data: APIPostExerciseForm) => {
   const token = await getAccessToken();
   if (!token) return null;
-
   const form = new FormData();
 
   for (const [key, value] of Object.entries(data)) {

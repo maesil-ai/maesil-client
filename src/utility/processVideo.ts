@@ -37,7 +37,7 @@ export const extractPoseFromVideo = async (
 
     const scores = [];
     let idx = 0;
-    const MINIMUM_THRESHOLD = 0.5;
+    const MINIMUM_THRESHOLD = 0.2;
     scores.push(0);
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();

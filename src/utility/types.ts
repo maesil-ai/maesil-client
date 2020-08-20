@@ -131,7 +131,6 @@ export interface APIGetUserInfoData {
 }
 
 export const userInfoHasMetadata = (userInfo: APIGetUserInfoData) => {
-  console.log(userInfo);
   if (
     userInfo &&
     userInfo.nickname &&
