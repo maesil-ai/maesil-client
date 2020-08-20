@@ -19,6 +19,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [message, setMessage] = React.useState<string>('영상 처리 중...');
   let [poses, setPoses] = React.useState<Pose[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
+  let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
 
   let [videoUrl, setVideoUrl] = React.useState<string>(URL.createObjectURL(video));
@@ -70,6 +71,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
       description: description,
       play_time: videoRef.current.duration,
       thumbnail: thumbnail ? thumbnail : defaultThumbnail,
+      gif_thumbnail: gifThumbnail,
       reward: 103,
       tag_id: 2,
       level: 4,
@@ -126,6 +128,16 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
                     accept="image/*"
                     required
                     onChange={(e) => setThumbnail(e.target.files[0])}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td> 움직이는 썸네일 이미지 (선택) </td>
+                <td className="fill">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setGifThumbnail(e.target.files[0])}
                   />
                 </td>
               </tr>

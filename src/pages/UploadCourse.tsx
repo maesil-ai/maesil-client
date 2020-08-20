@@ -31,6 +31,7 @@ function UploadCourse() {
   let [description, setDescription] = React.useState<string>('아~ 룡하떼연~?');
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
+  let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let [exercisesLoading, exercises, exercisesError] = usePromise(getExercises);
 
   const addContent = () => {
@@ -79,7 +80,7 @@ function UploadCourse() {
       reward: 103,
       level: 103103,
       course_name: title,
-      gif_thumbnail: thumbnail,
+      gif_thumbnail: gifThumbnail,
       exercise_list: JSON.stringify(contents),
       tag_id: 0,
     })
@@ -126,6 +127,17 @@ function UploadCourse() {
                   accept="image/*"
                   required
                   onChange={(e) => setThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 움직이는 썸네일 이미지 </td>
+              <td className="fill">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setGifThumbnail(e.target.files[0])}
                 />
               </td>
             </tr>

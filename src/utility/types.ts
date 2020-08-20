@@ -96,6 +96,7 @@ export interface APIPostExerciseForm {
   description: string;
   play_time: number;
   thumbnail: Blob;
+  gif_thumbnail: Blob;
   reward: number;
   tag_id: number;
   level: number;
