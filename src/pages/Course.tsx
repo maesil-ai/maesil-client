@@ -12,28 +12,7 @@ import { Redirect } from "react-router-dom";
 const videoWidth = 800;
 const videoHeight = 600;
 
-const amuId = 11;
-
-const defaultContents : CourseContent[] = [
-    {
-        phase: 'exercise',
-        id: amuId,
-        repeat: 3,
-        message: "첫번째 운동을 하구요...",
-    },
-    {
-        phase: 'break',
-        id: null,
-        repeat: 5,
-        message: "5초간 쉽니다...",
-    },
-    {
-        phase: 'exercise',
-        id: amuId,
-        repeat: 3,
-        message: "다시 운동을 합니다...",
-    }
-];
+const amuId = 23;
 
 const loadStream = async () => {
     return await navigator.mediaDevices.getUserMedia({

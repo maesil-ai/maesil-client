@@ -10,19 +10,15 @@ interface UploadExerciseBProps {
 }
 
 export function UploadExerciseB({ video }: UploadExerciseBProps) {
-  let [title, setTitle] = React.useState<string>(
-    '그대 기억이 지난 사랑이 내 안을 파고드는 가시가 되어'
-  );
-  let [description, setDescription] = React.useState<string>(
-    '머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다'
-  );
+  let [title, setTitle] = React.useState<string>('');
+  let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('영상 처리 중...');
   let [poses, setPoses] = React.useState<Pose[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
 
-  let [videoUrl, setVideoUrl] = React.useState<string>(URL.createObjectURL(video));
+  let videoUrl = React.useMemo<string>(() => URL.createObjectURL(video), []);
 
   const handleExtractProgress = (ratio: number) => {
     setMessage(`영상 ${Math.round(ratio * 100)}% 처리 중...`);

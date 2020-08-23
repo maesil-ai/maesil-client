@@ -22,13 +22,13 @@ const emptyContent: CourseContent = {
   phase: 'exercise',
   id: 11,
   repeat: 1,
-  message: "아~ 룡하떼연~?",
+  message: "",
 };
 
 function UploadCourse() {
   let [contents, setContents] = React.useState<CourseContent[]>([emptyContent]);
-  let [title, setTitle] = React.useState<string>('아놔~');
-  let [description, setDescription] = React.useState<string>('아~ 룡하떼연~?');
+  let [title, setTitle] = React.useState<string>('');
+  let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
