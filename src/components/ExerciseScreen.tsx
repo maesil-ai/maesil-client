@@ -239,6 +239,7 @@ class ExerciseScreen extends React.Component<
       }
 
       if (poses) {
+        console.log(poses);
         poses.forEach(({ score, keypoints }) => {
           if (score >= this.state.viewConfig.minPoseConfidence) {
             if (this.state.viewConfig.showPoints)

@@ -11,6 +11,7 @@
 # production
 /build
 최*.zip
+????.zip
 
 # misc
 .DS_Store

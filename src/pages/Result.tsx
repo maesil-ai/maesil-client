@@ -46,14 +46,14 @@ class Result extends React.Component<ResultProps, ResultState> {
   }
   async componentDidMount() {
     const [exercise, exercises] = await Promise.all([
-      getExercise(this.state.exerciseId),
+      this.state.exerciseId ? getExercise(this.state.exerciseId) : null,
       getExercises(),
     ]);
 
     this.setState({
       ...this.state,
       nextExercises: exercises,
-      exerciseName: exercise.name,
+      exerciseName: exercise ? exercise.name : "운동 코스",
       loading: false,
     });
   }

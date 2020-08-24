@@ -109,8 +109,10 @@ class PoseCalculator {
 
       this.modelInUse = false;
     }
-    if (poses[0]) this.record.push(poses[0]);
-    this.resultPoses = poses;
+    if (poses[0]) {
+      this.record.push(poses[0]);
+      this.resultPoses = poses;
+    }
     return true;
   };
 }

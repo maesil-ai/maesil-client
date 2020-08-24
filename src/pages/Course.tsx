@@ -12,7 +12,7 @@ import { Redirect } from "react-router-dom";
 const videoWidth = 800;
 const videoHeight = 600;
 
-const amuId = 23;
+const amuId = 25;
 
 const loadStream = async () => {
     return await navigator.mediaDevices.getUserMedia({
@@ -151,7 +151,7 @@ function Course({match, history} : CourseProps) {
               to={{
                 pathname: '/result',
                 state: {
-                  exerciseId: amuId,
+                  exerciseId: 0,
                   score: playRecord.score,
                   time: playRecord.time,
                   calorie: playRecord.calorie,
