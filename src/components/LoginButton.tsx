@@ -20,8 +20,8 @@ const LoginButton = () => {
             setStatus(1);
             props.onClick();
           }
-        }>
-          {status == 0 && '카카오톡으로 로그인!'}
+        } style={{cursor:'pointer'}}>
+          {status == 0 && '로그인'}
           {status == 1 && '로그인 중...'}
         </div>
       )}

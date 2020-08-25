@@ -39,13 +39,14 @@ header {
     .dropdown-content {
       text-align: left;
       padding: 30px;
-      display: none;
       position: absolute;
       background-color: #f9f9f9;
       z-index: 1;
+      display: block;
+      width: 32px;
       right: 0;
-      height: calc(100% - 100px);
-      width: 300px;
+      height: calc(100% - 60px);
+      color: #333;
       .text {
         font-size: 20px;
         font-weight: 400;
@@ -57,7 +58,9 @@ header {
     }
 
     .dropdown:hover .dropdown-content {
-      display: block;
+      width: 200px;
     }
+
+    
   }
 }

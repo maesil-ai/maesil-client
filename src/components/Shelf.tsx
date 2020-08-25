@@ -54,6 +54,7 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
                     else select(-1);
                   }
                 }}
+                style={{cursor:'pointer'}}
             />
             <GridListTileBar
               title={exercise.name}

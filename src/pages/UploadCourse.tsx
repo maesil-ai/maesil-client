@@ -8,6 +8,7 @@ import usePromise from 'utility/usePromise';
 import { getExercises, postCourse } from 'utility/api';
 import Loading from './Loading';
 import ComposeCourse from 'components/ComposeCourse';
+import Tabs from 'components/Tabs';
 
 const emptyContent: CourseContent = {
   phase: 'exercise',
@@ -83,7 +84,16 @@ function UploadCourse() {
   return (
     <>
       <Header/>
-      <Title title="운동 코스 올리기" />
+      <Title title="매실 스튜디오" />
+      <Tabs data={[{
+        name: "운동 업로드",
+        link: "/upload/exercise",
+        active: false,
+      }, {
+        name: "운동 코스 업로드",
+        link: "/upload/course",
+        active: true,
+      }]} />
       <div className="zone">
         <table>
           <tbody>
