@@ -29,11 +29,8 @@ function Modify() {
     return (
       <>
         <Header />
-        <Title title="설정" />
+        <Title title="정보 수정" />
         <div className="zone">
-          <div>
-            정보 수정
-          </div>
           <InfoForm defaultInfo={userInfo} onSubmit={handleSubmit} buttonMessage='수정'/>
         </div>
         <Footer />

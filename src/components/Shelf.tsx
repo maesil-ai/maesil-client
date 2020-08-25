@@ -10,7 +10,7 @@ import Title from 'components/Title';
 interface ShelfProps {
   exercises: ContentData[];
   title?: string;
-  control?: string;
+  control?: 'heart' | 'remove' | ((data: ContentData) => void);
 }
 
 function changeImageFunc(imageUrl: string | undefined) {
@@ -38,7 +38,7 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
       {title && <Title title={title}/>}
       <div className={'shelf'}>
         {exercises.map((exercise, index) => (
-          <GridListTile key={exercise.id} className={'gridList'}>
+          <GridListTile key={exercise.id} className={'gridList'} style={{margin: '5px'}}>
             <img
                 src={exercise.thumbUrl ? exercise.thumbUrl : defaultThumbUrl}
                 alt={exercise.name}
@@ -47,8 +47,12 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
                 onMouseOver={changeImageFunc(exercise.thumbGifUrl ? exercise.thumbGifUrl : defaultThumbGifUrl)}
                 onMouseOut={changeImageFunc(exercise.thumbUrl ? exercise.thumbUrl : defaultThumbUrl)}
                 onClick={() => {
-                  if (selected != index) select(index);
-                  else select(-1);
+                  if (typeof control == 'function') {
+                    control(exercise);
+                  } else {
+                    if (selected != index) select(index);
+                    else select(-1);
+                  }
                 }}
             />
             <GridListTileBar

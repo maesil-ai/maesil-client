@@ -7,16 +7,7 @@ import { CourseContent } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import { getExercises, postCourse } from 'utility/api';
 import Loading from './Loading';
-
-const typeList = ['운동', '휴식'];
-const typeToCode = {
-  '운동': 'exercise',
-  '휴식': 'break',
-}
-const codeToType = {
-  'exercise': '운동',
-  'break': '휴식',
-}
+import ComposeCourse from 'components/ComposeCourse';
 
 const emptyContent: CourseContent = {
   phase: 'exercise',
@@ -42,10 +33,10 @@ function UploadCourse() {
     setContents(contents.filter((_, elementIndex) => index != elementIndex ));
   }
 
-  const onChangeType = (index: number, str: string) => {
+  const onChangeType = (index: number, str: 'exercise' | 'break') => {
     console.log(index, str);
     let newContents = contents.map((content) => ({...content}));
-    newContents[index].phase = typeToCode[str];
+    newContents[index].phase = str;
     setContents(newContents);
   }
 
@@ -151,34 +142,25 @@ function UploadCourse() {
             <tr>
               <th> </th>
               <th> 동작 </th>
-              <th> 운동 ID </th>
+              <th> 운동 이름 </th>
               <th> 반복 횟수 (시간) </th>
               <th className="fill"> 설명 </th>
               <th> </th>
             </tr>
           </thead>
           <tbody>
-            { contents.map((content, index) => (
-              <tr key={index}>
-                <td> { index + 1 } </td>
-                <td>
-                  <select 
-                    value={codeToType[content.phase]}
-                    onChange={(event) => onChangeType(index, event.target.value)} 
-                  >
-                  {(typeList).map((value) => (
-                    <option value={value} key={value}>
-                      {value}
-                    </option>
-                  ))}
-                  </select>
-                </td>
-                <td> { content.phase != 'break' && <input type='number' value={content.id} onChange={(event) => onChangeId(index, event.target.value)} /> } </td>
-                <td> <input type='number' value={content.repeat} onChange={(event) => onChangeRepeat(index, event.target.value)} /> </td>
-                <td className="fill"> <input value={content.message} onChange={(event) => onChangeMessage(index, event.target.value)} /> </td>
-                <td> <button onClick={() => removeContent(index)}> {" - "} </button> </td>
-              </tr>
-            )).concat([(
+            { contents.map((content, index) => 
+              <ComposeCourse 
+                content={content} 
+                index={index}
+                onRemove={() => removeContent(index)}
+                onChangeId={(id) => onChangeId(index, id)}
+                onChangeMessage={(message) => onChangeMessage(index, message)}
+                onChangeRepeat={(repeat) => onChangeRepeat(index, repeat)}
+                onChangeType={(type) => onChangeType(index, type)}
+                exercises={exercises}
+                /> 
+            ).concat([(
               <tr key={-1}>
                 <td/> <td/> <td/> <td/> <td/>
                 <td> <button onClick={addContent}> {" + "} </button> </td>
