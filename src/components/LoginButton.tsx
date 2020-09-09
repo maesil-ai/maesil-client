@@ -3,6 +3,7 @@ import React from 'react';
 
 import { login } from 'utility/api';
 import * as dotenv from 'dotenv';
+import { Redirect } from 'react-router-dom';
 
 interface LoginButtonProps {
 

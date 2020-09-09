@@ -8,6 +8,8 @@ import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Title from 'components/Title';
 import { PlayRecord, PoseData } from 'utility/types';
+import store from 'store';
+import { setContent, setResult } from 'actions';
 
 interface ExerciseProps {
   videoWidth: number;
@@ -80,16 +82,15 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   };
 
   componentDidMount = async () => {
-    const [
-      { videoUrl: guideSource, innerData: guidePose },
-      userStream,
-    ] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
-
-    if (guidePose) this.guidePose = JSON.parse(guidePose) as PoseData;
-
+    const [guide, userStream] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
     const guideVideo = this.guideVideo.current;
     const userVideo = this.userVideo.current;
-    guideVideo.src = guideSource;
+
+    store.dispatch(setContent(guide));
+
+    if (guide.innerData) this.guidePose = JSON.parse(guide.innerData) as PoseData;
+
+    guideVideo.src = guide.videoUrl;
     userVideo.srcObject = userStream;
 
     this.userStream = userStream;
@@ -119,7 +120,8 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   };
 
   handleExerciseFinish = async (record: PlayRecord) => {
-    await postResult(this.state.id, record.score, record.time, record.calorie);
+    await postResult(this.state.id, record.score, record.playTime, record.calorie);
+    store.dispatch(setResult(record));
 
     this.setState({
       ...this.state,
@@ -139,7 +141,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
             state: {
               exerciseId: this.state.id,
               score: this.state.record.score,
-              time: this.state.record.time,
+              time: this.state.record.playTime,
               calorie: this.state.record.calorie,
             },
           }}
@@ -177,6 +179,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         </>
       );
     }
+    
     // 카메라 권한을 거절당했을 때...ㅠ
     else if (this.state.isCameraRejected) {
       return (
@@ -187,6 +190,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
         </>
       );
     }
+
     // 정상적인 운동 화면. 운동의 처리는 ExerciseScreen 컴포넌트에서 모두 이루어진다.
     else {
       return (

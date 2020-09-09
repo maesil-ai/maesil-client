@@ -10,74 +10,29 @@ import Loading from 'pages/Loading';
 
 import Shelf from 'components/Shelf';
 import { ContentData, PlayRecord } from 'utility/types';
+import usePromise from 'utility/usePromise';
+import { RootReducerState } from 'reducers';
+import { useSelector } from 'react-redux';
 
-interface ResultProps {
-  exerciseId: number;
-  location: any;
-}
+function Result() {
+  let [loading, nextExercises] = usePromise(getExercises);
+  let {content, record} = useSelector((state : RootReducerState) => state.content );
 
-interface ResultState {
-  loading: boolean;
-  exerciseId: number;
-  exerciseName?: string;
-  stats: PlayRecord;
-  nextExercises: ContentData[];
-}
 
-/**
- * Result 페이지
- * @class Result
- * @extends {React.Component<ResultProps, ResultState>}
- */
-class Result extends React.Component<ResultProps, ResultState> {
-  constructor(props: Readonly<ResultProps>) {
-    super(props);
-
-    this.state = {
-      loading: true,
-      exerciseId: this.props.location.state.exerciseId,
-      stats: {
-        time: this.props.location.state.time,
-        calorie: this.props.location.state.calorie,
-        score: this.props.location.state.score,
-      },
-      nextExercises: [],
-    };
-  }
-  async componentDidMount() {
-    const [exercise, exercises] = await Promise.all([
-      this.state.exerciseId ? getExercise(this.state.exerciseId) : null,
-      getExercises(),
-    ]);
-
-    this.setState({
-      ...this.state,
-      nextExercises: exercises,
-      exerciseName: exercise ? exercise.name : "운동 코스",
-      loading: false,
-    });
-  }
-
-  render() {
-    if (this.state.loading) return <Loading />;
-    else {
-      const stats = this.state.stats;
-
-      return (
-        <>
-          <Header />
-          <Title title={this.state.exerciseName + ' 완료!'} />
-          <StatView
-            time={stats.time}
-            calorie={stats.calorie}
-            score={stats.score}
-          />
-          <Shelf title="다음에 할 운동들" exercises={this.state.nextExercises} />
-          <Footer />
-        </>
-      );
-    }
-  }
+  if (loading) return <Loading />;
+  else return (
+    <>
+      <Header />
+      <Title title={content.name + ' 완료!'} />
+      <StatView
+        time={record.playTime}
+        calorie={record.calorie}
+        score={record.score}
+      />
+      <Shelf title="다음에 할 운동들" exercises={nextExercises} />
+      <Footer />
+    </>
+  )
 }
 
 export default Result;

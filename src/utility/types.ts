@@ -49,7 +49,7 @@ export const defaultPosenetConfig: PosenetConfig = {
 };
 
 export interface PlayRecord {
-  time: number;
+  playTime: number;
   calorie: number;
   score: number;
 }

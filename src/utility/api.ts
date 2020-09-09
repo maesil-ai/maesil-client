@@ -9,7 +9,7 @@ import {
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
-import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo } from 'actions';
+import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
 
 const apiAddress = 'https://api.maesil.ai';
 

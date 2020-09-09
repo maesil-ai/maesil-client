@@ -1,5 +1,5 @@
 import * as types from 'actions/ActionTypes';
-import { APIGetUserInfoData, Channel } from 'utility/types';
+import { APIGetUserInfoData, Channel, ContentData, PlayRecord } from 'utility/types';
 
 export const raiseError = (message: string) => {
   return {
@@ -17,6 +17,7 @@ export const closeError = () => {
 export type SystemAction =
   | ReturnType<typeof raiseError>
   | ReturnType<typeof closeError>;
+
 
 
 export const setUser = (userInfo: APIGetUserInfoData, subscribes: Channel[], profileImageUrl: string) => {
@@ -57,3 +58,29 @@ export type UserAction =
   | ReturnType<typeof clearUser>
   | ReturnType<typeof subscribe>
   | ReturnType<typeof changeInfo>;
+
+
+export const setContent = (content: ContentData) => {
+  return {
+    type: types.SET_CONTENT,
+    content: content,
+  };
+}
+
+export const setResult = (record: PlayRecord) => {
+  return {
+    type: types.SET_RESULT,
+    record: record,
+  };
+};
+
+export const clearContent = () => {
+  return {
+    type: types.CLEAR_CONTENT,
+  };
+};
+
+export type ContentAction =
+  | ReturnType<typeof setContent>
+  | ReturnType<typeof setResult>
+  | ReturnType<typeof clearContent>;

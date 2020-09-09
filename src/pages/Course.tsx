@@ -8,11 +8,11 @@ import Loading from "pages/Loading";
 import { ContentData, PoseData, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult, getCourse } from "utility/api";
 import { Redirect } from "react-router-dom";
+import { setResult, setContent } from 'actions';
+import store from 'store';
 
 const videoWidth = 800;
 const videoHeight = 600;
-
-const amuId = 25;
 
 const loadStream = async () => {
     return await navigator.mediaDevices.getUserMedia({
@@ -31,18 +31,22 @@ interface CourseProps {
 };
 
 function Course({match, history} : CourseProps) {
-    let [id] = React.useState<number>(match.params.id);
+    let id = React.useMemo<number>(() => match.params.id, []);
 
     let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);
-    let [userVideo, setUserVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
-    let [guideVideo, setGuideVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
+    let userVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
+    let guideVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
     let [guidePose, setGuidePose] = React.useState<PoseData>();
 
     let [contents, setContents] = React.useState<CourseContent[]>();
-    let [courseDataLoading, courseData, courseDataError] = usePromise(() => getCourse(id));
+    let [courseDataLoading, courseData] = usePromise(async () => {
+        const data = await getCourse(id);
+        store.dispatch(setContent(data));
+        return data;
+    });
     let [progress, setProgress] = React.useState<number>();
 
     let [currentExercise, setCurrentExercise] = React.useState<ContentData>();
@@ -51,7 +55,7 @@ function Course({match, history} : CourseProps) {
     let [repeat, setRepeat] = React.useState<number>(100);
 
     let [playRecord, setPlayRecord] = React.useState<PlayRecord>({
-        time: 0, calorie: 0, score: 0,
+        playTime: 0, calorie: 0, score: 0,
     });
 
     useEffect(() => {
@@ -59,7 +63,6 @@ function Course({match, history} : CourseProps) {
         userVideo.width = guideVideo.width = videoWidth;
         userVideo.crossOrigin = guideVideo.crossOrigin = 'anonymous';
   
-      
         new Promise((resolve) => {
             userVideo.onloadeddata = resolve;
         }).then(() => {
@@ -112,7 +115,8 @@ function Course({match, history} : CourseProps) {
     }, [progress]);
 
     const finish = async () => {
-        await postResult(amuId, playRecord.score, playRecord.time, playRecord.calorie);
+     //   await postResult(amuId, playRecord.score, playRecord.playTime, playRecord.calorie);
+        store.dispatch(setResult(playRecord));
         setRedirectToResult(true);
     };
 
@@ -134,7 +138,7 @@ function Course({match, history} : CourseProps) {
 
     const handleExerciseFinish = (nowRecord: PlayRecord) => {
         setPlayRecord({
-            time: playRecord.time + nowRecord.time,
+            playTime: playRecord.playTime + nowRecord.playTime,
             calorie: playRecord.calorie + nowRecord.calorie,
             score: playRecord.score + nowRecord.score / contents.length,
         });
@@ -153,7 +157,7 @@ function Course({match, history} : CourseProps) {
                 state: {
                   exerciseId: 0,
                   score: playRecord.score,
-                  time: playRecord.time,
+                  time: playRecord.playTime,
                   calorie: playRecord.calorie,
                 },
               }}

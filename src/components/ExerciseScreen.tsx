@@ -152,7 +152,7 @@ class ExerciseScreen extends React.Component<
 
         this.props.onExerciseFinish({
           score: averageScore,
-          time: (guideRecord.length / fps) * this.props.repeat,
+          playTime: (guideRecord.length / fps) * this.props.repeat,
           calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
         });
       } else {
@@ -181,7 +181,7 @@ class ExerciseScreen extends React.Component<
         });
         this.props.onExerciseFinish({
           score: 1,
-          time: 0,
+          playTime: 0,
           calorie: 0,
         });
       }
