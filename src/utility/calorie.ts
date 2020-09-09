@@ -13,7 +13,7 @@ const calculateVelocity = (
   time: number
 ) => calculatePixelDistance(position1, position2) / time;
 
-const convertDistanceToMeters = (distance: number, height: number) =>
+const convertDistanceToMeters = (distance: number, height: number = 1.73) =>
   (height - 0.3322) / (4.3 * distance);
 
 const calculateKineticEnergy = (velocity: number, mass: number) =>
@@ -66,6 +66,9 @@ export function exerciseCalorie(
   second: number,
   userInfo: any
 ) {
+  if (userInfo === null) {
+    userInfo = {height: 1.73, weight: 70};
+  }
   return (
     (17.5 / 60000) *
     energyToMET(estimateEnergy(userPose, userInfo)) *

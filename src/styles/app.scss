@@ -52,6 +52,10 @@ body {
   background-color: #eeeeee;
 }
 
+#root > * {
+  margin-right: 92px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -110,4 +114,32 @@ video.previewVideo {
   flex-wrap: nowrap;
   margin: 0px auto;
   position: relative;
+}
+
+.tabs {
+  width: calc(100% - 100px);
+  padding: 0px 20px;
+  margin-bottom: -10px;
+  align-items: flex-start;
+  justify-content: left;
+
+  display: flex;
+
+  font-size: 18px;
+  font-weight: 400;
+
+
+  letter-spacing: 0.1rem;
+  text-align: center;
+
+  button {
+    background-color: transparent;
+    color: #555;
+    font-weight: 400;
+
+    &.active {
+      font-weight: 700;
+      border-bottom: 2px solid black;
+    }
+  }
 }

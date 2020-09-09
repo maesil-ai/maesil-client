@@ -239,6 +239,7 @@ class ExerciseScreen extends React.Component<
       }
 
       if (poses) {
+        console.log(poses);
         poses.forEach(({ score, keypoints }) => {
           if (score >= this.state.viewConfig.minPoseConfidence) {
             if (this.state.viewConfig.showPoints)
@@ -361,23 +362,6 @@ class ExerciseScreen extends React.Component<
         >
           운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
         </canvas>
-        <label>
-          <Switch
-            id="Skeleton"
-            onChange={this.checkSkeleton}
-            checked={this.state.viewConfig.showSkeleton}
-          />
-          운동 가이드 보기
-        </label>
-        <br />
-        <label>
-          <Switch
-            id="Kalman"
-            onChange={this.checkKalmanFilters}
-            checked={this.state.useKalmanFilters}
-          />
-          칼만 필터 씌우기 (씌우면 움직임이 더 부드러워진다는 속설이 있습니다.)
-        </label>
       </div>
     );
   }

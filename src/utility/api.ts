@@ -9,7 +9,7 @@ import {
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
-import { UserAction, setUser, subscribe, clearUser, raiseError } from 'actions';
+import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo } from 'actions';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -157,7 +157,6 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data: APIPostExerciseForm) => {
   const token = await getAccessToken();
   if (!token) return null;
-
   const form = new FormData();
 
   for (const [key, value] of Object.entries(data)) {
@@ -292,6 +291,8 @@ export const postUserInfo = async (
       height: height,
     },
   }, 'always');
+
+  store.dispatch(changeInfo(nickname, gender, height, weight));
 };
 
 export const getLikes = async () => {

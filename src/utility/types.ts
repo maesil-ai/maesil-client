@@ -96,6 +96,7 @@ export interface APIPostExerciseForm {
   description: string;
   play_time: number;
   thumbnail: Blob;
+  gif_thumbnail: Blob;
   reward: number;
   tag_id: number;
   level: number;
@@ -131,6 +132,7 @@ export interface APIGetUserInfoData {
 
 export const userInfoHasMetadata = (userInfo: APIGetUserInfoData) => {
   if (
+    userInfo &&
     userInfo.nickname &&
     userInfo.gender &&
     userInfo.weight &&

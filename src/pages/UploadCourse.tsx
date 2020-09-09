@@ -7,30 +7,23 @@ import { CourseContent } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import { getExercises, postCourse } from 'utility/api';
 import Loading from './Loading';
-
-const typeList = ['운동', '휴식'];
-const typeToCode = {
-  '운동': 'exercise',
-  '휴식': 'break',
-}
-const codeToType = {
-  'exercise': '운동',
-  'break': '휴식',
-}
+import ComposeCourse from 'components/ComposeCourse';
+import Tabs from 'components/Tabs';
 
 const emptyContent: CourseContent = {
   phase: 'exercise',
   id: 11,
   repeat: 1,
-  message: "아~ 룡하떼연~?",
+  message: "",
 };
 
 function UploadCourse() {
   let [contents, setContents] = React.useState<CourseContent[]>([emptyContent]);
-  let [title, setTitle] = React.useState<string>('아놔~');
-  let [description, setDescription] = React.useState<string>('아~ 룡하떼연~?');
+  let [title, setTitle] = React.useState<string>('');
+  let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
+  let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let [exercisesLoading, exercises, exercisesError] = usePromise(getExercises);
 
   const addContent = () => {
@@ -41,10 +34,10 @@ function UploadCourse() {
     setContents(contents.filter((_, elementIndex) => index != elementIndex ));
   }
 
-  const onChangeType = (index: number, str: string) => {
+  const onChangeType = (index: number, str: 'exercise' | 'break') => {
     console.log(index, str);
     let newContents = contents.map((content) => ({...content}));
-    newContents[index].phase = typeToCode[str];
+    newContents[index].phase = str;
     setContents(newContents);
   }
 
@@ -79,7 +72,7 @@ function UploadCourse() {
       reward: 103,
       level: 103103,
       course_name: title,
-      gif_thumbnail: thumbnail,
+      gif_thumbnail: gifThumbnail,
       exercise_list: JSON.stringify(contents),
       tag_id: 0,
     })
@@ -91,7 +84,16 @@ function UploadCourse() {
   return (
     <>
       <Header/>
-      <Title title="운동 코스 올리기" />
+      <Title title="매실 스튜디오" />
+      <Tabs data={[{
+        name: "운동 업로드",
+        link: "/upload/exercise",
+        active: false,
+      }, {
+        name: "운동 코스 업로드",
+        link: "/upload/course",
+        active: true,
+      }]} />
       <div className="zone">
         <table>
           <tbody>
@@ -129,6 +131,17 @@ function UploadCourse() {
                 />
               </td>
             </tr>
+            <tr>
+              <td> 움직이는 썸네일 이미지 </td>
+              <td className="fill">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setGifThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -139,34 +152,25 @@ function UploadCourse() {
             <tr>
               <th> </th>
               <th> 동작 </th>
-              <th> 운동 ID </th>
+              <th> 운동 이름 </th>
               <th> 반복 횟수 (시간) </th>
               <th className="fill"> 설명 </th>
               <th> </th>
             </tr>
           </thead>
           <tbody>
-            { contents.map((content, index) => (
-              <tr key={index}>
-                <td> { index + 1 } </td>
-                <td>
-                  <select 
-                    value={codeToType[content.phase]}
-                    onChange={(event) => onChangeType(index, event.target.value)} 
-                  >
-                  {(typeList).map((value) => (
-                    <option value={value} key={value}>
-                      {value}
-                    </option>
-                  ))}
-                  </select>
-                </td>
-                <td> { content.phase != 'break' && <input type='number' value={content.id} onChange={(event) => onChangeId(index, event.target.value)} /> } </td>
-                <td> <input type='number' value={content.repeat} onChange={(event) => onChangeRepeat(index, event.target.value)} /> </td>
-                <td className="fill"> <input value={content.message} onChange={(event) => onChangeMessage(index, event.target.value)} /> </td>
-                <td> <button onClick={() => removeContent(index)}> {" - "} </button> </td>
-              </tr>
-            )).concat([(
+            { contents.map((content, index) => 
+              <ComposeCourse 
+                content={content} 
+                index={index}
+                onRemove={() => removeContent(index)}
+                onChangeId={(id) => onChangeId(index, id)}
+                onChangeMessage={(message) => onChangeMessage(index, message)}
+                onChangeRepeat={(repeat) => onChangeRepeat(index, repeat)}
+                onChangeType={(type) => onChangeType(index, type)}
+                exercises={exercises}
+                /> 
+            ).concat([(
               <tr key={-1}>
                 <td/> <td/> <td/> <td/> <td/>
                 <td> <button onClick={addContent}> {" + "} </button> </td>

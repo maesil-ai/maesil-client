@@ -19,11 +19,13 @@ import Loading from 'pages/Loading';
 import { RootReducerState } from 'reducers';
 import Error from 'pages/Error';
 import UploadCourse from 'pages/UploadCourse';
+import { userInfoHasMetadata } from 'utility/types';
 
 
 const Root = () => {
   const dispatch = useDispatch<Dispatch<UserAction>>();
   const system = useSelector((state: RootReducerState) => state.system);
+  const user = useSelector((state: RootReducerState) => state.user);
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
@@ -48,6 +50,8 @@ const Root = () => {
       <Switch>
         { system.error && <Route path="*" component={Error} /> }
         { loading && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
+        <Route path="/logout" component={Logout} />
+        { user.loggedIn && !userInfoHasMetadata(user.userInfo) && <Route path="*" component={Signup} /> }
         <Route exact path="/" component={Home} />
         <Route path="/exercise/:id" component={Exercise} />
         <Route path="/course/:id" component={Course} />
@@ -58,7 +62,6 @@ const Root = () => {
         <Redirect path="/upload" to="/upload/exercise" />
         <Route path="/signup" component={Signup} />
         <Route path="/mypage" component={Mypage} />
-        <Route path="/logout" component={Logout} />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />
         <Redirect path="/setting/*" to="/setting/info" />
