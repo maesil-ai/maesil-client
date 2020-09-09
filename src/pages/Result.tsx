@@ -9,16 +9,16 @@ import StatView from 'components/StatView';
 import Loading from 'pages/Loading';
 
 import Shelf from 'components/Shelf';
-import { ContentData, PlayRecord } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import { RootReducerState } from 'reducers';
 import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 function Result() {
   let [loading, nextExercises] = usePromise(getExercises);
   let {content, record} = useSelector((state : RootReducerState) => state.content );
 
-
+  if (!content || !record) return <Redirect to='/' />;
   if (loading) return <Loading />;
   else return (
     <>
