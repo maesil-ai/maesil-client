@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LockIcon from '@material-ui/icons/Lock';
 import LoginButton from './LoginButton';
-import {  useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
 import store from 'store';
 import { closeError } from 'actions';
@@ -50,9 +50,6 @@ function Header({ real = true } : HeaderProps) {
       </div>
     </li>
   ), [user]);
-
-  
-
 
   return (
     <header>

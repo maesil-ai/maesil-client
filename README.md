@@ -1,14 +1,10 @@
-# 매실 텍스트 로고
+# 매실
 
-> 한 문장으로 우리 프로젝트 설명
+> 오늘부터 매일매일 실내운동
 
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/maesil-ai/maesil-client/pulls)
 
 [![매실](https://i.imgur.com/b0YBYnC.png)](https://maesil.ai)
-
-우리 앱을 설명할 수 있는 데모 GIF
-
-[참조 리드미](https://github.com/nhn/tui.editor#readme)
 
 ## 🚩 목차
 
@@ -16,43 +12,69 @@
 - [🐾 튜토리얼](#🐾-튜토리얼)
 - [🌏 브라우저 지원](#🌏-브라우저-지원)
 - [🔧 개발 환경 설정](#🔧-개발-환경-설정)
+- [⚙️ 시스템 구성도](#⚙️-시스템-구성도)
 - [🔗 자세한 설명](#🔗-자세한-설명)
 - [📜 라이센스](#📜-라이센스)
 
 ## 🤖 왜 매실인가
 
-줄 글 2~3줄 분량으로 설명
+“홈 트레닝계의 유튜브”
 
-### 장점 1
+매실은 많은 사람들이 매일매일 실내운동을 할 수 있게 도와주는 운동 콘텐츠 플랫폼이다. 누구나 자신만의 운동 동영상 콘텐츠를 올릴 수 있고 이를 보고 홈 트레이닝을 할 수 있다. 이 때 운동 영상을 보면서 운동을 할 때 AI가 동작을 잘 따라하는지에 대한 점수를 매겨준다. 또한 운동들을 모아서 운동 코스를 제작할 수 있고, 개인에게 맞는 추천 기능, 커뮤니티, 업적, 레벨 등의 기능등을 통해 재미를 느껴 매일매일할 수 있는 동기부여를 유저에게 제공한다.
 
-장점을 보여줄 수 있는 이미지
+### Play
 
-장점에 대한 자세한 설명
+![main](https://i.imgur.com/3Q85jq7.png)
 
-### 장점 2
+사용자는 메인화면에서 자신이 원하는 운동 동작을 고를 수 있다.
 
-장점을 보여줄 수 있는 이미지
+![play](https://i.imgur.com/dhA0m9Q.gif)
 
-장점에 대한 자세한 설명
+자신이 가이드의 자세를 잘 따라하고 있는지 AI 기반으로 실시간으로 점수를 피드백 받을 수 있다.
 
-### 장점 3
+### Upload
 
-장점을 보여줄 수 있는 이미지
+![upload](https://i.imgur.com/g0EpWXg.gif)
 
-장점에 대한 자세한 설명
+자신만의 운동을 업로드 할 수 있다
 
-### 장점 4
+### Course
 
-장점을 보여줄 수 있는 이미지
+![코스](https://i.imgur.com/qmfm1gE.png)
 
-장점에 대한 자세한 설명
+여러 운동들을 모아서 자신만의 운동 코스를 제작할 수 있다.
+
+### Feedback
+
+미구현: 사용자가 운동을 계속하도록 자극하는 장치
+업적, 레벨, 통계 시스템 등
+
+### Community
+
+미구현:컨텐츠 제작자와 상호작용하며 혼자 하는 운동이 아닌 다같이 하는 운동이라는 재미를 주는 기능피드, 게시글 기능
+
+### Coach
+
+미구현: 자신의 체형과 운동 기록에 맞게 필요한 운동을 추천해주는 기술기존 유저들의 플레이를 분석하여 데이터에서 의미를 찾아내는 과정
 
 ## 🐾 튜토리얼
 
-우리 앱 사용 설명서
+TO-DO
 
-- 기능 1
-- 기능 2
+
+## ⚙️ 시스템 구성도
+
+### 시스템 아키텍처
+
+![architecture](https://i.imgur.com/2O3UcMM.png)
+
+### DB 설계
+
+![database](https://i.imgur.com/hTrCjef.png)
+
+### CI/CD
+
+![CI/CD](https://i.imgur.com/EfdPlQw.png)
 
 ## 🌏 브라우저 지원
 
@@ -121,9 +143,12 @@ PR을 하기 전에는 에러가 없는지 체크를 해야합니다. 그리고 
 
 - [매실 블로그](https://blog.maesil.ai)
   - [두 사람의 동작 유사도를 계산하기](https://blog.maesil.ai/2020/08/04/pose-similarity.html)
+  - [Bye-bye master 브랜치](https://blog.maesil.ai/2020/08/10/bye-bye-master.html)
 
 - [매실 트위터](https://twitter.com/maesil_ai)
 
 ## 📜 라이센스
 
 [MIT License](https://github.com/maesil-ai/maesil-client/LICENSE) © [매실 - Maesil](https://github.com/maesil-ai).
+
+![codeblue](https://i.imgur.com/QtKhI7x.jpg)
