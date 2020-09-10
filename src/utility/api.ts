@@ -46,6 +46,7 @@ export interface RawAPIExerciseData {
   created_at: string;
   updated_at: string;
   isLike?: boolean;
+  tag_id: number;
 }
 
 export interface RawAPICourseData {
@@ -65,6 +66,7 @@ export interface RawAPICourseData {
   created_at: string;
   updated_at: string;
   isLike?: boolean;
+  tag_id: number;
 }
 
 // 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
@@ -375,6 +377,7 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       createdAt: rawData.created_at,
       updatedAt: rawData.updated_at,
       heart: rawData.isLike,
+      tagId: rawData.tag_id,
   } as ContentData;
 }
 
@@ -398,5 +401,6 @@ const processRawCourseData = (rawData : RawAPICourseData) => {
       createdAt: rawData.created_at,
       updatedAt: rawData.updated_at,
       heart: rawData.isLike,
+      tagId: rawData.tag_id,
   } as ContentData;
 }

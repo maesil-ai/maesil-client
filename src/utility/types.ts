@@ -79,6 +79,7 @@ export interface ContentData {
   userName: string;
   thumbUrl: string;
   thumbGifUrl: string;
+  tagId: number;
   videoUrl: string;
   innerData?: string;
   reward: number;
