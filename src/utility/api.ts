@@ -6,6 +6,7 @@ import {
   APIGetUserInfoData,
   Channel,
   APIPostCourseForm,
+  TagData,
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
@@ -329,7 +330,7 @@ export const getSubscribes = async () => {
   const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/users/subscribes`,
-  }, 'always');
+  }, 'always', 'ignore');
 
   return result.map((data) => {
     return {
@@ -355,6 +356,29 @@ export const getId = async (name: string) => {
   });
 
   return result.user_id;
+}
+
+interface RawAPITagData {
+  tag_id: number;
+  tag_name: string;
+  tag_english_name: string;
+};
+
+export const getTags = async () => {
+  let [code, result] = await callAxios<RawAPITagData[]>({
+    method: 'GET',
+    url: `${apiAddress}/tags`,
+  });
+
+  return result.map((rawData) => processRawTagData(rawData));
+}
+
+const processRawTagData = (rawData : RawAPITagData) => {
+  return {
+    id: rawData.tag_id,
+    name: rawData.tag_name,
+    englishName: rawData.tag_english_name,
+  } as TagData;
 }
 
 const processRawExerciseData = (rawData : RawAPIExerciseData) => {

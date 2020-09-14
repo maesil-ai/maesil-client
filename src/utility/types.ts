@@ -69,6 +69,12 @@ export interface ScreenView {
   calculator?: PoseCalculator;
 }
 
+export interface TagData {
+  id: number;
+  name: string;
+  englishName: string;
+};
+
 export interface ContentData {
   type: 'exercise' | 'course';
   id: number;

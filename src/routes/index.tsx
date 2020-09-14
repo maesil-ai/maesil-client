@@ -9,9 +9,9 @@ import Mypage from 'pages/Mypage';
 import Logout from 'pages/Logout';
 import Userpage from 'pages/User';
 
-import { getUserInfo, getSubscribes, getAccessToken } from 'utility/api';
+import { getUserInfo, getSubscribes, getAccessToken, getTags } from 'utility/api';
 import { useDispatch, useStore, useSelector } from 'react-redux';
-import { UserAction, setUser, clearUser } from 'actions';
+import { UserAction, setUser, clearUser, setTags, SystemAction } from 'actions';
 import Modify from 'pages/Modify';
 import Course from 'pages/Course';
 import Fuck from 'pages/AccessToken';
@@ -20,36 +20,31 @@ import { RootReducerState } from 'reducers';
 import Error from 'pages/Error';
 import UploadCourse from 'pages/UploadCourse';
 import { userInfoHasMetadata } from 'utility/types';
+import usePromise from 'utility/usePromise';
 
 
 const Root = () => {
-  const dispatch = useDispatch<Dispatch<UserAction>>();
+  const dispatch = useDispatch<Dispatch<UserAction | SystemAction>>();
   const system = useSelector((state: RootReducerState) => state.system);
   const user = useSelector((state: RootReducerState) => state.user);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const [userInfoLoading, userInfo] = usePromise(getUserInfo);
+  const [subscribesLoading, subscribes] = usePromise(getSubscribes);
+  const [tagsLoading, tags] = usePromise(getTags);
 
   React.useEffect(() => {
-    getAccessToken().then((token) => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-      Promise.all([getUserInfo(), getSubscribes()]).then(([userInfo, subscribes]) => {
-        if (userInfo && subscribes) {
-          dispatch(setUser(userInfo, subscribes, null));
-        } else {
-          dispatch(clearUser());
-        }
-        setLoading(false);
-      });
-    });
-  }, []);
+    if (userInfo && subscribes) dispatch(setUser(userInfo, subscribes, null));
+    else dispatch(clearUser());
+  }, [userInfo, subscribes]);
+
+  React.useEffect(() => {
+    dispatch(setTags(tags));
+  }, [tags]);
 
   return (
     <BrowserRouter>
       <Switch>
         { system.error && <Route path="*" component={Error} /> }
-        { loading && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
+        { (userInfoLoading || subscribesLoading || tagsLoading) && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
         <Route path="/logout" component={Logout} />
         { user.loggedIn && !userInfoHasMetadata(user.userInfo) && <Route path="*" component={Signup} /> }
         <Route exact path="/" component={Home} />

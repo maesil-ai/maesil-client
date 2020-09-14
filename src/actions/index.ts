@@ -1,5 +1,5 @@
 import * as types from 'actions/ActionTypes';
-import { APIGetUserInfoData, Channel, ContentData, PlayRecord } from 'utility/types';
+import { APIGetUserInfoData, Channel, ContentData, PlayRecord, TagData } from 'utility/types';
 
 export const raiseError = (message: string) => {
   return {
@@ -14,9 +14,17 @@ export const closeError = () => {
   };
 }
 
+export const setTags = (tags: TagData[]) => {
+  return {
+    type: types.SET_TAGS,
+    tags: tags,
+  }
+}
+
 export type SystemAction =
   | ReturnType<typeof raiseError>
-  | ReturnType<typeof closeError>;
+  | ReturnType<typeof closeError>
+  | ReturnType<typeof setTags>;
 
 
 
