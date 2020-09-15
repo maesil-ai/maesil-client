@@ -2,6 +2,7 @@ import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LockIcon from '@material-ui/icons/Lock';
+import SearchIcon from '@material-ui/icons/Search';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
@@ -57,6 +58,12 @@ function Header({ real = true } : HeaderProps) {
           <Link to="/" style={{ padding: '32px' }} onClick={() => { system.error && store.dispatch(closeError()); } }>
             매실
           </Link>
+        </li>
+        <li className="right">
+          <SearchIcon style={{margin: '32px 16px'}} fontSize="large" />
+        </li>
+        <li className="right">
+          <input style={{ width: '300px', margin: '32px 0px', borderBottom: '2px solid #555' }}/>
         </li>
         { mouseHover && real ? dropdownMenu : smallDropdownMenu }
       </ul>

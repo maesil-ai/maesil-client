@@ -56,7 +56,9 @@ const Root = () => {
         <Redirect path="/upload/*" to="/upload/exercise" />
         <Redirect path="/upload" to="/upload/exercise" />
         <Route path="/signup" component={Signup} />
-        <Route path="/mypage" component={Mypage} />
+        <Route path="/mypage/info" component={Mypage} />
+        <Redirect path="/mypage/*" to="mypage/info" />
+        <Redirect path="/mypage" to="mypage/info" />
         <Route path="/user/:name" component={Userpage} />
         <Route path="/setting/info" component={Modify} />
         <Redirect path="/setting/*" to="/setting/info" />

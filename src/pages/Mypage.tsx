@@ -8,6 +8,7 @@ import { APIGetUserInfoData, ContentData } from 'utility/types';
 import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Shelf from 'components/Shelf';
+import Tabs from 'components/Tabs';
 
 function Mypage() {
   let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
@@ -30,6 +31,11 @@ function Mypage() {
       <>
         <Header />
         <Title title={userInfo.nickname + '님, 오늘도 파이팅!'} />
+        <Tabs data={[{
+          name: "정보",
+          link: "/mypage/info",
+          active: true,
+        }]} />
         <div className="zone">
           <div> 현재 {userInfo.level}레벨입니다. </div>
           <div> 키: {userInfo.height}cm </div>
