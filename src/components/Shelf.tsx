@@ -58,7 +58,6 @@ function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfP
             />
             <GridListTileBar
               title={exercise.name}
-              subtitle={exercise.description}
               classes={{
                 root: 'titleBar',
                 title: 'titleText',

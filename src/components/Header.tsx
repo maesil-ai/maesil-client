@@ -23,9 +23,8 @@ function Header({ real = true } : HeaderProps) {
       { user.loggedIn ? <PermIdentityIcon fontSize="large" /> : <LockIcon fontSize="large" /> }
       {user.loggedIn ? (
         <>
-          <div className="text"> {user.userInfo.nickname}님 안녕하세요! </div>
+          <div className="text"> <Link to={`/user/${user.userInfo.nickname}`}><span style={{fontWeight: 700}}>{user.userInfo.nickname}</span></Link>님 안녕하세요! </div>
           <div> <Link to="/mypage"> 마이페이지 </Link> </div>
-          <div> <Link to={`/user/${user.userInfo.nickname}`}> 내 채널 </Link> </div>
           <div> <Link to="/upload/exercise"> 스튜디오 </Link> </div>
           <div> <Link to="/setting"> 설정 </Link> </div>
           <div> <Link to="/logout"> 로그아웃 </Link> </div>
@@ -59,7 +58,7 @@ function Header({ real = true } : HeaderProps) {
             매실
           </Link>
         </li>
-        { mouseHover ? dropdownMenu : smallDropdownMenu }
+        { mouseHover && real ? dropdownMenu : smallDropdownMenu }
       </ul>
     </header>
   );
