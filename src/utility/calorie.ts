@@ -1,4 +1,5 @@
 import * as posenet from '@tensorflow-models/posenet';
+import store from 'store';
 import { fps, Position, APIGetUserInfoData } from './types';
 
 const calculatePixelDistance = (position1: Position, position2: Position) =>
@@ -19,7 +20,7 @@ const convertDistanceToMeters = (distance: number, height: number = 1.73) =>
 const calculateKineticEnergy = (velocity: number, mass: number) =>
   0.5 * mass * velocity * velocity;
 
-function estimateEnergy(userPose: posenet.Pose[], userInfo: any) {
+function estimateEnergy(userPose: posenet.Pose[], userInfo: APIGetUserInfoData) {
   let energyBurned = 0;
   let previousPose = null;
   const k = 1;
@@ -61,14 +62,8 @@ function energyToMET(energy: number) {
   return log_scale;
 }
 
-export function exerciseCalorie(
-  userPose: posenet.Pose[],
-  second: number,
-  userInfo: any
-) {
-  if (userInfo === null) {
-    userInfo = {height: 1.73, weight: 70};
-  }
+export function exerciseCalorie(userPose: posenet.Pose[], second: number) {
+  const userInfo = store.getState().user.userInfo;
   return (
     (17.5 / 60000) *
     energyToMET(estimateEnergy(userPose, userInfo)) *
