@@ -22,7 +22,7 @@ function Header({ real = true } : HeaderProps) {
     <li className="dropdown right" onMouseLeave={() => setMouseHover(false)}>
       <div className="dropdown-content">
       { user.loggedIn ? <PermIdentityIcon fontSize="large" /> : <LockIcon fontSize="large" /> }
-      {user.loggedIn ? (
+      { user.loggedIn ? (
         <>
           <div className="text"> <Link to={`/user/${user.userInfo.nickname}`}><span style={{fontWeight: 700}}>{user.userInfo.nickname}</span></Link>님 안녕하세요! </div>
           <div> <Link to="/mypage"> 마이페이지 </Link> </div>
@@ -43,14 +43,6 @@ function Header({ real = true } : HeaderProps) {
     </li>
   ), [user]);
 
-  const smallDropdownMenu = real && React.useMemo(() => (
-    <li className="dropdown right" onMouseEnter={() => setMouseHover(true)}>
-      <div className="dropdown-content">
-      { user.loggedIn ? <PermIdentityIcon fontSize="large" /> : <LockIcon fontSize="large" /> }
-      </div>
-    </li>
-  ), [user]);
-
   return (
     <header>
       <ul>
@@ -59,13 +51,17 @@ function Header({ real = true } : HeaderProps) {
             매실
           </Link>
         </li>
+        { mouseHover && real && dropdownMenu }
+        <li className="dropdown right" onMouseEnter={() => setMouseHover(true)}>
+          { user.loggedIn ? <PermIdentityIcon style={{ padding: '32px' }} fontSize="large" /> 
+                          : <LockIcon style={{ padding: '32px' }} fontSize="large" /> }
+        </li>
         <li className="right">
           <SearchIcon style={{margin: '32px 16px'}} fontSize="large" />
         </li>
         <li className="right">
-          <input style={{ width: '300px', margin: '32px 0px', borderBottom: '2px solid #555' }}/>
+          <input style={{ margin: '32px 0px' }} className='search'/>
         </li>
-        { mouseHover && real ? dropdownMenu : smallDropdownMenu }
       </ul>
     </header>
   );
