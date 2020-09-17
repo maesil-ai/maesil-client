@@ -51,7 +51,7 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
 
   return (
     <>
-      <table>
+      <table style={{width: '100%'}}>
         <tbody>
           <tr>
             <td> 이름 </td>
