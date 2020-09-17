@@ -62,7 +62,8 @@ function Course({match, history} : CourseProps) {
         userVideo.height = guideVideo.height = videoHeight;
         userVideo.width = guideVideo.width = videoWidth;
         userVideo.crossOrigin = guideVideo.crossOrigin = 'anonymous';
-  
+        userVideo.load();
+
         new Promise((resolve) => {
             userVideo.onloadeddata = resolve;
         }).then(() => {
@@ -95,6 +96,8 @@ function Course({match, history} : CourseProps) {
         if (currentExercise) {
             guideVideo.src = currentExercise.videoUrl;
             setGuidePose(JSON.parse(currentExercise.innerData));
+
+            guideVideo.load();
 
             new Promise((resolve) => {
                 guideVideo.onloadeddata = resolve;

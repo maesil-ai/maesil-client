@@ -95,6 +95,14 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
     this.userStream = userStream;
 
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
+    }, 2000)
+
+
     await new Promise((resolve) => {
       let cnt = 0;
       const incrementCnt = () => {
@@ -105,10 +113,7 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       userVideo.onloadeddata = incrementCnt;
     });
 
-    this.setState({
-      ...this.state,
-      isLoading: false,
-    });
+
   };
 
   componentWillUnmount = () => {
