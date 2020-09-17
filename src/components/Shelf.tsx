@@ -23,7 +23,7 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises: initialExercises, control = 'heart', title }: ShelfProps) {
+function Shelf({ exercises: initialExercises, control = null, title }: ShelfProps) {
   let [exercises, setExercises] = React.useState<ContentData[]>([]);
   let [selected, select] = React.useState<number>(-1);
   const defaultThumbUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';

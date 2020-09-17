@@ -8,6 +8,7 @@ import Title from 'components/Title';
 import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
 import { ContentData } from 'utility/types';
+import store from 'store';
 
 interface ShelfData {
   title: string;
@@ -72,7 +73,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     if (this.state.loading) return <Loading/>;
     else {
       const shelfs = this.state.shelfDatas.map((data, index) => (
-        <Shelf key={index} title={data.title} exercises={data.contents} />
+        <Shelf key={index} title={data.title} exercises={data.contents} control={store.getState().user.loggedIn ? "heart" : null} />
       ));
 
       return (

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LockIcon from '@material-ui/icons/Lock';
 import SearchIcon from '@material-ui/icons/Search';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
@@ -21,7 +22,7 @@ function Header({ real = true } : HeaderProps) {
   const dropdownMenu = real && React.useMemo(() => (
     <li className="dropdown right" onMouseLeave={() => setMouseHover(false)}>
       <div className="dropdown-content">
-      { user.loggedIn ? <PermIdentityIcon fontSize="large" /> : <LockIcon fontSize="large" /> }
+      <ArrowForwardIosIcon fontSize="large" onClick={() => setMouseHover(false)} />
       { user.loggedIn ? (
         <>
           <div className="text"> <Link to={`/user/${user.userInfo.nickname}`}><span style={{fontWeight: 700}}>{user.userInfo.nickname}</span></Link>님 안녕하세요! </div>
@@ -59,7 +60,7 @@ function Header({ real = true } : HeaderProps) {
         <li className="right">
           <SearchIcon style={{margin: '32px 16px'}} fontSize="large" />
         </li>
-        <li className="right">
+        <li className="right fill">
           <input style={{ margin: '32px 0px' }} className='search'/>
         </li>
       </ul>
