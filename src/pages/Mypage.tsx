@@ -3,7 +3,7 @@ import React from 'react';
 import Title from 'components/Title';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import { getAccessToken, getUserInfo, getLikes } from 'utility/api';
+import { getAccessToken, getUserInfo, getLikes, getExercise } from 'utility/api';
 import { APIGetUserInfoData, ContentData } from 'utility/types';
 import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
@@ -19,8 +19,10 @@ function Mypage() {
     Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
       setUserInfo(info);
 
-      setLikes(likes);
-      setLoading(false);
+      Promise.all(likes.map((content) => getExercise(content.id))).then((likes) => {
+        setLikes(likes);
+        setLoading(false);  
+      });
     });
   }, []);
 
