@@ -82,9 +82,10 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
   };
 
   componentDidMount = async () => {
-    const [guide, userStream] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
     const guideVideo = this.guideVideo.current;
     const userVideo = this.userVideo.current;
+
+    const [guide, userStream] = await Promise.all([getExercise(this.state.id), this.loadStream()]);
 
     store.dispatch(setContent(guide));
 
@@ -95,15 +96,9 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
 
     this.userStream = userStream;
 
-    setTimeout(() => {
-      this.setState({
-        ...this.state,
-        isLoading: false,
-      });
-    }, 2000)
-
-
-    await new Promise((resolve) => {
+    guideVideo.load();
+    userVideo.load();
+    new Promise((resolve) => {
       let cnt = 0;
       const incrementCnt = () => {
         cnt += 1;
@@ -111,8 +106,12 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
       };
       guideVideo.onloadeddata = incrementCnt;
       userVideo.onloadeddata = incrementCnt;
+    }).then(() => {
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
     });
-
 
   };
 
@@ -232,5 +231,4 @@ class Exercise extends React.Component<ExerciseProps, ExerciseState> {
     }
   }
 }
-
 export default Exercise;
