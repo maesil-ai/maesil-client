@@ -1,7 +1,7 @@
 import React from 'react';
 import PoseCalculator from 'utility/poseCalculator';
 import { drawBoundingBox, drawKeypoints, drawSkeleton } from 'utility/draw';
-import { exerciseScore } from 'utility/score';
+import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
 
@@ -60,6 +60,7 @@ interface ExerciseScreenState {
   isPlaying: boolean;
   records: Pose[][][];
   scores: number[];
+  liveScores: number[],
   progress: number,
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
@@ -102,6 +103,7 @@ class ExerciseScreen extends React.Component<
       progress: 0,
       records: [],
       scores: [],
+      liveScores: [],
       viewConfig: this.props.viewConfig,
       useKalmanFilters: true,
     };
@@ -127,6 +129,7 @@ class ExerciseScreen extends React.Component<
         ...this.state,
         count: newCount,
         scores: Array.prototype.concat(this.state.scores, [newScore]),
+        liveScores: [],
         progress: 0,
       });
 
@@ -236,7 +239,6 @@ class ExerciseScreen extends React.Component<
       }
 
       if (poses) {
-        console.log(poses);
         poses.forEach(({ score, keypoints }) => {
           if (score >= this.state.viewConfig.minPoseConfidence) {
             if (this.state.viewConfig.showPoints)
@@ -284,8 +286,11 @@ class ExerciseScreen extends React.Component<
 
     executeEveryFrame(() => {
       ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
+      let poses : Pose[] = [];
       this.views.forEach((view) => {
         view.calculator.getPoseResult();
+        if (view.calculator.record.length > 0)
+          poses.push(view.calculator.record[view.calculator.record.length - 1]);
         drawVideoPose(
           view.video,
           view.calculator.resultPoses,
@@ -293,6 +298,12 @@ class ExerciseScreen extends React.Component<
           view.offset
         );
       });
+
+      this.setState({
+        ...this.state,
+        liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : (this.state.liveScores.length > 0 ? [] : [0])),
+      });
+
       if (this.state.viewConfig.showCount) {
         const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
 
@@ -301,15 +312,20 @@ class ExerciseScreen extends React.Component<
           ctx.fillRect(x - 40 * i, y, w, h);
         }
       }
-      if (this.state.viewConfig.showScore) {
-        const x = this.props.videoWidth - 20, y = this.props.videoHeight / 2;
+      if (this.props.phase == 'exercise' && this.state.viewConfig.showScore) {
+        const x = this.props.videoWidth - 20, y = this.props.videoHeight * 2 / 3 - 20;
 
         ctx.fillStyle = 'rgb(22, 22, 22)';
-        ctx.font = '40px arial';
+        ctx.font = '40px Verdana';
         ctx.textAlign = 'right';
-        if (this.state.scores.length) {
-          const score = this.state.scores[this.state.scores.length - 1];
-          ctx.fillText(`${Math.round(score * 100)}점`, x, y);
+        if (this.state.liveScores.length) {
+          const score = this.state.liveScores[this.state.liveScores.length - 1];
+          let text : string;
+          if (score < 0.1) text = "Bad..";
+          else if (score < 0.45) text = "Good";
+          else if (score < 0.8) text = "Nice!";
+          else text = "Great!!";
+          ctx.fillText(text, x, y);
         }
       }
       if (this.state.viewConfig.showProgress) {
@@ -321,8 +337,17 @@ class ExerciseScreen extends React.Component<
         ctx.fillStyle = 'rgb(22, 22, 22)';
         ctx.fillRect(x, y, w, h);
 
-        ctx.fillStyle = 'rgb(222, 22, 22)';
-        ctx.fillRect(x, y, w * this.state.progress, h);
+        let i = 0;
+        for (let score of this.state.liveScores) {
+          if (i == 0 && this.state.liveScores.length > 1) score = this.state.liveScores[1];
+          if (score < 0) score = 0;
+          score = Math.floor(score * 100);
+          if (this.props.phase == 'break') score = 100;
+          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 22)`;
+          ctx.fillRect(x + i * w * this.state.progress / this.state.liveScores.length - 1, y, 
+                      w * this.state.progress / this.state.liveScores.length + 2, h);
+          i++;
+        }
       }
     });
   };
