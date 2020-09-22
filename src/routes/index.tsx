@@ -21,6 +21,7 @@ import Error from 'pages/Error';
 import UploadCourse from 'pages/UploadCourse';
 import { userInfoHasMetadata } from 'utility/types';
 import usePromise from 'utility/usePromise';
+import HitTest from 'pages/HitTest';
 
 
 const Root = () => {
@@ -65,6 +66,7 @@ const Root = () => {
           <Redirect path="/setting/*" to="/setting/info" />
           <Redirect path="/setting" to="/setting/info" />
           <Route path="/fuck" component={Fuck} />
+          <Route path="/hittest" component={HitTest} />
           <Redirect path="*" to="/" />
         </Switch>
       </Analytics>
