@@ -7,7 +7,7 @@ import usePromise from "utility/usePromise";
 import Loading from "pages/Loading";
 import { ContentData, PoseData, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult, getCourse } from "utility/api";
-import { Redirect } from "react-router-dom";
+import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
 import store from 'store';
 
@@ -25,14 +25,17 @@ const loadStream = async () => {
     });
 };
 
-interface CourseProps {
-    match?: any;
-    history?: any;  
+interface MatchParams {
+    id: string;
 };
 
-function Course({match, history} : CourseProps) {
-    let id = React.useMemo<number>(() => match.params.id, []);
+interface CourseProps {
+    match: match<MatchParams>;
+};
 
+function Content({match} : CourseProps) {
+    let contentType = React.useMemo<'course' | 'exercise'>(() => match.url.includes('course') ? 'course' : 'exercise', []);
+    let id = React.useMemo<number>(() => Number.parseInt(match.params.id), []);
     let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
@@ -43,9 +46,23 @@ function Course({match, history} : CourseProps) {
 
     let [contents, setContents] = React.useState<CourseContent[]>();
     let [courseDataLoading, courseData] = usePromise(async () => {
-        const data = await getCourse(id);
-        store.dispatch(setContent(data));
-        return data;
+        if (contentType == 'course') {
+            const data = await getCourse(id);
+            store.dispatch(setContent(data));
+            return data;
+        } else {
+            const data = await getExercise(id);
+            store.dispatch(setContent(data));
+            return {
+                type: 'course',
+                innerData: JSON.stringify([{
+                    phase: "exercise",
+                    id: id,
+                    repeat: 3,
+                    message: data.name,
+                }]),
+            } as ContentData;
+        }
     });
     let [progress, setProgress] = React.useState<number>();
 
@@ -118,7 +135,9 @@ function Course({match, history} : CourseProps) {
     }, [progress]);
 
     const finish = async () => {
-     //   await postResult(amuId, playRecord.score, playRecord.playTime, playRecord.calorie);
+        const loggedIn = store.getState().user.loggedIn;
+        if (loggedIn && contentType == 'exercise') 
+            await postResult(id, playRecord.score, playRecord.playTime, playRecord.calorie);
         store.dispatch(setResult(playRecord));
         setRedirectToResult(true);
     };
@@ -217,4 +236,4 @@ function Course({match, history} : CourseProps) {
       );
 }
 
-export default Course;
+export default Content;
