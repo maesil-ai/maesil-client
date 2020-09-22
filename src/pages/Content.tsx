@@ -10,6 +10,7 @@ import { getExercise, postResult, getCourse } from "utility/api";
 import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
 import store from 'store';
+import Title from "components/Title";
 
 const videoWidth = 800;
 const videoHeight = 600;
@@ -55,11 +56,11 @@ function Content({match} : CourseProps) {
             store.dispatch(setContent(data));
             return {
                 type: 'course',
+                name: data.name,
                 innerData: JSON.stringify([{
                     phase: "exercise",
                     id: id,
                     repeat: 3,
-                    message: data.name,
                 }]),
             } as ContentData;
         }
@@ -153,7 +154,6 @@ function Content({match} : CourseProps) {
             let exercise = await getExercise(content.id);
             setCurrentExercise(exercise);
         } else {
-            
             setGuideLoading(false);
         }        
     }
@@ -190,9 +190,7 @@ function Content({match} : CourseProps) {
     return (
         <div>
           <Header />
-          <div className='zone'>
-              {message}
-          </div>
+          <Title title={courseData.name} subtitle={message} />
             { phase == 'exercise' && 
             <ExerciseScreen
                 onExerciseFinish={handleExerciseFinish}
