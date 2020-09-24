@@ -20,9 +20,14 @@ import Shelf from 'components/Shelf';
 import UserIntroduce from 'components/UserIntroduce';
 import { useSelector } from 'react-redux';
 import { RootReducerState } from 'reducers';
+import { match } from 'react-router-dom';
+
+interface MatchParams {
+  name: string;
+};
 
 interface UserpageProps {
-  match?: any;
+  match: match<MatchParams>;
 }
 
 function Userpage({ match }: UserpageProps) {

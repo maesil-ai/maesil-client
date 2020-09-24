@@ -53,7 +53,7 @@ export function isMobile() {
  * @param {*} pos
  * @return {[number, number]}
  */
-function toTuple(pos: any): [number, number] {
+export function toTuple(pos: any): [number, number] {
   return [pos.y, pos.x];
 }
 

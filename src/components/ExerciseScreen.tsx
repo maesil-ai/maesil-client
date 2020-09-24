@@ -1,19 +1,22 @@
 import React from 'react';
 import PoseCalculator from 'utility/poseCalculator';
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from 'utility/draw';
+import { drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
 import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
 
 import {
-  APIGetUserInfoData,
   ScreenView,
   Pose,
   PlayRecord,
   fps,
   PoseData,
 } from 'utility/types';
-import store from 'store';
+
+const LEFT_ELBOW = 7;
+const RIGHT_ELBOW = 8;
+const LEFT_WRIST = 9;
+const RIGHT_WRIST = 10;
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -41,6 +44,7 @@ const defaultViewConfig = {
   minPartConfidence: 0.1,
 };
 
+// showHits: show testing hit record for view[0];
 interface ExerciseScreenProps {
   phase: 'exercise' | 'break';
   videoWidth: number;
@@ -51,7 +55,7 @@ interface ExerciseScreenProps {
   guidePose?: PoseData;
   onExerciseFinish: (record: PlayRecord) => any;
   repeat: number;
-  match?: any;
+  showHits: boolean;
 }
 
 // Records[view 번호][exercise 번호][frame 번호] => 해당 시점의 Pose
@@ -86,6 +90,7 @@ class ExerciseScreen extends React.Component<
     onExerciseFinish: () => {},
     viewConfig: defaultViewConfig,
     repeat: 1,
+    showHits: false,
   };
   
   ctx: CanvasRenderingContext2D;
@@ -207,8 +212,8 @@ class ExerciseScreen extends React.Component<
   drawCanvas = () => {
     const ctx = this.ctx!;
 
-    for (let i = 0; i < this.views.length; i++) {
-      this.views[i].video.play();
+    for (let view of this.views) {
+      view.video.play();
     }
 
     const drawVideoPose = (
@@ -261,6 +266,33 @@ class ExerciseScreen extends React.Component<
               drawBoundingBox(keypoints, ctx, scale, offset);
           }
         });
+      }
+
+      if (this.props.showHits) {
+/*        for (let pose of this.views[0].calculator.record) {
+          if (pose.score >= this.state.viewConfig.minPoseConfidence) {
+  //          if (pose.keypoints[LEFT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose.keypoints[LEFT_WRIST].score >= this.state.viewConfig.minPartConfidence)
+  //            drawSegment(toTuple(pose.keypoints[LEFT_ELBOW].position), toTuple(pose.keypoints[LEFT_WRIST].position), 'blue', ctx);
+            if (pose.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence)
+              drawSegment(toTuple(pose.keypoints[RIGHT_ELBOW].position), toTuple(pose.keypoints[RIGHT_WRIST].position), 'blue', ctx);
+          }
+        }
+*/
+        let pose2 = this.views[0].calculator.record[this.views[0].calculator.record.length-1];
+
+        let pose1 : Pose = null;
+        for (let i = this.views[0].calculator.record.length-1; i>=0; i--) if (this.views[0].calculator.record[i] != pose2) {
+          pose1 = this.views[0].calculator.record[i];
+          break;
+        }
+
+        if (pose1 && pose2 && pose1.score >= this.state.viewConfig.minPoseConfidence && pose2.score >= this.state.viewConfig.minPoseConfidence && pose1.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose1.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence) {
+          let {x : x1, y : y1} = pose1.keypoints[RIGHT_WRIST].position;
+          let {x : x2, y : y2} = pose2.keypoints[RIGHT_WRIST].position;
+          console.log([y1, x1], [y2+50*(y2-y1), x2+50*(x2-x1)]);
+
+          drawSegment([y1, x1], [y2+50*(y2-y1), x2+50*(x2-x1)], 'black', ctx);
+        }
       }
     };
 
