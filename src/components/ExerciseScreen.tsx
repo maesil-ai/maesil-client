@@ -1,5 +1,5 @@
 import React from 'react';
-import PoseCalculator from 'utility/poseCalculator';
+import PoseCalculator from 'utility/bodyCalculator';
 import { drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
 import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
