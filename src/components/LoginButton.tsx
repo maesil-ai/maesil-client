@@ -14,6 +14,8 @@ const LoginButton = ({}: LoginButtonProps) => {
   if (status == 2) return <Redirect to="/signup" />;
   dotenv.config();
 
+  console.log(process.env);
+
   return (
     <KakaoLogin
       jsKey={process.env.REACT_APP_KAKAO_JS_KEY}
