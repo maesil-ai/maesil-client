@@ -12,7 +12,7 @@ import Userpage from 'pages/User';
 import { getUserInfo, getSubscribes, getAccessToken, getTags } from 'utility/api';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import { UserAction, setUser, clearUser, setTags, SystemAction } from 'actions';
-import Modify from 'pages/Modify';
+import SettingInfo from 'pages/SettingInfo';
 import Content from 'pages/Content';
 import Fuck from 'pages/AccessToken';
 import Loading from 'pages/Loading';
@@ -62,10 +62,11 @@ const Root = () => {
           <Redirect path="/mypage/*" to="mypage/info" />
           <Redirect path="/mypage" to="mypage/info" />
           <Route path="/user/:name" component={Userpage} />
-          <Route path="/setting/info" component={Modify} />
+          <Route path="/setting/info" component={SettingInfo} />
           <Redirect path="/setting/*" to="/setting/info" />
           <Redirect path="/setting" to="/setting/info" />
           <Route path="/fuck" component={Fuck} />
+          <Route path="/justload" component={Loading} />
           <Route path="/hittest" component={HitTest} />
           <Redirect path="*" to="/" />
         </Switch>

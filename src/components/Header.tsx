@@ -61,7 +61,9 @@ function Header({ real = true } : HeaderProps) {
             <span style={{paddingLeft: '64px'}} />
             { userIcon }
             <span style={{paddingLeft: '64px'}} />
-            { settingIcon }
+            <Link to="/setting">
+              { settingIcon }
+            </Link>
         </div>
       </div>
     </header>
