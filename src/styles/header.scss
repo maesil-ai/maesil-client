@@ -4,14 +4,45 @@ header {
   top: 0;
   left: 0;
   right: 0;
-
-  height: 100px;
-//  margin-bottom: 25px;
-  font-size: 24px;
-  color: #00816c;
+  height: 96px;
+  margin-bottom: 36px;
+  
+//  color: #00816c;
   background: #fff;
-  text-align: left;
-  font-weight: 600;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  
+  color: #000000;
+  
+  opacity: 0.7;
+
+  .logo {
+    position: absolute;
+    height: 64px;
+    left: calc(50% - 32px);
+    top: 21px;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+
+    position: absolute;
+    top: 48px;
+  }
+
+  .leftmenu {
+    left: 64px;
+  }
+
+  .rightmenu {
+    right: 64px;
+  }
 
   ul {
     margin: 0;
@@ -29,6 +60,10 @@ header {
 
       &.right {
         float: right;
+      }
+
+      &.center {
+        float: center;
       }
 
       &.fill {

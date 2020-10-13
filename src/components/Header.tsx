@@ -1,8 +1,6 @@
 import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import LockIcon from '@material-ui/icons/Lock';
-import SearchIcon from '@material-ui/icons/Search';
+import { headerLogo, searchIcon, userIcon, settingIcon } from 'utility/svg';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,6 +16,7 @@ function Header({ real = true } : HeaderProps) {
   let user = useSelector((state : RootReducerState) => state.user );
   let system = useSelector((state : RootReducerState) => state.system );
   let [mouseHover, setMouseHover] = React.useState(false);
+
 
   const dropdownMenu = real && React.useMemo(() => (
     <li className="dropdown right" onMouseLeave={() => setMouseHover(false)}>
@@ -46,24 +45,25 @@ function Header({ real = true } : HeaderProps) {
 
   return (
     <header>
-      <ul>
-        <li className="left">
-          <Link to="/" style={{ padding: '32px' }} onClick={() => { system.error && store.dispatch(closeError()); } }>
-            매실
+      <div className="logo">
+          <Link to="/" onClick={() => { system.error && store.dispatch(closeError()); } }>
+            { headerLogo }
           </Link>
-        </li>
-        { mouseHover && real && dropdownMenu }
-        <li className="dropdown right" onMouseEnter={() => setMouseHover(true)}>
-          { user.loggedIn ? <PermIdentityIcon style={{ padding: '32px' }} fontSize="large" /> 
-                          : <LockIcon style={{ padding: '32px' }} fontSize="large" /> }
-        </li>
-        <li className="right">
-          <SearchIcon style={{margin: '32px 16px'}} fontSize="large" />
-        </li>
-        <li className="right fill">
-          <input style={{ margin: '32px 0px' }} className='search'/>
-        </li>
-      </ul>
+      </div>
+      <div className="menu leftmenu">
+        <div style={{top: '-8px', height: '16px'}}>
+
+        </div>
+      </div>
+      <div className="menu rightmenu">
+        <div style={{top: '-16px', height: '32px'}}>
+            { searchIcon }
+            <span style={{paddingLeft: '64px'}} />
+            { userIcon }
+            <span style={{paddingLeft: '64px'}} />
+            { settingIcon }
+        </div>
+      </div>
     </header>
   );
 }
