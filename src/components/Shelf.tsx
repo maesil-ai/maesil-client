@@ -69,14 +69,24 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
       <div className='shelf'>
       { contents.map((content, index) => (
         <div className='shelfItem' key={index} style={{transform: `translateX(${-currentPosition}px)`}}>
-          <Link to={`/${content.type}/${content.id}`}>
-            <img 
-              src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
-              onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
-              onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
-              style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
-            />
-          </Link>
+          { typeof control != 'function'
+          ? <Link to={`/${content.type}/${content.id}`}>
+              <img 
+                src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
+                onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
+                onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
+                style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
+              />
+            </Link>
+          :   <img 
+                src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
+                onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
+                onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
+                style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
+                onClick={ () => control(content) }
+              />
+          }
+
           <div style={{width: '100%', height: '17.5%'}}>
             <div className='title'> {content.name} </div>
             <div className='creator'> {content.userName} </div>

@@ -9,6 +9,7 @@ import { getExercises, postCourse } from 'utility/api';
 import Loading from './Loading';
 import ComposeCourse from 'components/ComposeCourse';
 import Tabs from 'components/Tabs';
+import { plusIcon } from 'utility/svg';
 
 const emptyContent: CourseContent = {
   phase: 'exercise',
@@ -98,7 +99,7 @@ function UploadCourse() {
           <tbody>
             <tr>
               <td> 제목 </td>
-              <td className="fill">
+              <td className="fill inputbox">
                 <input
                   className="inputTitle"
                   value={title}
@@ -109,11 +110,11 @@ function UploadCourse() {
               </td>
             </tr>
             <tr>
-              <td> 설명 </td>
-              <td className="fill">
+              <td > 설명 </td>
+              <td className="fill inputbox" style={{height: '96px'}}>
                 <textarea
                   className="inputDescription"
-                  rows={1}
+                  rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value) }
                 />
@@ -121,7 +122,7 @@ function UploadCourse() {
             </tr>
             <tr>
               <td> 썸네일 이미지 </td>
-              <td className="fill">
+              <td className="fill inputbox">
                 <input
                   type="file"
                   accept="image/*"
@@ -132,7 +133,7 @@ function UploadCourse() {
             </tr>
             <tr>
               <td> 움직이는 썸네일 이미지 </td>
-              <td className="fill">
+              <td className="fill inputbox">
                 <input
                   type="file"
                   accept="image/*"
@@ -143,41 +144,25 @@ function UploadCourse() {
             </tr>
           </tbody>
         </table>
+      </div>
+      <Title size='small' title='운동 코스 구성' />
 
-        운동 코스 구성하기
-
-        <table>
-          <thead>
-            <tr>
-              <th> </th>
-              <th> 동작 </th>
-              <th> 운동 이름 </th>
-              <th> 반복 횟수 (시간) </th>
-              <th className="fill"> 설명 </th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            { contents.map((content, index) => 
-              <ComposeCourse 
-                content={content} 
-                index={index}
-                onRemove={() => removeContent(index)}
-                onChangeId={(id) => onChangeId(index, id)}
-                onChangeMessage={(message) => onChangeMessage(index, message)}
-                onChangeRepeat={(repeat) => onChangeRepeat(index, repeat)}
-                onChangeType={(type) => onChangeType(index, type)}
-                exercises={exercises}
-                /> 
-            ).concat([(
-              <tr key={-1}>
-                <td/> <td/> <td/> <td/> <td/>
-                <td> <button onClick={addContent}> {" + "} </button> </td>
-              </tr>
-            )]) }
-          </tbody>
-        </table>
-        {message ? message : <button onClick={upload}> 올리기! </button>}
+      { contents.map((content, index) => 
+        <ComposeCourse 
+          content={content} 
+          index={index}
+          onRemove={() => removeContent(index)}
+          onChangeId={(id) => onChangeId(index, id)}
+          onChangeMessage={(message) => onChangeMessage(index, message)}
+          onChangeRepeat={(repeat) => onChangeRepeat(index, repeat)}
+          onChangeType={(type) => onChangeType(index, type)}
+          exercises={exercises}
+          /> 
+      ) }
+      <div onClick={addContent} style={{margin: '24px 64px'}}> { plusIcon } </div>
+      <div className='zone invisible'>
+        { message ? <div> { message } </div> : <></> }
+        <button className='submit' onClick={upload}> 올리기! </button>
       </div>
       <Footer />
     </>

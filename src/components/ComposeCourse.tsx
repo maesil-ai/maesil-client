@@ -1,4 +1,5 @@
 import React from 'react';
+import { minusIcon } from 'utility/svg';
 import { ContentData, CourseContent } from 'utility/types';
 import Shelf from './Shelf';
 
@@ -31,34 +32,43 @@ function ComposeCourse({content, index, onRemove, onChangeType, onChangeRepeat, 
 
     return (
         <>
-            <tr key={index}>
-                <td> { index + 1 } </td>
-                <td>
-                <select 
-                    value={codeToType[content.phase]}
-                    onChange={(event) => onChangeType(typeToCode[event.target.value])} 
-                >
-                {(typeList).map((value) => (
-                    <option value={value} key={value}> {value} </option>
-                ))}
-                </select>
-                </td>
-                <td> { content.phase != 'break' && <input onClick={() => setSelecting(true)} value={contentName} /> }
-                </td>
-                <td> <input type='number' value={content.repeat} onChange={(event) => onChangeRepeat(event.target.value)} /> </td>
-                <td className="fill"> <input value={content.message} onChange={(event) => onChangeMessage(event.target.value)} /> </td>
-                <td> <button onClick={onRemove}> {" - "} </button> </td>
-            </tr>
+            <div className='zone' style={{height: '0px', display: 'flex', marginBottom: '12px'}}>
+                <div onClick={onRemove} style={{margin: '-24px 24px 0px 12px'}}> { minusIcon } </div>
+                <div style={{marginTop: '-12px'}}> { index + 1 } </div>
+                <div style={{marginTop: '-24px', minWidth: '110px'}}>
+                    <select 
+                        value={codeToType[content.phase]}
+                        onChange={(event) => onChangeType(typeToCode[event.target.value])} 
+                    >
+                    {(typeList).map((value) => (
+                        <option value={value} key={value}> {value} </option>
+                    ))}
+                    </select>
+                </div>
+                <div style={{marginTop: '-24px', minWidth: '120px', maxWidth: '240px'}}> 
+                    { content.phase != 'break' && ( 
+                        contentName 
+                        ? <input onClick={() => setSelecting(true)} value={contentName} /> 
+                        : <button className='submit mini' onClick={() => setSelecting(true)}> 운동 선택 </button>) }
+                </div>
+                <div style={{marginTop: '-24px', maxWidth: '100px'}}> 
+                    <input type='number' value={content.repeat} onChange={(event) => onChangeRepeat(event.target.value)} /> 
+                </div>
+                <div style={{marginTop: '-12px', minWidth: '60px'}}>
+                    { content.phase == 'exercise' ? '번 반복' : '초' }
+                </div>
+                <div className='fill' style={{marginTop: '-24px'}}> 
+                    <input placeholder='설명' className='underbar' value={content.message} onChange={(event) => onChangeMessage(event.target.value)} /> 
+                </div>
+            </div>
             { selecting && 
-                <tr>
-                    <td colSpan={6}>
-                        <Shelf contents={exercises} control={(content) => {
-                            onChangeId(Number.prototype.toString(content.id)); 
-                            setContentName(content.name);
-                            setSelecting(false);
-                        }} />
-                    </td>
-                </tr>
+                <div style={{margin: '0px 50px'}}>
+                    <Shelf contents={exercises} control={(content) => {
+                        onChangeId(Number.prototype.toString(content.id)); 
+                        setContentName(content.name);
+                        setSelecting(false);
+                    }} />
+                </div>
             }
         </>
     );

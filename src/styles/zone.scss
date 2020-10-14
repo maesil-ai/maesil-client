@@ -25,6 +25,10 @@
     background-color: white;
     color: #555;
 
+    &.invisible {
+      background: none;
+      box-shadow: none;
+    }
   
 //    letter-spacing: 0.1rem;
     text-align: center;
@@ -85,12 +89,24 @@
       color: grey;
     }
 
+    input {
+      &.underbar {
+        border-bottom: 1px solid grey;
+      }
+    }
+
     button {
       &.submit {
         background: linear-gradient(271.11deg, #38FFDB 0.92%, rgba(255, 255, 255, 0) 103.95%), linear-gradient(0deg, #59FF56, #59FF56);
         border-radius: 32px;
         height: 48px;
         width: 256px;
+      }
+      &.mini {
+        border-radius: 16px;
+        height: 32px;
+        width: 120px;
+        padding: 0px;
       }
       min-width: 44px;
     }

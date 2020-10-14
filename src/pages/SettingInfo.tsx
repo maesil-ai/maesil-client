@@ -30,7 +30,6 @@ function SettingInfo() {
     return (
       <>
         <Header />
-        <Title title="설정" />
         <Tabs data={[{
           name: "정보 수정",
           link: "/settings/info",
