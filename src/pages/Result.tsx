@@ -29,7 +29,7 @@ function Result() {
         calorie={record.calorie}
         score={record.score}
       />
-      <Shelf title="다음에 할 운동들" exercises={nextExercises} />
+      <Shelf title="다음에 할 운동들" contents={nextExercises} />
       <Footer />
     </>
   )

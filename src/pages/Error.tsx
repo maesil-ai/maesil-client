@@ -19,7 +19,7 @@ function Error() {
                 <h1 className='grey'> 이런! </h1>
                 <div style={{paddingBottom: '16px'}} />
                 <div className='grey'> 어디선가 문제가 생겼습니다... 이 페이지를 보게 되는 일이 있으면 안 되는데, 죄송합니다. </div>
-                <div/> 
+                <div style={{paddingBottom: '16px'}} />
                 <div> { system.message } </div>
             </div>
             <Footer/>

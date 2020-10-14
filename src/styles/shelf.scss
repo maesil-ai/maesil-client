@@ -2,45 +2,76 @@
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  overflow: auto;
+  overflow: hidden;
   justify-content: flex-start;
   padding-left: 30px;
   padding-right: 30px;
-}
 
-.gridList {
-  width: 222px;
-  height: 222px;
-  flex-wrap: nowrap;
-  display: inline-block;
-}
+  .arrow {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 96px;
+    background: #000000;
+    opacity: 0.4;
+    padding: 24px;
+    margin: 24px;
+  }
 
-titleText {
-  font-family: 'Noto Sans KR';
-  font-weight: 700;
-}
+  .leftArrow {
+    left: 0;
+  }
 
-titleBar {
-  background: rgba(100, 100, 100, 0.54);
-}
+  .rightArrow {
+    right: 0;
+  }
 
-.detail {
-  width: calc(100% - 100px);
-  padding: 20px;
+  .shelfItem {
+    margin: 10px;
+    width: 300px;
+    height: 300px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    
 
-  display: block;
+    .title {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+      display: flex;
+      align-items: center;
 
-  font-size: 18px;
-  font-weight: 400;
+      color: #000000;
+    }
 
-  background-color: white;
-  color: #555;
+    .line {
+      width: 100%;
+      opacity: 0.08;
+      border: 1px solid #000000;
+    }
 
-  letter-spacing: 0.1rem;
-  text-align: left;
+    .creator {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      
+      color: #999999;    
+    }
 
-  h1 {
-    font-size: 30px;
-    font-weight: 600;
+    .info {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+
+      color: #999999;
+
+    }
   }
 }

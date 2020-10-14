@@ -72,9 +72,14 @@ function Header({ real = true } : HeaderProps) {
           </div>
         )}
         { !user.loggedIn && (
-          <div style={{top: '-8px', height: '16px'}}>
-            <LoginButton/>
-          </div>
+          <>
+            <div style={{top: '-16px', height: '32px'}}>
+              { searchIcon }
+            </div>
+            <div style={{top: '-8px', height: '16px'}}>
+              <LoginButton/>
+            </div>
+          </>
         )}
       </div>
     </header>

@@ -52,7 +52,7 @@ function ComposeCourse({content, index, onRemove, onChangeType, onChangeRepeat, 
             { selecting && 
                 <tr>
                     <td colSpan={6}>
-                        <Shelf exercises={exercises} control={(content) => {
+                        <Shelf contents={exercises} control={(content) => {
                             onChangeId(Number.prototype.toString(content.id)); 
                             setContentName(content.name);
                             setSelecting(false);

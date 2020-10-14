@@ -46,28 +46,38 @@ table {
 html, body, #root {
   height: 100%;
   width: 100%;
+
+  >.title {
+    padding-left: 30px;  
+    height: 40px;
+  }
+
+  >.title.large {
+    margin: 45px auto;
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+  >.title.small {
+    margin-top: 90px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  
+  >.subtitle {
+    margin: 30px auto;
+    margin-top: -30px;
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: 500;
+  
+    height: 25px;
+  } 
 }
 
-.title {
-  margin: 45px auto;
-  padding-left: 30px;
-  font-size: 25px;
-  font-weight: 500;
-
-  height: 40px;
+.grey {
+  color: grey;
 }
-
-.subtitle {
-  margin: 30px auto;
-  margin-top: -30px;
-  padding-left: 30px;
-  font-size: 15px;
-  font-weight: 500;
-
-  height: 25px;
-}
-
-
 
 button {
   margin: 10px;

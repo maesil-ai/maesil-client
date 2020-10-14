@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { GridListTile, GridListTileBar } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import Heart from 'components/Heart';
 import { ContentData } from 'utility/types';
 import DeleteButton from 'components/DeleteButton';
 import ContentDetail from 'components/ContentDetail';
 import Title from 'components/Title';
+import { leftArrow, rightArrow, smallHeartIcon, smallViewIcon } from 'utility/svg';
+import { Link } from 'react-router-dom';
 
 interface ShelfProps {
-  exercises: ContentData[];
+  contents: ContentData[];
   title?: string;
   control?: 'heart' | 'remove' | ((data: ContentData) => void);
 }
@@ -23,21 +23,85 @@ function changeImageFunc(imageUrl: string | undefined) {
   }
 }
 
-function Shelf({ exercises: initialExercises, control = null, title }: ShelfProps) {
-  let [exercises, setExercises] = React.useState<ContentData[]>([]);
+function Shelf({ contents: initialContents, control = null, title }: ShelfProps) {
+  let [contents, setContents] = React.useState<ContentData[]>([]);
   let [selected, select] = React.useState<number>(-1);
+  let [position, setPosition] = React.useState<number>(0);
+  let [currentPosition, setCurrentPosition] = React.useState<number>(0);
   const defaultThumbUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
   const defaultThumbGifUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
   useEffect(() => {
-    setExercises(initialExercises);
+    setContents(initialContents);
   }, []);
+
+  useEffect(() => {
+    let halt = false;
+    setTimeout(() => {
+      if (halt) return;
+      let maxX = contents.length * 320 - screen.width + 60;
+      let nextPosition = (9 * currentPosition + position) / 10;
+      if (maxX > 0 && nextPosition > maxX) setPosition(maxX), setCurrentPosition(maxX);
+      else if (nextPosition < 0) setPosition(0), setCurrentPosition(0);
+      else {
+        if (Math.abs(currentPosition - position) < 1) setCurrentPosition(position);
+        setCurrentPosition((9*currentPosition + position) / 10);
+      }
+      console.log(currentPosition, position);
+    }, 30);
+    return () => halt = true;
+  }, [currentPosition, position]);
+
+  const moveLeft = () => {
+    setPosition(position - 1000);
+  }
+
+  const moveRight = () => {
+    setPosition(position + 1000);
+  }
 
   return (
     <>
-      {title && <Title title={title}/>}
-      <div className={'shelf'}>
-        {exercises.map((exercise, index) => (
+      {title && <Title size='small' title={title}/>}
+      <div className='shelf'>
+      { contents.map((content, index) => (
+        <div className='shelfItem' key={index} style={{transform: `translateX(${-currentPosition}px)`}}>
+          <Link to={`/${content.type}/${content.id}`}>
+            <img 
+              src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
+              onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
+              onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
+              style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
+            />
+          </Link>
+          <div style={{width: '100%', height: '17.5%'}}>
+            <div className='title'> {content.name} </div>
+            <div className='creator'> {content.userName} </div>
+          </div>
+          
+          <div className='info' style={{width: '100%', height: '10%'}}>
+            <div style={{marginLeft: '10px', marginRight: '0px'}}>
+              <span> { smallViewIcon } </span>
+              <span> { content.viewCount } </span>
+            </div>
+            <div style={{marginLeft: '20px'}}>
+              <span> { smallHeartIcon } </span>
+              <span> { content.heartCount } </span>
+            </div>
+          </div>
+        </div>
+      ))}
+      { position > 0 && <div className='arrow leftArrow' onClick={moveLeft}> { leftArrow } </div> }
+      { position < contents.length * 320 - screen.width + 60 && <div className='arrow rightArrow' onClick={moveRight}> { rightArrow } </div> }
+      </div>
+      { selected != -1 && contents[selected] && <ContentDetail data={contents[selected]} /> }
+    </>
+  );
+}
+
+/*
+
+
           <GridListTile key={exercise.id} className={'gridList'} style={{margin: '5px'}}>
             <img
                 src={exercise.thumbUrl ? exercise.thumbUrl : defaultThumbUrl}
@@ -84,11 +148,7 @@ function Shelf({ exercises: initialExercises, control = null, title }: ShelfProp
               }
             />
           </GridListTile>
-        ))}
-      </div>
-      { selected != -1 && exercises[selected] && <ContentDetail data={exercises[selected]} /> }
-    </>
-  );
-}
+
+*/
 
 export default Shelf;

@@ -44,7 +44,7 @@ function Mypage() {
           <div> 몸무게: {userInfo.weight}kg </div>
           <div> 성별: {userInfo.gender} </div>
         </div>
-        <Shelf title={`${userInfo.nickname}님이 좋아하는 운동들`} exercises={likes} />
+        <Shelf title={`${userInfo.nickname}님이 좋아하는 운동들`} contents={likes} />
         <Footer />
       </>
     );

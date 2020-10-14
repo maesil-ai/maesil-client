@@ -73,7 +73,7 @@ class Home extends React.Component<HomeProps, HomeState> {
     if (this.state.loading) return <Loading/>;
     else {
       const shelfs = this.state.shelfDatas.map((data, index) => (
-        <Shelf key={index} title={data.title} exercises={data.contents} control={store.getState().user.loggedIn ? "heart" : null} />
+        <Shelf key={index} title={data.title} contents={data.contents} control={store.getState().user.loggedIn ? "heart" : null} />
       ));
 
       return (
