@@ -53,10 +53,13 @@ const Root = () => {
           <Route path="/exercise/:id" component={Content} />
           <Route path="/course/:id" component={Content} />
           <Route path="/result" component={Result} />
-          <Route path="/upload/exercise" component={UploadExercise} />
-          <Route path="/upload/course" component={UploadCourse} />
-          <Redirect path="/upload/*" to="/upload/exercise" />
-          <Redirect path="/upload" to="/upload/exercise" />
+          <Redirect path="/upload/course" to="/studio/course" />
+          <Redirect path="/upload/*" to="/studio/exercise" />
+          <Redirect path="/upload" to="/studio/exercise" />
+          <Route path="/studio/exercise" component={UploadExercise} />
+          <Route path="/studio/course" component={UploadCourse} />
+          <Redirect path="/studio/*" to="/studio/exercise" />
+          <Redirect path="/studio" to="/studio/exercise" />
           <Route path="/signup" component={Signup} />
           <Route path="/mypage/info" component={Mypage} />
           <Redirect path="/mypage/*" to="mypage/info" />
@@ -67,6 +70,7 @@ const Root = () => {
           <Redirect path="/setting" to="/setting/info" />
           <Route path="/fuck" component={Fuck} />
           <Route path="/justload" component={Loading} />
+          <Route path="/justerror" component={Error} />
           <Route path="/hittest" component={HitTest} />
           <Redirect path="*" to="/" />
         </Switch>

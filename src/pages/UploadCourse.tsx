@@ -77,21 +77,20 @@ function UploadCourse() {
       tag_id: 0,
     })
     if (response) setMessage('업로드 성공!');
-    else setMessage('업로드 실패!');
+    else setMessage('업로드 실패..');
   };
 
   if (exercisesLoading) return <Loading/>;
   return (
     <>
       <Header/>
-      <Title title="매실 스튜디오" />
       <Tabs data={[{
         name: "운동 업로드",
-        link: "/upload/exercise",
+        link: "/studio/exercise",
         active: false,
       }, {
         name: "운동 코스 업로드",
-        link: "/upload/course",
+        link: "/studio/course",
         active: true,
       }]} />
       <div className="zone">

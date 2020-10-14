@@ -52,19 +52,30 @@ function Header({ real = true } : HeaderProps) {
       </div>
       <div className="menu leftmenu">
         <div style={{top: '-8px', height: '16px'}}>
-
+          <Link to="/studio">
+            Studio
+          </Link>
         </div>
       </div>
       <div className="menu rightmenu">
-        <div style={{top: '-16px', height: '32px'}}>
-            { searchIcon }
-            <span style={{paddingLeft: '64px'}} />
-            { userIcon }
-            <span style={{paddingLeft: '64px'}} />
-            <Link to="/setting">
-              { settingIcon }
-            </Link>
-        </div>
+        { user.loggedIn && (
+          <div style={{top: '-16px', height: '32px'}}>
+              { searchIcon }
+              <span style={{paddingLeft: '64px'}} />
+              <Link to="/mypage">
+                { userIcon }
+              </Link>
+              <span style={{paddingLeft: '64px'}} />
+              <Link to="/setting">
+                { settingIcon }
+              </Link>
+          </div>
+        )}
+        { !user.loggedIn && (
+          <div style={{top: '-8px', height: '16px'}}>
+            <LoginButton/>
+          </div>
+        )}
       </div>
     </header>
   );

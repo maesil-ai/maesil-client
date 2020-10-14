@@ -69,8 +69,8 @@ function validateHumanVideo(file) {
  * @return {String} true when validation success
  */
 export function validA(file: File) {
-  if (!validateVideoFile(file)) return 'The format is not supported';
-  if (!validateVideoSize(file)) return 'Size must less than 10MiB';
+  if (!validateVideoFile(file)) return '동영상 파일만 올려주세요.';
+  if (!validateVideoSize(file)) return '최대 10메가바이트의 파일만 올릴 수 있습니다. 용량을 줄여주세요.';
   return 'ok';
 }
 
