@@ -49,7 +49,7 @@ html, body, #root {
 
   >.title {
     padding-left: 30px;  
-    height: 40px;
+    height: 32px;
   }
 
   >.title.large {
@@ -120,7 +120,7 @@ button {
 
 body {
   margin: 0px auto;
-  background-color: #eeeeee;
+  background-color: #f5f5f5;
 }
 
 * {
@@ -161,7 +161,6 @@ div {
   margin: 0px auto;
   position: relative;
 }
-
 
 footer {
   height: 96px;
@@ -225,5 +224,25 @@ video.previewVideo {
       font-weight: 700;
       border-bottom: 2px solid #3aa704;
     }
+  }
+}
+
+.contentInfo {
+  width: calc(100% - 100px);
+  padding: 32px;
+
+  h1 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  div {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    color: grey;
   }
 }

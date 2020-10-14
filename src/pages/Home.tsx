@@ -79,6 +79,7 @@ class Home extends React.Component<HomeProps, HomeState> {
       return (
         <>
           <Header />
+          <div style={{marginBottom: '-32px'}} />
           {shelfs}
           <Footer />
         </>

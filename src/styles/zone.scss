@@ -11,8 +11,8 @@
     h1 {
       font-style: normal;
       font-weight: bold;
-      font-size: 36px;
-      line-height: 52px;
+      font-size: 32px;
+      line-height: 48px;
     }
 
     div {
@@ -24,6 +24,7 @@
 
     background-color: white;
     color: #555;
+
   
 //    letter-spacing: 0.1rem;
     text-align: center;
@@ -58,6 +59,19 @@
       font-weight: bold;
       width: inherit;
       text-align: center;
+    }
+
+    td.labelColumn {
+      text-align: left;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    td.contentColumn {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 300;
+      color: grey;
     }
   
     input,

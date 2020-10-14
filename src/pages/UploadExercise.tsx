@@ -28,7 +28,7 @@ function UploadExercise() {
         link: "/studio/exercise",
         active: true,
       }, {
-        name: "운동 코스 업로드",
+        name: "운동 코스 제작",
         link: "/studio/course",
         active: false,
       }]} />

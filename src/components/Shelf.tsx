@@ -41,23 +41,26 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
       if (halt) return;
       let maxX = contents.length * 320 - screen.width + 60;
       let nextPosition = (9 * currentPosition + position) / 10;
-      if (maxX > 0 && nextPosition > maxX) setPosition(maxX), setCurrentPosition(maxX);
-      else if (nextPosition < 0) setPosition(0), setCurrentPosition(0);
-      else {
-        if (Math.abs(currentPosition - position) < 1) setCurrentPosition(position);
-        setCurrentPosition((9*currentPosition + position) / 10);
+      if (Math.abs(currentPosition - position) < 1) setCurrentPosition(position);
+      if (maxX > 0 && nextPosition > maxX) {
+        setPosition(maxX + (position - maxX) * 0.8);
+        setCurrentPosition(maxX + (nextPosition - maxX) * 0.7);
       }
-      console.log(currentPosition, position);
+      else if (nextPosition < 0) {
+        setPosition(position * 0.8);
+        setCurrentPosition(nextPosition * 0.7);
+      }
+      else setCurrentPosition(nextPosition);
     }, 30);
     return () => halt = true;
   }, [currentPosition, position]);
 
   const moveLeft = () => {
-    setPosition(position - 1000);
+    setPosition(position - Math.floor(screen.width / 320) * 320);
   }
 
   const moveRight = () => {
-    setPosition(position + 1000);
+    setPosition(position + Math.floor(screen.width / 320) * 320);
   }
 
   return (
@@ -80,12 +83,10 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
           </div>
           
           <div className='info' style={{width: '100%', height: '10%'}}>
-            <div style={{marginLeft: '10px', marginRight: '0px'}}>
-              <span> { smallViewIcon } </span>
+            <div style={{marginLeft: '0px'}}>
+              <span style={{marginLeft: '4px'}}> { smallViewIcon } </span>
               <span> { content.viewCount } </span>
-            </div>
-            <div style={{marginLeft: '20px'}}>
-              <span> { smallHeartIcon } </span>
+              <span style={{marginLeft: '20px'}}> { smallHeartIcon } </span>
               <span> { content.heartCount } </span>
             </div>
           </div>

@@ -11,6 +11,7 @@ import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
 import store from 'store';
 import Title from "components/Title";
+import ContentDetail from "components/ContentDetail";
 
 const videoWidth = 800;
 const videoHeight = 600;
@@ -188,9 +189,15 @@ function Content({match} : CourseProps) {
     }
     if (userLoading || guideLoading || courseDataLoading) return <Loading/>;
     return (
-        <div>
-          <Header />
-          <Title title={courseData.name} subtitle={message} />
+        <>
+            <Header />
+            <div style={{marginBottom: '-16px'}} />
+            { message && (
+                <div className='zone'>
+                    { message }
+                </div>
+            )}
+            <div style={{marginBottom: '16px'}} />
             { phase == 'exercise' && 
             <ExerciseScreen
                 onExerciseFinish={handleExerciseFinish}
@@ -229,8 +236,9 @@ function Content({match} : CourseProps) {
                 time={repeat}
             />
             }
-          <Footer />
-        </div>
+            <ContentDetail data={ store.getState().content.content } />
+            <Footer />
+        </>
       );
 }
 

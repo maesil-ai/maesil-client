@@ -89,7 +89,7 @@ function UploadCourse() {
         link: "/studio/exercise",
         active: false,
       }, {
-        name: "운동 코스 업로드",
+        name: "운동 코스 제작",
         link: "/studio/course",
         active: true,
       }]} />
