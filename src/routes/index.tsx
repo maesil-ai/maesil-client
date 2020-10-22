@@ -22,6 +22,7 @@ import UploadCourse from 'pages/UploadCourse';
 import { userInfoHasMetadata } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import HitTest from 'pages/HitTest';
+import Test3D from 'pages/Test3D';
 
 
 const Root = () => {
@@ -72,6 +73,8 @@ const Root = () => {
           <Route path="/justload" component={Loading} />
           <Route path="/justerror" component={Error} />
           <Route path="/hittest" component={HitTest} />
+          <Route path="/3dtest" component={Test3D} />
+          <Redirect path="/test3d" to="/3dtest" />
           <Redirect path="*" to="/" />
         </Switch>
       </Analytics>

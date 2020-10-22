@@ -12,6 +12,7 @@ import { setResult, setContent } from 'actions';
 import store from 'store';
 import Title from "components/Title";
 import ContentDetail from "components/ContentDetail";
+import { sampleData } from "utility/data";
 
 const videoWidth = 800;
 const videoHeight = 600;
@@ -27,17 +28,8 @@ const loadStream = async () => {
     });
 };
 
-interface MatchParams {
-    id: string;
-};
-
-interface CourseProps {
-    match: match<MatchParams>;
-};
-
-function Content({match} : CourseProps) {
-    let contentType = React.useMemo<'course' | 'exercise'>(() => match.url.includes('course') ? 'course' : 'exercise', []);
-    let id = React.useMemo<number>(() => Number.parseInt(match.params.id), []);
+function Test3D() {
+    let contentType = 'exercise' as const;
     let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
@@ -48,23 +40,16 @@ function Content({match} : CourseProps) {
 
     let [contents, setContents] = React.useState<CourseContent[]>();
     let [courseDataLoading, courseData] = usePromise(async () => {
-        if (contentType == 'course') {
-            const data = await getCourse(id);
-            store.dispatch(setContent(data));
-            return data;
-        } else {
-            const data = await getExercise(id);
-            store.dispatch(setContent(data));
-            return {
-                type: 'course',
-                name: data.name,
-                innerData: JSON.stringify([{
-                    phase: "exercise",
-                    id: id,
-                    repeat: 3,
-                }]),
-            } as ContentData;
-        }
+        let data = await getExercise(25);
+        return {
+            type: 'course',
+            name: data.name,
+            innerData: JSON.stringify([{
+                phase: "exercise",
+                id: 25,
+                repeat: 100000,
+            }]),
+        } as ContentData;
     });
     let [progress, setProgress] = React.useState<number>();
 
@@ -137,9 +122,6 @@ function Content({match} : CourseProps) {
     }, [progress]);
 
     const finish = async () => {
-        const loggedIn = store.getState().user.loggedIn;
-        if (loggedIn && contentType == 'exercise') 
-            await postResult(id, playRecord.score, playRecord.playTime, playRecord.calorie);
         store.dispatch(setResult(playRecord));
         setRedirectToResult(true);
     };
@@ -153,6 +135,7 @@ function Content({match} : CourseProps) {
         setRepeat(content.repeat);
         if (content.phase == 'exercise') {
             let exercise = await getExercise(content.id);
+            exercise.innerData = JSON.stringify(sampleData);
             setCurrentExercise(exercise);
         } else {
             setGuideLoading(false);
@@ -198,7 +181,6 @@ function Content({match} : CourseProps) {
                 </div>
             )}
             <div style={{marginBottom: '16px'}} />
-            { phase == 'exercise' && 
             <ExerciseScreen
                 onExerciseFinish={handleExerciseFinish}
                 videoWidth={videoWidth}
@@ -219,27 +201,9 @@ function Content({match} : CourseProps) {
                 repeat={repeat}
                 guidePose={guidePose}
             />
-            }
-            { phase == 'break' && 
-            <ExerciseScreen 
-                onExerciseFinish={handleExerciseFinish}
-                videoWidth={videoWidth}
-                videoHeight={videoHeight}
-                phase='break'
-                views={[
-                    {
-                        video: userVideo,
-                        scale: 1,
-                        offset: [0, 0],
-                    },
-                ]}
-                time={repeat}
-            />
-            }
-            <ContentDetail data={ store.getState().content.content } />
             <Footer />
         </>
       );
 }
 
-export default Content;
+export default Test3D;

@@ -1,6 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
-import { PosenetConfig, defaultPosenetConfig, PoseData } from 'utility/types';
+import { PosenetConfig, defaultPosenetConfig, PoseData2D, PoseData, Pose } from 'utility/types';
 
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
@@ -16,8 +16,8 @@ class PoseCalculator {
   config: PosenetConfig;
   readyToUse: boolean;
   modelInUse: boolean;
-  resultPoses: posenet.Pose[];
-  record: posenet.Pose[];
+  resultPoses: Pose[];
+  record: Pose[];
   filters: KalmanFilter[];
   poseData?: PoseData;
   useFilters: boolean;
@@ -65,7 +65,7 @@ class PoseCalculator {
       if (this.record.length > 0) this.record.push(this.resultPoses[0]);
       return false;
     }
-    let poses: posenet.Pose[] = [];
+    let poses: Pose[] = [];
 
     if (this.poseData) {
       poses = poses.concat(
@@ -98,7 +98,7 @@ class PoseCalculator {
           break;
       }
 
-      if (poses[0] && this.useFilters) {
+      if (poses[0] && "keypoints" in poses[0] && this.useFilters) {
         poses[0].keypoints.forEach((keypoint, i) => {
           keypoint.position.x = this.filters[2 * i].filter(keypoint.position.x);
           keypoint.position.y = this.filters[2 * i + 1].filter(

@@ -3,7 +3,7 @@ import React from 'react';
 import { postExercise } from 'utility/api';
 import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
-import { PoseData, Pose } from 'utility/types';
+import { PoseData2D, Pose2D } from 'utility/types';
 
 interface UploadExerciseBProps {
   video: File;
@@ -13,7 +13,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [title, setTitle] = React.useState<string>('');
   let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('영상 처리 중...');
-  let [poses, setPoses] = React.useState<Pose[]>([]);
+  let [poses, setPoses] = React.useState<Pose2D[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
@@ -69,7 +69,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
       skeleton: JSON.stringify({
         fps: recordFps,
         poses: poses,
-      } as PoseData),
+      } as PoseData2D),
     });
 
     if (success) {
