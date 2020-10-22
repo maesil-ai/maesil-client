@@ -9,6 +9,7 @@ import Loading from 'pages/Loading';
 import Shelf from 'components/Shelf';
 import { ContentData } from 'utility/types';
 import store from 'store';
+import { Link } from 'react-router-dom';
 
 interface ShelfData {
   title: string;
@@ -80,6 +81,22 @@ class Home extends React.Component<HomeProps, HomeState> {
         <>
           <Header />
           <div style={{marginBottom: '-32px'}} />
+          <div style={{height: '360px', background: '#1E1A14'}} >
+            <img style={{position: 'absolute', left: '166px'}} src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png' />
+            <div style={{position: 'absolute', left: '55%', top: '64px', color: 'white', fontWeight: 'bold', fontSize: '36px'}}>
+              매일매일 실내 트레이닝
+            </div>
+            <div style={{position: 'absolute', left: '55%', top: '132px', color: 'white', fontWeight: 'normal', fontSize: '18px', opacity: '0.6', lineHeight: '23px'}}>
+            우리의 피가 바로 살 말이다. 용감하고 것은 풀이 칼이다. 
+            <br/>
+            동력은 눈에 별과 뜨거운지라, 곳으로 보는 두손을 생의 것이다.
+            </div>
+            <Link to='/studio'>
+              <div style={{position: 'absolute', left: '55%', top: '240px'}} className='neonbox' >
+                MAESIL STUDIO
+              </div>
+            </Link>
+          </div>
           {shelfs}
           <Footer />
         </>
