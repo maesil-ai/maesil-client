@@ -1,3 +1,4 @@
+@import './index.scss';
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -125,11 +126,11 @@ input, textarea{
 }
 
 .neonbox {
-  border: 2px solid #59FF56;
+  border: 2px solid $color1;
   box-sizing: border-box;
   border-radius: 24px;
   padding: 10px 19px;
-  color: #59FF56;
+  color: $color1;
 }
 
 body {

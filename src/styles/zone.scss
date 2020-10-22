@@ -1,3 +1,5 @@
+@import './index.scss';
+
 .zone {
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
     border-radius: 48px;
@@ -97,8 +99,9 @@
 
     button {
       &.submit {
-        background: linear-gradient(271.11deg, #38FFDB 0.92%, rgba(255, 255, 255, 0) 103.95%), linear-gradient(0deg, #59FF56, #59FF56);
+        background: $main-gradient;
         border-radius: 32px;
+        color: #111111;
         height: 48px;
         width: 256px;
       }
@@ -107,6 +110,7 @@
         height: 32px;
         width: 120px;
         padding: 0px;
+        font-size: 16px;
       }
       min-width: 44px;
     }
