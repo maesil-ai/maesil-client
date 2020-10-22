@@ -16,6 +16,7 @@ export function UploadExerciseA({ onFinish }: UploadExerciseAProps) {
 
   return (
     <div {...getRootProps({ className: 'zone' })}>
+      <div style={{paddingBottom: '200px'}} />
       <input {...getInputProps()} />
       {isDragActive ? (
         <p>여기로 파일을 드래그해 주세요.</p>
@@ -24,6 +25,7 @@ export function UploadExerciseA({ onFinish }: UploadExerciseAProps) {
           파일을 여기로 드래그하거나, 상자를 눌러서 운동 영상을 올려 주세요.
         </p>
       )}
+      <div style={{paddingBottom: '200px'}} />
     </div>
   );
 }
