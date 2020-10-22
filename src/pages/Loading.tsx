@@ -11,7 +11,7 @@ interface LoadingProps {
 };
 
 function Loading({ headerReal = true } : LoadingProps) {
-  let rgb1 = [56, 255, 219], rgb2 = [89, 255, 86];
+  let rgb1 = [24, 223, 187], rgb2 = [57, 223, 54];
   let [mix, setMix] = React.useState(0);
 
   React.useEffect(() => {
