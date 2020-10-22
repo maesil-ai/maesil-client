@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
-import { headerLogo, searchIcon, userIcon, settingIcon } from 'utility/svg';
+import { headerLogo, searchIcon, userIcon, settingIcon, logoutIcon } from 'utility/svg';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -71,6 +71,10 @@ function Header({ real = true } : HeaderProps) {
               <Link to="/setting">
                 { settingIcon }
               </Link>
+              <span style={{paddingLeft: '64px'}} />
+              <Link to="/logout">
+                { logoutIcon }
+              </Link>
           </div>
         )}
         { !user.loggedIn && (
@@ -78,7 +82,7 @@ function Header({ real = true } : HeaderProps) {
             <div style={{top: '-16px', height: '32px'}}>
             { /* searchIcon */ }
             </div>
-            <div style={{top: '-8px', height: '16px'}}>
+            <div style={{top: '-16px', height: '32px'}}>
               <LoginButton/>
             </div>
           </>
