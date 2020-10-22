@@ -86,10 +86,10 @@ class Home extends React.Component<HomeProps, HomeState> {
             <div style={{position: 'absolute', left: '55%', top: '64px', color: 'white', fontWeight: 'bold', fontSize: '36px'}}>
               매일매일 실내 트레이닝
             </div>
-            <div style={{position: 'absolute', left: '55%', top: '132px', color: 'white', fontWeight: 'normal', fontSize: '18px', opacity: '0.6', lineHeight: '23px'}}>
-            우리의 피가 바로 살 말이다. 용감하고 것은 풀이 칼이다. 
-            <br/>
-            동력은 눈에 별과 뜨거운지라, 곳으로 보는 두손을 생의 것이다.
+            <div style={{position: 'absolute', left: '55%', top: '132px', color: 'white', fontWeight: 'normal', fontSize: '18px', opacity: '0.6', lineHeight: '27px'}}>
+              누구나 운동을 만들고 트레이닝할 수 있는 
+              <br/>
+              새로운 실내 헬스 트레이닝 플랫폼
             </div>
             <Link to='/studio'>
               <div style={{position: 'absolute', left: '55%', top: '240px'}} className='neonbox' >

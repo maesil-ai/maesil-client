@@ -75,23 +75,25 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
                 src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
                 onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
                 onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
-                style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
+                style={{width: '100%', height: '65%', cursor: 'pointer'}}
               />
             </Link>
           :   <img 
                 src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
                 onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
                 onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
-                style={{width: '100%', height: '72.5%', cursor: 'pointer'}}
+                style={{width: '100%', height: '65%', cursor: 'pointer'}}
                 onClick={ () => control(content) }
               />
           }
 
-          <div style={{width: '100%', height: '17.5%'}}>
+          <div style={{width: '100%', height: '25%'}}>
             <div className='title'> {content.name} </div>
-            <div className='creator'> {content.userName} </div>
+            <Link to={`/user/${content.userName}`}><div className='creator'> {content.userName} </div></Link>
           </div>
           
+          <div style={{width: '100%', height: '0px', border: '1px black solid', opacity: '0.08', marginBottom: '4px'}} />
+
           <div className='info' style={{width: '100%', height: '10%'}}>
             <div style={{marginLeft: '0px'}}>
               <span style={{marginLeft: '4px'}}> { smallViewIcon } </span>
