@@ -23,7 +23,7 @@ import { userInfoHasMetadata } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import HitTest from 'pages/HitTest';
 import Test3D from 'pages/Test3D';
-import ExerciseList from 'pages/ExerciseList';
+import ContentList from 'pages/ContentList';
 
 
 const Root = () => {
@@ -75,7 +75,8 @@ const Root = () => {
           <Route path="/justerror" component={Error} />
           <Route path="/hittest" component={HitTest} />
           <Route path="/3dtest" component={Test3D} />
-          <Route path="/search/:query" component={ExerciseList} />
+          <Route path="/search/:query" component={ContentList} />
+          <Route path="/tag/:tag" component={ContentList} />
           <Redirect path="/test3d" to="/3dtest" />
           <Redirect path="*" to="/" />
         </Switch>

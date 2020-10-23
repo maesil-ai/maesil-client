@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Heart from 'components/Heart';
 import { ContentData } from 'utility/types';
 import DeleteButton from 'components/DeleteButton';
-import ContentDetail from 'components/ContentDetail';
 import Title from 'components/Title';
 import { leftArrow, rightArrow, smallHeartIcon, smallViewIcon } from 'utility/svg';
 import { Link } from 'react-router-dom';
@@ -63,7 +62,6 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
     setPosition(position + Math.floor(screen.width / 320) * 320);
   }
 
-  console.log(contents);
   return (
     <>
       {title && <Title size='small' title={title}/>}
@@ -90,7 +88,12 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
 
           <div style={{width: '100%', height: '25%'}}>
             <div className='title'> {content.name} </div>
-            <Link to={`/user/${content.userName}`}><div className='creator'> {content.userName} </div></Link>
+            <div className='creator'>
+              <span style={{marginRight: '7px'}}> <Link to={`/user/${content.userName}`}> {content.userName } </Link> </span>
+              { content.tagList.map((tag) => (
+                <span style={{marginRight: '7px'}}> <Link to={`/tag/${tag}`}> #{ tag + ' ' } </Link> </span>
+              ))}
+            </div>
           </div>
           
           <div style={{width: '100%', height: '0px', border: '1px black solid', opacity: '0.08', marginBottom: '4px'}} />
@@ -108,7 +111,6 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
       { position > 0 && <div className='arrow leftArrow' onClick={moveLeft}> { leftArrow } </div> }
       { position < contents.length * 320 - screen.width + 60 && <div className='arrow rightArrow' onClick={moveRight}> { rightArrow } </div> }
       </div>
-      { selected != -1 && contents[selected] && <ContentDetail data={contents[selected]} /> }
     </>
   );
 }

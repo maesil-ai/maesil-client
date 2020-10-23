@@ -12,7 +12,7 @@ interface ContentDetailProps {
 function ContentDetail({ data }: ContentDetailProps) {
   let user = useSelector((state : RootReducerState) => state.user );
   let tags = useSelector((state : RootReducerState) => state.system.tags );
-  let tag = tags.find((tag) => tag.id == data.tagId);
+//  let tag = tags.find((tag) => tag.id == data.tagId);
 
   return (
     <div className='contentInfo'>

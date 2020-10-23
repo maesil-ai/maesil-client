@@ -52,6 +52,8 @@ class Home extends React.Component<HomeProps, HomeState> {
   async componentDidMount() {
     const exercises = await getExercises();
     const courses = await getCourses();
+
+    console.log(exercises);
     
     this.setState({
       ...this.state,

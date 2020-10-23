@@ -36,7 +36,7 @@ export interface RawAPIExerciseData {
   description: string;
   play_time: string;
   user_id: number;
-  "user.nickname": string;
+  nickname: string;
   thumb_url: string;
   thumb_gif_url: string;
   video_url: string;
@@ -48,7 +48,7 @@ export interface RawAPIExerciseData {
   created_at: string;
   updated_at: string;
   isLike?: boolean;
-  tag_id: number;
+  tag_list: string | null;
 }
 
 export interface RawAPICourseData {
@@ -68,7 +68,7 @@ export interface RawAPICourseData {
   created_at: string;
   updated_at: string;
   isLike?: boolean;
-  tag_id: number;
+  tag_list: string | null;
 }
 
 // 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
@@ -108,6 +108,8 @@ export const getExercises = async () => {
     method: 'GET',
     url: `${apiAddress}/exercises/`,
   }, "sometimes");
+
+  console.log(result);
 
   if (code < 300) return result.map(processRawExerciseData);
   else return null;
@@ -364,10 +366,26 @@ export const getId = async (name: string) => {
 }
 
 export const searchContent = async (query : string) => {
-//  let [code, result] = await callAxios<{exerciseResult: RawAPIExerciseData[], courseResult: RawAPICourseData[]}>
   let result = await Axios({
     method: 'GET',
     url: `${apiAddress}/all/search?title=${query}`,
+  });
+
+  if (result.data.code < 300) return {
+    exerciseResult: result.data.exerciseResult.map((result : RawAPIExerciseData) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result : RawAPICourseData) => processRawCourseData(result) ) as ContentData[],
+  };
+  else return {
+    exerciseResult: [], 
+    courseResult: [],
+  }
+}
+
+
+export const searchTag = async (tag : string) => {
+  let result = await Axios({
+    method: 'GET',
+    url: `${apiAddress}/tags/search?tag_name=${tag}`,
   });
 
   if (result.data.code < 300) return {
@@ -411,7 +429,7 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       description: rawData.description,
       playTime: rawData.play_time,
       userId: rawData.user_id,
-      userName: rawData["user.nickname"],
+      userName: rawData.nickname,
       thumbUrl: rawData.thumb_url,
       thumbGifUrl: rawData.thumb_gif_url,
       videoUrl: rawData.video_url,
@@ -423,7 +441,7 @@ const processRawExerciseData = (rawData : RawAPIExerciseData) => {
       createdAt: rawData.created_at,
       updatedAt: rawData.updated_at,
       heart: rawData.isLike,
-      tagId: rawData.tag_id,
+      tagList: rawData.tag_list ? rawData.tag_list.split(',') : [],
   } as ContentData;
 }
 
@@ -447,6 +465,6 @@ const processRawCourseData = (rawData : RawAPICourseData) => {
       createdAt: rawData.created_at,
       updatedAt: rawData.updated_at,
       heart: rawData.isLike,
-      tagId: rawData.tag_id,
+      tagList: rawData.tag_list ? rawData.tag_list.split(',') : [],
   } as ContentData;
 }

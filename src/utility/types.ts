@@ -97,7 +97,7 @@ export interface ContentData {
   userName: string;
   thumbUrl: string;
   thumbGifUrl: string;
-  tagId: number;
+  tagList: string[];
   videoUrl: string;
   innerData?: string;
   reward: number;
