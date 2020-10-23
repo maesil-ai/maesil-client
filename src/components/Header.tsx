@@ -16,6 +16,7 @@ function Header({ real = true } : HeaderProps) {
   let user = useSelector((state : RootReducerState) => state.user );
   let system = useSelector((state : RootReducerState) => state.system );
   let [mouseHover, setMouseHover] = React.useState(false);
+  let [query, setQuery] = React.useState<string>();
 
 
   const dropdownMenu = real && React.useMemo(() => (
@@ -61,27 +62,42 @@ function Header({ real = true } : HeaderProps) {
       </div>
       <div className="menu rightmenu">
         { user.loggedIn && (
-          <div style={{top: '-16px', height: '32px'}}>
-              { /* searchIcon */ }
-              <span style={{paddingLeft: '64px'}} />
-              <Link to="/mypage">
-                { userIcon }
-              </Link>
-              <span style={{paddingLeft: '64px'}} />
-              <Link to="/setting">
-                { settingIcon }
-              </Link>
-              <span style={{paddingLeft: '64px'}} />
-              <Link to="/logout">
-                { logoutIcon }
-              </Link>
-          </div>
+          <>
+            <div style={{top: '-18px', height: '33px'}}>
+              <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
+            </div>
+            <div style={{top: '-16px', height: '32px'}}>
+              <span style={{paddingLeft: '48px'}} />
+                <Link to={`/search/${query}`}>
+                  { searchIcon }
+                </Link>
+                <span style={{paddingLeft: '64px'}} />
+                <Link to="/mypage">
+                  { userIcon }
+                </Link>
+                <span style={{paddingLeft: '64px'}} />
+                <Link to="/setting">
+                  { settingIcon }
+                </Link>
+                <span style={{paddingLeft: '64px'}} />
+                <Link to="/logout">
+                  { logoutIcon }
+                </Link>
+            </div>
+          </>
         )}
         { !user.loggedIn && (
           <>
-            <div style={{top: '-16px', height: '32px'}}>
-            { /* searchIcon */ }
+            <div style={{top: '-18px', height: '33px'}}>
+              <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
             </div>
+            <span style={{paddingLeft: '48px'}} />
+            <div style={{top: '-16px', height: '32px'}}>
+              <Link to={`/search/${query}`}>
+                { searchIcon }
+              </Link>
+           </div>
+            <span style={{paddingLeft: '64px'}} />
             <div style={{top: '-16px', height: '32px'}}>
               <LoginButton/>
             </div>

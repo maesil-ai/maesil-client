@@ -44,6 +44,14 @@ header {
     right: 64px;
   }
 
+  .search {
+    width: 200px;
+    border-bottom: 2px solid #555;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: right;
+  }
+
   ul {
     margin: 0;
     padding: 0;
@@ -81,10 +89,6 @@ header {
         text-decoration: none;
       }
 
-      .search {
-        width: 100%;
-        border-bottom: 2px solid #555;
-      }
     }
 
     .dropdown-content {
