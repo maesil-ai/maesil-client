@@ -1,5 +1,5 @@
 import React from 'react';
-import PoseCalculator from 'utility/poseCalculator';
+import PoseCalculator from 'utility/bodyCalculator';
 import { draw3DPoints, drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
 import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
@@ -298,7 +298,6 @@ class ExerciseScreen extends React.Component<
         if (pose1 && pose2 && pose1.score >= this.state.viewConfig.minPoseConfidence && pose2.score >= this.state.viewConfig.minPoseConfidence && pose1.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose1.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence) {
           let {x : x1, y : y1} = pose1.keypoints[RIGHT_WRIST].position;
           let {x : x2, y : y2} = pose2.keypoints[RIGHT_WRIST].position;
-          console.log([y1, x1], [y2+50*(y2-y1), x2+50*(x2-x1)]);
 
           drawSegment([y1, x1], [y2+50*(y2-y1), x2+50*(x2-x1)], 'black', ctx);
         }
