@@ -63,6 +63,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
     setPosition(position + Math.floor(screen.width / 320) * 320);
   }
 
+  console.log(contents);
   return (
     <>
       {title && <Title size='small' title={title}/>}

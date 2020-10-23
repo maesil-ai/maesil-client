@@ -246,7 +246,6 @@ class ExerciseScreen extends React.Component<
       }
 
       if (poses && poses.length > 0) {
-        console.log(poses);
         if ("keypoints" in poses[0]) poses.forEach((pose : Pose2D) => {
             const keypoints = pose.keypoints;
             const score = pose.score;

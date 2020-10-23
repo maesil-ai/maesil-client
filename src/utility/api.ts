@@ -11,6 +11,7 @@ import {
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
 import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
+import Axios from 'axios';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -360,6 +361,23 @@ export const getId = async (name: string) => {
   });
 
   return result.user_id;
+}
+
+export const searchContent = async (query : string) => {
+//  let [code, result] = await callAxios<{exerciseResult: RawAPIExerciseData[], courseResult: RawAPICourseData[]}>
+  let result = await Axios({
+    method: 'GET',
+    url: `${apiAddress}/all/search?title=${query}`,
+  });
+
+  if (result.data.code < 300) return {
+    exerciseResult: result.data.exerciseResult.map((result : RawAPIExerciseData) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result : RawAPICourseData) => processRawCourseData(result) ) as ContentData[],
+  };
+  else return {
+    exerciseResult: [], 
+    courseResult: [],
+  }
 }
 
 interface RawAPITagData {
