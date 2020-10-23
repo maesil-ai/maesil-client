@@ -108,7 +108,8 @@ export const getExercises = async () => {
     url: `${apiAddress}/exercises/`,
   }, "sometimes");
 
-  return result.map(processRawExerciseData);
+  if (code < 300) return result.map(processRawExerciseData);
+  else return null;
 };
 
 export const getExercise = async (id: number) => {
@@ -117,7 +118,8 @@ export const getExercise = async (id: number) => {
     url: `${apiAddress}/exercises/${id}`,
   }, "sometimes");
 
-  return processRawExerciseData(result);
+  if (code < 300) return processRawExerciseData(result);
+  else return null;
 };
 
 export const getCourses = async () => {
@@ -126,7 +128,8 @@ export const getCourses = async () => {
     url: `${apiAddress}/courses`,
   }, "sometimes");
 
-  return result.map(processRawCourseData);
+  if (code < 300) return result.map(processRawCourseData);
+  else return null;
 }
 
 export const getCourse = async (id: number) => {
@@ -135,7 +138,8 @@ export const getCourse = async (id: number) => {
     url: `${apiAddress}/courses/${id}`,
   }, "sometimes");
 
-  return processRawCourseData(result);
+  if (code < 300) return processRawCourseData(result);
+  else return null;
 }
 
 export const deleteExercise = async (id : number) => {  

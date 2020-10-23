@@ -88,14 +88,6 @@ function Content({match} : CourseProps) {
         }).then(() => {
             setUserLoading(false);
         });
-
-        return () => {
-            if (userStream) {
-                userStream.getTracks().forEach((track) => {
-                    track.stop();
-                });
-            }
-        };
     }, []);
 
     // 내 카메라 스트림이 로딩되었을 때
@@ -137,10 +129,20 @@ function Content({match} : CourseProps) {
     }, [progress]);
 
     const finish = async () => {
+        console.log(userStream);
+        if (userStream) {
+            userStream.getTracks().forEach((track) => {
+                console.log(track);
+                console.log('이게 안돼?');
+                track.stop();
+            });
+        }
         const loggedIn = store.getState().user.loggedIn;
         if (loggedIn && contentType == 'exercise') 
             await postResult(id, playRecord.score, playRecord.playTime, playRecord.calorie);
         store.dispatch(setResult(playRecord));
+
+        
         setRedirectToResult(true);
     };
 
@@ -156,7 +158,7 @@ function Content({match} : CourseProps) {
             setCurrentExercise(exercise);
         } else {
             setGuideLoading(false);
-        }        
+        }
     }
 
     const handleExerciseFinish = (nowRecord: PlayRecord) => {
