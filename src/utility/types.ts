@@ -3,17 +3,29 @@ import PoseCalculator from './poseCalculator';
 
 export const fps = 30;
 
-export type Pose = posenet.Pose;
 export type PosenetModelConfig = posenet.ModelConfig;
 export interface Position {
   x: number;
   y: number;
 }
 
-export interface PoseData {
+export type Pose2D = posenet.Pose;
+export type Pose3D = number[][];
+export type Pose = Pose2D | Pose3D;
+
+export interface PoseData2D {
+  dimension: "2d",
   fps: number;
-  poses: Pose[];
+  poses: Pose2D[];
 }
+
+export interface PoseData3D {
+  dimension: "3d",
+  fps: number;
+  poses: Pose3D[];
+}
+
+export type PoseData = PoseData2D | PoseData3D;
 
 export interface PosenetConfig {
   algorithm: string;
@@ -81,7 +93,7 @@ export interface ScreenView {
   video: HTMLVideoElement;
   scale: number;
   offset: [number, number];
-  poseData?: PoseData;
+  poseData?: PoseData2D;
   calculator?: PoseCalculator;
 }
 

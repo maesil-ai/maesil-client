@@ -10,7 +10,7 @@ import usePromise from 'utility/usePromise';
 import { APIGetUserInfoData } from 'utility/types';
 import Tabs from 'components/Tabs';
 
-function Modify() {
+function SettingInfo() {
   let [loading, userInfo, error] = usePromise<APIGetUserInfoData>(getUserInfo);
 
   const handleSubmit = async (name: string, sex: string, height: number, weight: number, setMessage: (string) => void) => {
@@ -30,7 +30,6 @@ function Modify() {
     return (
       <>
         <Header />
-        <Title title="설정" />
         <Tabs data={[{
           name: "정보 수정",
           link: "/settings/info",
@@ -44,4 +43,4 @@ function Modify() {
     );
 }
 
-export default Modify;
+export default SettingInfo;

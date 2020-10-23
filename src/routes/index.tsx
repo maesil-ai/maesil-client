@@ -12,7 +12,7 @@ import Userpage from 'pages/User';
 import { getUserInfo, getSubscribes, getAccessToken, getTags } from 'utility/api';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import { UserAction, setUser, clearUser, setTags, SystemAction } from 'actions';
-import Modify from 'pages/Modify';
+import SettingInfo from 'pages/SettingInfo';
 import Content from 'pages/Content';
 import Fuck from 'pages/AccessToken';
 import Loading from 'pages/Loading';
@@ -22,6 +22,7 @@ import UploadCourse from 'pages/UploadCourse';
 import { userInfoHasMetadata } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import HitTest from 'pages/HitTest';
+import Test3D from 'pages/Test3D';
 
 
 const Root = () => {
@@ -53,20 +54,27 @@ const Root = () => {
           <Route path="/exercise/:id" component={Content} />
           <Route path="/course/:id" component={Content} />
           <Route path="/result" component={Result} />
-          <Route path="/upload/exercise" component={UploadExercise} />
-          <Route path="/upload/course" component={UploadCourse} />
-          <Redirect path="/upload/*" to="/upload/exercise" />
-          <Redirect path="/upload" to="/upload/exercise" />
+          <Redirect path="/upload/course" to="/studio/course" />
+          <Redirect path="/upload/*" to="/studio/exercise" />
+          <Redirect path="/upload" to="/studio/exercise" />
+          <Route path="/studio/exercise" component={UploadExercise} />
+          <Route path="/studio/course" component={UploadCourse} />
+          <Redirect path="/studio/*" to="/studio/exercise" />
+          <Redirect path="/studio" to="/studio/exercise" />
           <Route path="/signup" component={Signup} />
           <Route path="/mypage/info" component={Mypage} />
           <Redirect path="/mypage/*" to="mypage/info" />
           <Redirect path="/mypage" to="mypage/info" />
           <Route path="/user/:name" component={Userpage} />
-          <Route path="/setting/info" component={Modify} />
+          <Route path="/setting/info" component={SettingInfo} />
           <Redirect path="/setting/*" to="/setting/info" />
           <Redirect path="/setting" to="/setting/info" />
           <Route path="/fuck" component={Fuck} />
+          <Route path="/justload" component={Loading} />
+          <Route path="/justerror" component={Error} />
           <Route path="/hittest" component={HitTest} />
+          <Route path="/3dtest" component={Test3D} />
+          <Redirect path="/test3d" to="/3dtest" />
           <Redirect path="*" to="/" />
         </Switch>
       </Analytics>

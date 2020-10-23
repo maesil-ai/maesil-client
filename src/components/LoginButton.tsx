@@ -4,6 +4,7 @@ import React from 'react';
 import { login } from 'utility/api';
 import * as dotenv from 'dotenv';
 import { Redirect } from 'react-router-dom';
+import { loginIcon } from 'utility/svg';
 
 interface LoginButtonProps {
 
@@ -32,8 +33,8 @@ const LoginButton = ({}: LoginButtonProps) => {
         } 
           style={{cursor:'pointer'}}
         >
-          {status == 0 && '로그인'}
-          {status == 1 && '로그인 중...'}
+          {status == 0 && loginIcon }
+          {status == 1 && ''}
         </div>
       )}
       getProfile={true}

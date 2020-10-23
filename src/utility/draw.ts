@@ -151,15 +151,25 @@ export function drawKeypoints(
   scale = 1,
   [offsetx, offsety] = [0, 0]
 ) {
-  for (let i = 0; i < keypoints.length; i++) {
-    const keypoint = keypoints[i];
-
+  for (let keypoint of keypoints) {
     if (keypoint.score < minConfidence) {
       continue;
     }
 
     const { y, x } = keypoint.position;
     drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+  }
+}
+
+export function draw3DPoints(
+  keypoints: number[][],
+  ctx: CanvasRenderingContext2D,
+  scale = 1,
+  [offsetx, offsety] = [0, 0]
+) {
+  for (let keypoint of keypoints) {
+    let x = (keypoint[0] + 1) / 2 * 800, y = (keypoint[1] + 1) / 2 * 600;
+    drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, "red");
   }
 }
 

@@ -1,16 +1,18 @@
 import React from 'react';
 import PoseCalculator from 'utility/bodyCalculator';
-import { drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
+import { draw3DPoints, drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
 import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
 
 import {
   ScreenView,
-  Pose,
+  Pose2D,
   PlayRecord,
   fps,
   PoseData,
+  Pose,
+  Pose3D,
 } from 'utility/types';
 
 const LEFT_ELBOW = 7;
@@ -62,7 +64,7 @@ interface ExerciseScreenProps {
 interface ExerciseScreenState {
   count: number;
   isPlaying: boolean;
-  records: Pose[][][];
+  records: Pose2D[][][];
   scores: number[];
   liveScores: number[],
   progress: number,
@@ -243,32 +245,40 @@ class ExerciseScreen extends React.Component<
         ctx.restore();
       }
 
-      if (poses) {
-        poses.forEach(({ score, keypoints }) => {
-          if (score >= this.state.viewConfig.minPoseConfidence) {
-            if (this.state.viewConfig.showPoints)
-              drawKeypoints(
-                keypoints,
-                this.state.viewConfig.minPartConfidence,
-                ctx,
-                scale,
-                offset
-              );
-            if (this.state.viewConfig.showSkeleton)
-              drawSkeleton(
-                keypoints,
-                this.state.viewConfig.minPartConfidence,
-                ctx,
-                scale,
-                offset
-              );
-            if (this.state.viewConfig.showBoundingBox)
-              drawBoundingBox(keypoints, ctx, scale, offset);
-          }
+      if (poses && poses.length > 0) {
+        console.log(poses);
+        if ("keypoints" in poses[0]) poses.forEach((pose : Pose2D) => {
+            const keypoints = pose.keypoints;
+            const score = pose.score;
+            if (score >= this.state.viewConfig.minPoseConfidence) {
+              if (this.state.viewConfig.showPoints)
+                drawKeypoints(
+                  keypoints,
+                  this.state.viewConfig.minPartConfidence,
+                  ctx,
+                  scale,
+                  offset
+                );
+              if (this.state.viewConfig.showSkeleton)
+                drawSkeleton(
+                  keypoints,
+                  this.state.viewConfig.minPartConfidence,
+                  ctx,
+                  scale,
+                  offset
+                );
+              if (this.state.viewConfig.showBoundingBox)
+                drawBoundingBox(keypoints, ctx, scale, offset);
+            }
         });
+        else {
+            if (this.state.viewConfig.showPoints) {
+              draw3DPoints(poses as unknown as Pose3D, ctx);
+            }
+        }
       }
 
-      if (this.props.showHits) {
+      if (this.props.showHits && this.views[0].poseData.dimension == '2d') {
 /*        for (let pose of this.views[0].calculator.record) {
           if (pose.score >= this.state.viewConfig.minPoseConfidence) {
   //          if (pose.keypoints[LEFT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose.keypoints[LEFT_WRIST].score >= this.state.viewConfig.minPartConfidence)
@@ -278,11 +288,11 @@ class ExerciseScreen extends React.Component<
           }
         }
 */
-        let pose2 = this.views[0].calculator.record[this.views[0].calculator.record.length-1];
+        let pose2 = this.views[0].calculator.record[this.views[0].calculator.record.length-1] as Pose2D;
 
-        let pose1 : Pose = null;
+        let pose1 : Pose2D = null;
         for (let i = this.views[0].calculator.record.length-1; i>=0; i--) if (this.views[0].calculator.record[i] != pose2) {
-          pose1 = this.views[0].calculator.record[i];
+          pose1 = this.views[0].calculator.record[i] as Pose2D;
           break;
         }
 
@@ -341,7 +351,7 @@ class ExerciseScreen extends React.Component<
 
         for (let i = 0; i < this.props.repeat; i++) {
           ctx.fillStyle = this.state.count > i ? 'rgb(22, 22, 22)' : 'rgb(222, 222, 222)';
-          ctx.fillRect(x - 40 * i, y, w, h);
+          ctx.fillRect(x - 40 * (this.props.repeat - i - 1), y, w, h);
         }
       }
       if (this.props.phase == 'exercise' && this.state.viewConfig.showScore) {

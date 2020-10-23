@@ -3,7 +3,7 @@ import React from 'react';
 import { postExercise } from 'utility/api';
 import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
-import { PoseData, Pose } from 'utility/types';
+import { PoseData2D, Pose2D } from 'utility/types';
 
 interface UploadExerciseBProps {
   video: File;
@@ -13,7 +13,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [title, setTitle] = React.useState<string>('');
   let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('영상 처리 중...');
-  let [poses, setPoses] = React.useState<Pose[]>([]);
+  let [poses, setPoses] = React.useState<Pose2D[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
   let videoRef = React.useRef<HTMLVideoElement>();
@@ -69,7 +69,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
       skeleton: JSON.stringify({
         fps: recordFps,
         poses: poses,
-      } as PoseData),
+      } as PoseData2D),
     });
 
     if (success) {
@@ -81,62 +81,62 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', width: 1200 }}>
-        { guideVideo }
         <div className="zone">
-          <table>
-            <tbody>
-              <tr>
-                <td> 제목 </td>
-                <td className="fill">
-                  <input
-                    className="inputTitle"
-                    value={title}
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td> 설명 </td>
-                <td className="fill">
-                  <textarea
-                    className="inputDescription"
-                    rows={5}
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td> 썸네일 이미지 </td>
-                <td className="fill">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    required
-                    onChange={(e) => setThumbnail(e.target.files[0])}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td> 움직이는 썸네일 이미지 </td>
-                <td className="fill">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setGifThumbnail(e.target.files[0])}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          {message ? message : <button onClick={upload}> 올리기! </button>}
+        { guideVideo }
+        <table>
+          <tbody>
+            <tr>
+              <td> 제목 </td>
+              <td className="fill inputbox">
+                <input
+                  className="inputTitle"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td > 설명 </td>
+              <td className="fill inputbox" style={{height: '96px'}}>
+                <textarea
+                  className="inputDescription"
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value) }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 썸네일 이미지 </td>
+              <td className="fill inputbox">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 움직이는 썸네일 이미지 </td>
+              <td className="fill inputbox">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setGifThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
         </div>
-      </div>
+        <div className='zone invisible'>
+          { message ? <div> { message } </div> : <> </> }
+          { poses.length > 0 && <button onClick={upload} className='submit'> 올리기! </button> }
+        </div>
     </>
   );
 }

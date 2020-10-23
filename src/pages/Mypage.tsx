@@ -20,7 +20,7 @@ function Mypage() {
       setUserInfo(info);
 
       Promise.all(likes.map((content) => getExercise(content.id))).then((likes) => {
-        setLikes(likes);
+        setLikes(likes.filter((content) => content != null));
         setLoading(false);  
       });
     });
@@ -32,19 +32,40 @@ function Mypage() {
     return (
       <>
         <Header />
-        <Title title={userInfo.nickname + '님, 오늘도 파이팅!'} />
         <Tabs data={[{
           name: "정보",
           link: "/mypage/info",
           active: true,
+        }, {
+          name: "내 채널",
+          link: `/user/${userInfo.nickname}`,
+          active: false,
         }]} />
         <div className="zone">
-          <div> 현재 {userInfo.level}레벨입니다. </div>
-          <div> 키: {userInfo.height}cm </div>
-          <div> 몸무게: {userInfo.weight}kg </div>
-          <div> 성별: {userInfo.gender} </div>
+          <h1> { userInfo.nickname }님, 오늘도 파이팅! </h1>
+          <div style={{marginBottom: '48px'}} />
+          <table style={{width: '50%', margin: 'auto'}}>
+            <tbody>
+              <tr style={{height: '48px'}}>
+                <td className='labelColumn'> 레벨 </td>
+                <td className='contentColumn'> { userInfo.level } </td>
+              </tr>
+              <tr style={{height: '48px'}}>
+                <td className='labelColumn'> 키 </td>
+                <td className='contentColumn'> { userInfo.height } </td>
+              </tr>
+              <tr style={{height: '48px'}}>
+                <td className='labelColumn'> 몸무게 </td>
+                <td className='contentColumn'> { userInfo.weight } </td>
+              </tr>
+              <tr style={{height: '48px'}}>
+                <td className='labelColumn'> 성별 </td>
+                <td className='contentColumn'> { userInfo.gender } </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <Shelf title={`${userInfo.nickname}님이 좋아하는 운동들`} exercises={likes} />
+        <Shelf title={`${userInfo.nickname}님이 좋아하는 운동들`} contents={likes} />
         <Footer />
       </>
     );

@@ -23,14 +23,13 @@ function UploadExercise() {
   return (
     <>
       <Header />
-      <Title title="매실 스튜디오" />
       <Tabs data={[{
         name: "운동 업로드",
-        link: "/upload/exercise",
+        link: "/studio/exercise",
         active: true,
       }, {
-        name: "운동 코스 업로드",
-        link: "/upload/course",
+        name: "운동 코스 제작",
+        link: "/studio/course",
         active: false,
       }]} />
       {phase == 1 && <UploadExerciseA onFinish={handleAFinish} />}

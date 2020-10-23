@@ -51,18 +51,17 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
 
   return (
     <>
-      <table style={{width: '100%'}}>
+      <table style={{width: 'calc(100% - 58px)'}}>
         <tbody>
           <tr>
             <td> 이름 </td>
-            <td className="fill">
+            <td className="fill inputbox">
               <input value={name} onChange={(e) => setName(e.target.value)} />
             </td>
-            <td> </td>
           </tr>
           <tr>
             <td> 성별 </td>
-            <td className="fill">
+            <td className="fill inputbox">
               <select
                 value={sex ? sex : 0}
                 onChange={(event) => {
@@ -79,35 +78,30 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
                 ))}
               </select>
             </td>
-            <td> </td>
           </tr>
           <tr>
             <td> 키 </td>
-            <td className="fill">
-              {' '}
+            <td className="fill inputbox">
               <input
                 type="number"
                 value={height.toString()}
                 onChange={(e) => setHeight(e.target.value)}
-              />{' '}
+              />
             </td>
-            <td> cm </td>
           </tr>
           <tr>
             <td> 체중 </td>
-            <td className="fill">
-              {' '}
+            <td className="fill inputbox">
               <input
                 type="number"
                 value={weight.toString()}
                 onChange={(e) => setWeight(e.target.value)}
-              />{' '}
+              />
             </td>
-            <td> kg </td>
           </tr>
         </tbody>
       </table>
-      <button onClick={submit}> {buttonMessage} </button>
+      <button className='submit' onClick={submit}> {buttonMessage} </button>
       <div> {message} </div>
     </>
   );

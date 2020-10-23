@@ -1,6 +1,5 @@
-import * as posenet from '@tensorflow-models/posenet';
 import store from 'store';
-import { fps, Position, APIGetUserInfoData } from './types';
+import { fps, Position, APIGetUserInfoData, Pose, Pose2D } from './types';
 
 const calculatePixelDistance = (position1: Position, position2: Position) =>
   Math.sqrt(
@@ -20,12 +19,14 @@ const convertDistanceToMeters = (distance: number, height: number = 1.73) =>
 const calculateKineticEnergy = (velocity: number, mass: number) =>
   0.5 * mass * velocity * velocity;
 
-function estimateEnergy(userPose: posenet.Pose[], userInfo: APIGetUserInfoData) {
+function estimateEnergy(userPose: Pose[], userInfo: APIGetUserInfoData) {
+  if (!("keypoints" in userPose[0])) return 0;
   let energyBurned = 0;
-  let previousPose = null;
+  let previousPose : Pose2D = null;
   const k = 1;
 
   userPose.forEach((pose) => {
+    if (!("keypoints" in pose)) return 0;
     if (previousPose) {
       for (let i = 0; i < pose.keypoints.length; i++) {
         if (i >= 1 && 1 < 5) continue; // 0은 코 측정, 1~5 양쪽 눈 양쪽 귀는 무시
@@ -62,7 +63,7 @@ function energyToMET(energy: number) {
   return log_scale;
 }
 
-export function exerciseCalorie(userPose: posenet.Pose[], second: number) {
+export function exerciseCalorie(userPose: Pose[], second: number) {
   const userInfo = store.getState().user.userInfo;
   return (
     (17.5 / 60000) *

@@ -5,7 +5,7 @@ import ExerciseScreen from "components/ExerciseScreen";
 import Footer from "components/Footer";
 import usePromise from "utility/usePromise";
 import Loading from "pages/Loading";
-import { ContentData, PoseData, PlayRecord, CourseContent } from "utility/types";
+import { ContentData, PoseData2D, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult, getCourse } from "utility/api";
 import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
@@ -63,7 +63,7 @@ function HitTest() {
 
     if (userLoading) return <Loading/>;
     return (
-        <div>
+        <>
           <Header />
           <Title title='타격 테스트' subtitle='배고픕니다.' />
             <ExerciseScreen 
@@ -81,7 +81,7 @@ function HitTest() {
                 showHits={true}
             />
           <Footer />
-        </div>
+        </>
       );
 }
 
