@@ -60,6 +60,22 @@ export const defaultPosenetConfig: PosenetConfig = {
   },
 };
 
+// TO-DO add type
+export const defaultBodyPixResNetConfig = {
+  algorithm: 'multi-person-part',
+  architecture: 'ResNet50',
+  outputStride: 32,
+  quantBytes: 2
+};
+
+export const defaultBodyPixMobileNetConfig = {
+  algorithm: 'multi-person-part',
+  architecture: 'MobileNetV1',
+  outputStride: 16,
+  multiplier: 0.75,
+  quantBytes: 2
+};
+
 export interface PlayRecord {
   playTime: number;
   calorie: number;
