@@ -27,7 +27,7 @@ const loadStream = async () => {
 };
 
 function HitTest() {
-    let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
+    let [userStreamLoading, userStream] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let userVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
 

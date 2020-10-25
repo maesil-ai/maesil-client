@@ -30,7 +30,7 @@ const loadStream = async () => {
 
 function Test3D() {
     let contentType = 'exercise' as const;
-    let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
+    let [userStreamLoading, userStream] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);

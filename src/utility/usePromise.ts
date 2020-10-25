@@ -1,16 +1,19 @@
+import { raiseError } from 'actions';
 import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function usePromise<Type>(promiseCreator: () => Promise<Type>, deps: React.DependencyList = []) {
   const [loading, setLoading] = useState<boolean>(true);
   const [content, setContent] = useState<Type>(null);
-  const [error, setError] = useState<Error>(null);
+  const dispatch = useDispatch();
 
   const process = async () => {
     try {
       const result = await promiseCreator();
       setContent(result);
     } catch (error) {
-      setError(error);
+      dispatch(raiseError(`페이지를 불러오는 오류가 발생했습니다: ${error}`));
+      console.log(error);
     }
     setLoading(false);
   };
@@ -19,5 +22,5 @@ export default function usePromise<Type>(promiseCreator: () => Promise<Type>, de
     process();
   }, deps);
 
-  return [loading, content, error] as [boolean, Type, Error];
+  return [loading, content] as [boolean, Type];
 }

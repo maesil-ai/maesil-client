@@ -8,7 +8,7 @@ interface UserIntroduceProps {
 };
 
 export function UserIntroduce({ name, id } : UserIntroduceProps) {
-    let [loading, initialSubscribed, subscribedError] = usePromise(() => getSubscribed(id));
+    let [loading, initialSubscribed] = usePromise(() => getSubscribed(id));
     let [subscribed, setSubscribed] = React.useState<boolean>();
 
     React.useEffect(() => {

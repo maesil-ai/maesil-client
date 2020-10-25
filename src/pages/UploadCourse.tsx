@@ -25,7 +25,7 @@ function UploadCourse() {
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
-  let [exercisesLoading, exercises, exercisesError] = usePromise(getExercises);
+  let [exercisesLoading, exercises] = usePromise(getExercises);
 
   const addContent = () => {
     setContents(contents.concat([emptyContent]));

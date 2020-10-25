@@ -24,6 +24,7 @@ import usePromise from 'utility/usePromise';
 import HitTest from 'pages/HitTest';
 import Test3D from 'pages/Test3D';
 import ContentList from 'pages/ContentList';
+import MypageRecord from 'pages/MypageRecord';
 
 
 const Root = () => {
@@ -59,6 +60,7 @@ const Root = () => {
           <Redirect path="/studio" to="/studio/exercise" />
           <Route path="/signup" component={Signup} />
           <Route path="/mypage/info" component={Mypage} />
+          <Route path="/mypage/record" component={MypageRecord} />
           <Redirect path="/mypage/*" to="mypage/info" />
           <Redirect path="/mypage" to="mypage/info" />
           <Route path="/user/:name" component={Userpage} />

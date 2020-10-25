@@ -38,7 +38,7 @@ interface CourseProps {
 function Content({match} : CourseProps) {
     let contentType = React.useMemo<'course' | 'exercise'>(() => match.url.includes('course') ? 'course' : 'exercise', []);
     let id = React.useMemo<number>(() => Number.parseInt(match.params.id), []);
-    let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream);
+    let [userStreamLoading, userStream] = usePromise(loadStream);
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);

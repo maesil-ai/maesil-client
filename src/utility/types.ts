@@ -125,6 +125,18 @@ export interface ContentData {
   heart?: boolean;
 }
 
+export interface RecordData {
+  id: number;
+  userName: string;
+  userId: number;
+  exerciseName: string;
+  exerciseId: number;
+  score: number;
+  playTime: number;
+  calorie: number;
+  startedAt: string;
+}
+
 export interface APIPostExerciseForm {
   exercise: Blob;
   title: string;

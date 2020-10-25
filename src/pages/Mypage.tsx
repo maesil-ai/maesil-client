@@ -9,22 +9,14 @@ import Loading from 'pages/Loading';
 import { Redirect } from 'react-router-dom';
 import Shelf from 'components/Shelf';
 import Tabs from 'components/Tabs';
+import usePromise from 'utility/usePromise';
 
 function Mypage() {
-  let [userInfo, setUserInfo] = React.useState<APIGetUserInfoData>();
-  let [isLoading, setLoading] = React.useState<boolean>(true);
-  let [likes, setLikes] = React.useState<ContentData[]>([]);
-
-  React.useEffect(() => {
-    Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
-      setUserInfo(info);
-      setLikes(likes);
-      setLoading(false);  
-    });
-  }, []);
+  let [userInfoLoading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
+  let [likesLoading, likes] = usePromise<ContentData[]>(getLikes);
 
   if (!getAccessToken()) return <Redirect to="/" />;
-  if (isLoading) return <Loading />;
+  if (userInfoLoading || likesLoading) return <Loading />;
   else
     return (
       <>
@@ -33,6 +25,10 @@ function Mypage() {
           name: "정보",
           link: "/mypage/info",
           active: true,
+        }, {
+          name: "운동 기록",
+          link: "/mypage/record",
+          active: false,
         }, {
           name: "내 채널",
           link: `/user/${userInfo.nickname}`,

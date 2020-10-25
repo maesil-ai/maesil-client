@@ -12,6 +12,7 @@ import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
 import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
 import Axios from 'axios';
+import { RawAPIExerciseData, processRawExerciseData, RawAPICourseData, processRawCourseData, RawAPIRecordData, RawAPITagData, processRawTagData, processRawRecordData } from './apiTypes';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -30,46 +31,6 @@ function secondToString(time: number) {
   return `${hr}:${min}:${sec}`;
 }
 
-export interface RawAPIExerciseData {
-  exercise_id: number;
-  title: string;
-  description: string;
-  play_time: string;
-  user_id: number;
-  nickname: string;
-  thumb_url: string;
-  thumb_gif_url: string;
-  video_url: string;
-  skeleton: string;
-  reward: number;
-  like_counts: number;
-  view_counts: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  isLike?: boolean;
-  tag_list: string | null;
-}
-
-export interface RawAPICourseData {
-  course_id: number;
-  course_name: string;
-  description: string;
-  play_time: string;
-  user_id: number;
-  thumb_url: string;
-  thumb_gif_url: string;
-  video_url: string;
-  exercise_list: string;
-  reward: number;
-  like_counts: number;
-  view_counts: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  isLike?: boolean;
-  tag_list: string | null;
-}
 
 // 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
 // useToken = 'always': api 호출하기 전 access token을 무조건 가져와서 헤더에 넣음. 없으면 null 반환
@@ -149,6 +110,16 @@ export const deleteExercise = async (id : number) => {
     url: `${apiAddress}/exercises/${id}`,
   }, 'always');
 };
+
+export const getRecords = async () => {
+  const [code, result] = await callAxios<RawAPIRecordData[]>({
+    method: 'GET',
+    url: `${apiAddress}/exercises_history`,
+  }, 'always');
+
+  if (code < 300) return result.map(processRawRecordData);
+  else return null;
+}
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
   await callAxios<void>({
@@ -398,12 +369,6 @@ export const searchTag = async (tag : string) => {
   }
 }
 
-interface RawAPITagData {
-  tag_id: number;
-  tag_name: string;
-  tag_english_name: string;
-};
-
 export const getTags = async () => {
   let [code, result] = await callAxios<RawAPITagData[]>({
     method: 'GET',
@@ -411,60 +376,4 @@ export const getTags = async () => {
   });
 
   return result.map((rawData) => processRawTagData(rawData));
-}
-
-const processRawTagData = (rawData : RawAPITagData) => {
-  return {
-    id: rawData.tag_id,
-    name: rawData.tag_name,
-    englishName: rawData.tag_english_name,
-  } as TagData;
-}
-
-const processRawExerciseData = (rawData : RawAPIExerciseData) => {
-  return {
-      type: "exercise",
-      id: rawData.exercise_id,
-      name: rawData.title,
-      description: rawData.description,
-      playTime: rawData.play_time,
-      userId: rawData.user_id,
-      userName: rawData.nickname,
-      thumbUrl: rawData.thumb_url,
-      thumbGifUrl: rawData.thumb_gif_url,
-      videoUrl: rawData.video_url,
-      innerData: rawData.skeleton,
-      reward: rawData.reward,
-      heartCount: rawData.like_counts,
-      viewCount: rawData.view_counts,
-      status: rawData.status,
-      createdAt: rawData.created_at,
-      updatedAt: rawData.updated_at,
-      heart: rawData.isLike,
-      tagList: rawData.tag_list ? rawData.tag_list.split(',') : [],
-  } as ContentData;
-}
-
-const processRawCourseData = (rawData : RawAPICourseData) => {
-  return {
-      type: "course",
-      id: rawData.course_id,
-      name: rawData.course_name,
-      description: rawData.description,
-      playTime: rawData.play_time,
-      userId: rawData.user_id,
-      userName: rawData["user.nickname"],
-      thumbUrl: rawData.thumb_url,
-      thumbGifUrl: rawData.thumb_gif_url,
-      videoUrl: rawData.video_url,
-      innerData: rawData.exercise_list,
-      reward: rawData.reward,
-      heartCount: rawData.like_counts,
-      viewCount: rawData.view_counts,
-      status: rawData.status,
-      createdAt: rawData.created_at,
-      updatedAt: rawData.updated_at,
-      heart: rawData.isLike,
-      tagList: rawData.tag_list ? rawData.tag_list.split(',') : [],
-  } as ContentData;
 }

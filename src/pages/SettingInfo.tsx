@@ -11,7 +11,7 @@ import { APIGetUserInfoData } from 'utility/types';
 import Tabs from 'components/Tabs';
 
 function SettingInfo() {
-  let [loading, userInfo, error] = usePromise<APIGetUserInfoData>(getUserInfo);
+  let [loading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
 
   const handleSubmit = async (name: string, sex: string, height: number, weight: number, setMessage: (string) => void) => {
     let result = postUserInfo(name, sex, height, weight);
@@ -20,12 +20,6 @@ function SettingInfo() {
   }
 
   if (loading) return <Loading/>;
-  else if (error) return (
-    <>
-      <Header />
-      <Footer />
-    </>
-  );
   else
     return (
       <>
