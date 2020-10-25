@@ -1,5 +1,5 @@
 import * as types from 'actions/ActionTypes';
-import { APIGetUserInfoData, Channel, ContentData, PlayRecord, TagData } from 'utility/types';
+import { APIGetUserInfoData, Channel, ContentData, PlayRecord } from 'utility/types';
 
 export const raiseError = (message: string) => {
   return {
@@ -14,17 +14,18 @@ export const closeError = () => {
   };
 }
 
-export const setTags = (tags: TagData[]) => {
+export const setTutorialStep = (step: number) => {
   return {
-    type: types.SET_TAGS,
-    tags: tags,
-  }
+    type: types.SET_TUTORIAL_STEP,
+    step: step,
+  };
 }
 
 export type SystemAction =
   | ReturnType<typeof raiseError>
   | ReturnType<typeof closeError>
-  | ReturnType<typeof setTags>;
+  | ReturnType<typeof setTutorialStep>
+  ;
 
 
 
@@ -65,7 +66,8 @@ export type UserAction =
   | ReturnType<typeof setUser>
   | ReturnType<typeof clearUser>
   | ReturnType<typeof subscribe>
-  | ReturnType<typeof changeInfo>;
+  | ReturnType<typeof changeInfo>
+  ;
 
 
 export const setContent = (content: ContentData) => {
@@ -91,4 +93,5 @@ export const clearContent = () => {
 export type ContentAction =
   | ReturnType<typeof setContent>
   | ReturnType<typeof setResult>
-  | ReturnType<typeof clearContent>;
+  | ReturnType<typeof clearContent>
+  ;

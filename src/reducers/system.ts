@@ -5,13 +5,13 @@ import { TagData } from 'utility/types';
 interface SystemState {
     error: boolean;
     message: string;
-    tags: TagData[];
+    tutorialStep: number;
 };
 
 const initialState : SystemState = {
     error: false,
     message: "",
-    tags: null,
+    tutorialStep: 0,
 };
 
 export default function system(state = initialState, action : SystemAction) {
@@ -28,10 +28,10 @@ export default function system(state = initialState, action : SystemAction) {
         error: false,
         message: "",
       };
-    case types.SET_TAGS:
+    case types.SET_TUTORIAL_STEP:
       return {
         ...state,
-        tags: action.tags,
+        tutorialStep: action.step,
       };
     default:
       return state;

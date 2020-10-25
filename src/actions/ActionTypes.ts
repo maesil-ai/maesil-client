@@ -2,7 +2,7 @@
 // reducers/system
 export const RAISE_ERROR = 'RAISE_ERROR' as const;
 export const CLOSE_ERROR = 'CLOSE_ERROR' as const;
-export const SET_TAGS = 'SET_TAGS' as const;
+export const SET_TUTORIAL_STEP = 'SET_TUTORIAL_STEP' as const;
 
 // reducers/user
 export const SET_USER = 'SET_USER' as const;
