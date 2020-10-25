@@ -8,9 +8,10 @@ import Footer from 'components/Footer';
 
 interface LoadingProps {
   headerReal?: boolean;
+  mini?: boolean;
 };
 
-function Loading({ headerReal = true } : LoadingProps) {
+function Loading({ headerReal = true, mini = false } : LoadingProps) {
   let rgb1 = [24, 223, 187], rgb2 = [57, 223, 54];
   let [mix, setMix] = React.useState(0);
 
@@ -31,6 +32,9 @@ function Loading({ headerReal = true } : LoadingProps) {
     return `rgb(${x}, ${y}, ${z})`;
   };
 
+  if (mini) return (
+    <ReactLoading type='bars' color={color(mix)} height='7%' width='7%' />
+  );
   return (
     <div style={{top: '43%'}}>
     <ReactLoading type='bars' color={color(mix)} height='10%' width='10%' />

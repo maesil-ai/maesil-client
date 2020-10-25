@@ -18,11 +18,8 @@ function Mypage() {
   React.useEffect(() => {
     Promise.all([getUserInfo(), getLikes()]).then(([info, likes]) => {
       setUserInfo(info);
-
-      Promise.all(likes.map((content) => getExercise(content.id))).then((likes) => {
-        setLikes(likes.filter((content) => content != null));
-        setLoading(false);  
-      });
+      setLikes(likes);
+      setLoading(false);  
     });
   }, []);
 

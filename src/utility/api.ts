@@ -109,8 +109,6 @@ export const getExercises = async () => {
     url: `${apiAddress}/exercises/`,
   }, "sometimes");
 
-  console.log(result);
-
   if (code < 300) return result.map(processRawExerciseData);
   else return null;
 };
@@ -310,7 +308,9 @@ export const getLikes = async () => {
     url: `${apiAddress}/likes`
   }, 'always');
 
-  return result.map(processRawExerciseData);
+
+  return (await Promise.all(result.map((content) => getExercise(content.exercise_id)))).filter((content) => content != null);
+//  return result.map(processRawExerciseData);
 };
 
 export const getChannel = async (id: number) => {

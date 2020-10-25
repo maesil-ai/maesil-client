@@ -65,6 +65,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
   return (
     <>
       {title && <Title size='small' title={title}/>}
+      { contents.length == 0 && <div style={{paddingBottom: '330px'}} /> }
       <div className='shelf'>
       { contents.map((content, index) => (
         <div className='shelfItem' key={index} style={{transform: `translateX(${-currentPosition}px)`}}>
