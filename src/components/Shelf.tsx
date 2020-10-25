@@ -89,7 +89,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
           <div style={{width: '100%', height: '25%'}}>
             <div className='title'> {content.name} </div>
             <div className='creator'>
-              <span style={{marginRight: '7px'}}> <Link to={`/user/${content.userName}`}> {content.userName } </Link> </span>
+              { content.userName && <span style={{marginRight: '7px'}}> <Link to={`/user/${content.userName}`}> { content.userName } </Link> </span> }
               { content.tagList.map((tag) => (
                 <span style={{marginRight: '7px'}}> <Link to={`/tag/${tag}`}> #{ tag + ' ' } </Link> </span>
               ))}
