@@ -37,11 +37,13 @@ function Home() {
     const shelfSize = shelfs.length;
 
     new Promise<JSX.Element[]>((resolve) => {
-      let newShelfs : JSX.Element[] = [];
+      let newShelfs : JSX.Element[] = new Array(loadNum);
+      let okay = 0;
       for (let i=0; i<loadNum; i++) {
         suggestContent(shelfSize+i).then((shelf) => {
-          newShelfs = newShelfs.concat(shelf);
-          if (newShelfs.length == loadNum) resolve(newShelfs);
+          newShelfs[i] = shelf;
+          okay++;
+          if (okay == loadNum) resolve(newShelfs);
         });
       }
     }).then((newShelfs) => {
