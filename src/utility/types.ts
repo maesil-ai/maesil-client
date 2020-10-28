@@ -113,6 +113,7 @@ export interface ContentData {
   userName: string;
   thumbUrl: string;
   thumbGifUrl: string;
+  profileImageUrl: string;
   tagList: string[];
   videoUrl: string;
   innerData?: string;
@@ -181,6 +182,7 @@ export interface APIGetUserInfoData {
   level: number | null;
   points: number | null;
   status: string;
+  profile_image: string;
   created_at: string;
   updated_at: string;
 }

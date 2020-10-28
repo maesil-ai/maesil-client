@@ -10,6 +10,9 @@ import { Redirect } from 'react-router-dom';
 import Shelf from 'components/Shelf';
 import Tabs from 'components/Tabs';
 import usePromise from 'utility/usePromise';
+import { mainLogo } from 'utility/svg';
+import { useSelector } from 'react-redux';
+import { RootReducerState } from 'reducers';
 
 function Mypage() {
   let [userInfoLoading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
@@ -37,6 +40,10 @@ function Mypage() {
           active: false,
         }]} />
         <div className="zone">
+          <div>
+            <img src={ userInfo.profile_image } style={{width: '300px', height: '300px'}}/>
+          </div>
+          <div style={{paddingBottom: '32px'}} />
           <h1> { userInfo.nickname }님, 오늘도 파이팅! </h1>
           <div style={{marginBottom: '48px'}} />
           <table style={{width: '50%', margin: 'auto'}}>

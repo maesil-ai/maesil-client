@@ -22,6 +22,7 @@ const defaultUserInfo : APIGetUserInfoData = {
   status: null,
   created_at: null,
   updated_at: null,
+  profile_image: null,
 };
 
 const initialState : UserState = {
