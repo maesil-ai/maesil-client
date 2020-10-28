@@ -14,17 +14,18 @@ import suggestContent from 'utility/suggestContent';
 
 function Home() {
   let [shelfs, setShelfs] = React.useState<JSX.Element[]>([]);
-  let [loadNext, setLoadNext] = React.useState<number>(10);
+  let [loadNext, setLoadNext] = React.useState<number>(0);
   
-
-  let handleScroll = (event : any) => {
-    const scrollTop = event.srcElement.scrollingElement.scrollTop;
-    if ((document.body.scrollHeight - window.innerHeight) - scrollTop < window.innerHeight)
-      setLoadNext(1);
+  let handleScroll = (event? : any) => {
+    if (loadNext) return;
+    const scrollTop = event ? event.srcElement.scrollingElement.scrollTop : 0;
+    let loadNum = Math.floor((window.innerHeight - (document.body.scrollHeight - window.innerHeight - scrollTop)) / 320);
+    if (loadNum > 0) setLoadNext(loadNum);
   }
 
   React.useEffect(() => {
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => {
       window.removeEventListener("scroll", handleScroll);
     }
