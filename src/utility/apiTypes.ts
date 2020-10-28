@@ -11,7 +11,7 @@ export const processRawExerciseData = (rawData : any) => {
         userName: rawData.nickname,
         thumbUrl: rawData.thumb_url,
         thumbGifUrl: rawData.thumb_gif_url,
-        profileImageUrl: rawData.profile_image,
+        profileImageUrl: rawData.profile_image || 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png',
         videoUrl: rawData.video_url,
         innerData: rawData.skeleton,
         reward: rawData.reward,
