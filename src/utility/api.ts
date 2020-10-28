@@ -7,12 +7,13 @@ import {
   Channel,
   APIPostCourseForm,
   TagData,
+  DailyRecordData,
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
 import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
 import Axios from 'axios';
-import { RawAPIExerciseData, processRawExerciseData, RawAPICourseData, processRawCourseData, RawAPIRecordData, RawAPITagData, processRawTagData, processRawRecordData } from './apiTypes';
+import { processRawExerciseData, processRawCourseData, processRawTagData, processRawRecordData, processRawDailyRecordData } from './apiTypes';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -65,7 +66,7 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
 }
 
 export const getExercises = async () => {
-  const [code, result] = await callAxios<RawAPIExerciseData[]>({
+  const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/exercises/`,
   }, "sometimes");
@@ -75,7 +76,7 @@ export const getExercises = async () => {
 };
 
 export const getExercise = async (id: number) => {
-  const [code, result] = await callAxios<RawAPIExerciseData>({
+  const [code, result] = await callAxios<any>({
     method: 'GET',
     url: `${apiAddress}/exercises/${id}`,
   }, "sometimes");
@@ -85,7 +86,7 @@ export const getExercise = async (id: number) => {
 };
 
 export const getCourses = async () => {
-  const [code, result] = await callAxios<RawAPICourseData[]>({
+  const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/courses`,
   }, "sometimes");
@@ -95,7 +96,7 @@ export const getCourses = async () => {
 }
 
 export const getCourse = async (id: number) => {
-  const [code, result] = await callAxios<RawAPICourseData>({
+  const [code, result] = await callAxios<any>({
     method: 'GET',
     url: `${apiAddress}/courses/${id}`,
   }, "sometimes");
@@ -112,14 +113,37 @@ export const deleteExercise = async (id : number) => {
 };
 
 export const getRecords = async () => {
-  const [code, result] = await callAxios<RawAPIRecordData[]>({
+  const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/exercises_history`,
   }, 'always');
 
 
-  if (code < 300) return result.map(processRawRecordData).sort((x, y) => x.id > y.id ? -1 : 1);
+  if (code < 300) return result.map(processRawRecordData).sort((x, y) => x.contentId < y.contentId ? 1 : -1);
   else return null;
+}
+
+export const getDailyRecords = async () => {
+  const [code, result] = await callAxios<any[]>({
+    method: 'GET',
+    url: `${apiAddress}/users/today`,
+  }, 'always');
+
+  if (code < 300) return result.map(processRawDailyRecordData).sort((x, y) => x.dateString < y.dateString ? 1 : -1);
+}
+
+export const getRecord = (record : DailyRecordData[], day: Date) => {
+  let year = day.getFullYear(), month = day.getMonth()+1, date = day.getDate();
+  let todayRecord = record.filter((record: DailyRecordData) => record.year == year && record.month == month && record.date == date);
+
+  if (todayRecord.length > 0) return todayRecord[0];
+  else return {
+    dateString: `${year}-${month}-${date}`,
+    year, month, date,
+    calorie: 0,
+    playTime: "00:00:00",
+    score: 0,
+  } as DailyRecordData;
 }
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
@@ -277,7 +301,7 @@ export const postUserInfo = async (
 };
 
 export const getLikes = async () => {
-  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+  let [code, result] = await callAxios<any[]>({
     url: `${apiAddress}/likes`
   }, 'always');
 
@@ -287,7 +311,7 @@ export const getLikes = async () => {
 };
 
 export const getChannel = async (id: number) => {
-  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+  let [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/channel/${id}`,
   });
@@ -348,8 +372,8 @@ export const searchContent = async (query : string) => {
   });
 
   if (result.data.code < 300) return {
-    exerciseResult: result.data.exerciseResult.map((result : RawAPIExerciseData) => processRawExerciseData(result) ) as ContentData[], 
-    courseResult: result.data.courseResult.map((result : RawAPICourseData) => processRawCourseData(result) ) as ContentData[],
+    exerciseResult: result.data.exerciseResult.map((result) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result) => processRawCourseData(result) ) as ContentData[],
   };
   else return {
     exerciseResult: [], 
@@ -365,8 +389,8 @@ export const searchTag = async (tag : string) => {
   });
 
   if (result.data.code < 300) return {
-    exerciseResult: result.data.exerciseResult.map((result : RawAPIExerciseData) => processRawExerciseData(result) ) as ContentData[], 
-    courseResult: result.data.courseResult.map((result : RawAPICourseData) => processRawCourseData(result) ) as ContentData[],
+    exerciseResult: result.data.exerciseResult.map((result) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result) => processRawCourseData(result) ) as ContentData[],
   };
   else return {
     exerciseResult: [], 
@@ -375,7 +399,7 @@ export const searchTag = async (tag : string) => {
 }
 
 export const getTags = async () => {
-  let [code, result] = await callAxios<RawAPITagData[]>({
+  let [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/tags`,
   });

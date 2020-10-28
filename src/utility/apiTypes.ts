@@ -1,27 +1,6 @@
-import { ContentData, RecordData, TagData } from "./types";
+import { ContentData, DailyRecordData, RecordData, TagData } from "./types";
 
-export interface RawAPIExerciseData {
-    exercise_id: number;
-    title: string;
-    description: string;
-    play_time: string;
-    user_id: number;
-    nickname: string;
-    thumb_url: string;
-    thumb_gif_url: string;
-    video_url: string;
-    skeleton: string;
-    reward: number;
-    like_counts: number;
-    view_counts: number;
-    status: string;
-    created_at: string;
-    updated_at: string;
-    isLike?: boolean;
-    tag_list: string | null;
-}
-
-export const processRawExerciseData = (rawData : RawAPIExerciseData) => {
+export const processRawExerciseData = (rawData : any) => {
     return {
         type: "exercise",
         id: rawData.exercise_id,
@@ -44,30 +23,8 @@ export const processRawExerciseData = (rawData : RawAPIExerciseData) => {
         tagList: rawData.tag_list ? rawData.tag_list.split(',') : [],
     } as ContentData;
 }
-  
 
-  
-export interface RawAPICourseData {
-    course_id: number;
-    course_name: string;
-    description: string;
-    play_time: string;
-    user_id: number;
-    thumb_url: string;
-    thumb_gif_url: string;
-    video_url: string;
-    exercise_list: string;
-    reward: number;
-    like_counts: number;
-    view_counts: number;
-    status: string;
-    created_at: string;
-    updated_at: string;
-    isLike?: boolean;
-    tag_list: string | null;
-}
-
-export const processRawCourseData = (rawData : RawAPICourseData) => {
+export const processRawCourseData = (rawData : any) => {
     return {
         type: "course",
         id: rawData.course_id,
@@ -92,41 +49,32 @@ export const processRawCourseData = (rawData : RawAPICourseData) => {
   }
   
 
-export interface RawAPIRecordData {
-    id: number;
-    user_id: number;
-    exercise_id: number;
-    score: number;
-    play_time: string;
-    similarity_value: number;
-    started_at: string;
-    kcal: number;
-    finished_at: string;
-    created_at: string;
-}
-
-  
-export const processRawRecordData = (rawData : RawAPIRecordData) => {
+export const processRawRecordData = (rawData : any) => {
     return {
-        id: rawData.id,
-        userName: "",
-        userId: rawData.user_id,
-        exerciseName: "",
-        exerciseId: rawData.exercise_id,
-        score: rawData.score,
-        playTime: 0,
-        calorie: rawData.kcal,
-        startedAt: rawData.started_at,
+        contentName: rawData.title,
+        contentId: rawData.exercise_id,
+        thumbUrl: rawData.thumb_url,
+        thumbGifUrl: rawData.thumb_gif_url,
+        score: rawData["SUM(eh.similarity_value)"],
+        playTime: rawData.total_time,
+        calorie: rawData.total_kcal,
     } as RecordData;
 }
 
-export interface RawAPITagData {
-    tag_id: number;
-    tag_name: string;
-    tag_english_name: string;
-};
 
-export const processRawTagData = (rawData : RawAPITagData) => {
+export const processRawDailyRecordData = (rawData : any) => {
+    return {
+        dateString: rawData.today_date,
+        year: Number.parseInt(rawData.today_date.substring(0, 4)),
+        month: Number.parseInt(rawData.today_date.substring(5, 7)),
+        date: Number.parseInt(rawData.today_date.substring(8, 10)),
+        playTime: rawData.total_time,
+        calorie: Number.parseInt(rawData.total_kcal),
+        score: rawData.similarity_value,
+    } as DailyRecordData;
+}
+
+export const processRawTagData = (rawData : any) => {
     return {
       id: rawData.tag_id,
       name: rawData.tag_name,

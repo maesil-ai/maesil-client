@@ -32,7 +32,7 @@ function MypageRecord() {
             }]} />
             { records.map((record, index) => (
                 <div key={index} className='zone' style={{marginBottom: '10px'}}>
-                    #{ record.id }: {record.startedAt} { record.score }점
+                    { record.contentName }: { record.playTime }초 플레이, { record.calorie }칼로리 소모, { record.score }점
                 </div>
             )) }
             <Footer />

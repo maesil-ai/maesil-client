@@ -126,15 +126,23 @@ export interface ContentData {
 }
 
 export interface RecordData {
-  id: number;
-  userName: string;
-  userId: number;
-  exerciseName: string;
-  exerciseId: number;
-  score: number;
+  contentName: string;
+  contentId: number;
+  thumbUrl: string;
+  thumbGifUrl: string;
   playTime: number;
   calorie: number;
-  startedAt: string;
+  score: number;
+}
+
+export interface DailyRecordData {
+  dateString: string;
+  year: number;
+  month: number;
+  date: number;
+  playTime: string;
+  calorie: number;
+  score: number;
 }
 
 export interface APIPostExerciseForm {
