@@ -12,6 +12,7 @@ import { setResult, setContent } from 'actions';
 import store from 'store';
 import Title from "components/Title";
 import ContentDetail from "components/ContentDetail";
+import { warningIcon } from "utility/svg";
 
 const videoWidth = 800;
 const videoHeight = 600;
@@ -38,7 +39,7 @@ interface CourseProps {
 function Content({match} : CourseProps) {
     let contentType = React.useMemo<'course' | 'exercise'>(() => match.url.includes('course') ? 'course' : 'exercise', []);
     let id = React.useMemo<number>(() => Number.parseInt(match.params.id), []);
-    let [userStreamLoading, userStream] = usePromise(loadStream);
+    let [userStreamLoading, userStream, userStreamError] = usePromise(loadStream, [], 'ignore');
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);
@@ -189,8 +190,25 @@ function Content({match} : CourseProps) {
             />
         );
     }
-    if (userLoading || guideLoading || courseDataLoading) return <Loading/>;
-    return (
+    if (userStreamError) {
+        return (
+            <>
+                <Header real={false}/>
+                <div className='zone'>
+                    { warningIcon }
+                    <div style={{paddingBottom: '16px'}} />
+                    <h1 className='grey'> 앗! 카메라가 필요합니다! </h1>
+                    <div style={{paddingBottom: '16px'}} />
+                    <div> 매실은 여러분의 운동 영상을 분석해서 운동 자세를 피드백하는 서비스입니다. </div>
+                    <div>그래서 만약 카메라가 없거나 카메라 사용설정을 허용하지 않으셨다면 매실 서비스를 사용할 수 없습니다. </div>
+                    <div> 주소창 왼쪽에 표시되는 카메라 사용 설정을 활성화해 주세요. </div>
+                </div>
+                <Footer/>
+            </>
+        );
+    }
+    else if (userLoading || guideLoading || courseDataLoading) return <Loading/>;
+    else return (
         <>
             <Header />
             <div style={{marginBottom: '-16px'}} />
