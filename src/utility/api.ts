@@ -41,7 +41,7 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
     if (ifError == 'abort') store.dispatch(raiseError(
       `로그인해야만 받아올 수 있는 정보를 로그인하지 않고 받아오려 했습니다. 받아오려던 정보: ${config.url}`
     ));
-    return [null, null];
+    return [403, null];
   }
 
   if (token) {
@@ -60,7 +60,7 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
     if (ifError == 'abort') store.dispatch(raiseError(
       `API 서버에서 정보를 받아오는 데에 문제가 생겼습니다. 받아오려던 정보 : ${config.url} 발생한 오류 : ${error}`
     ));
-    return [null, null];
+    return [500, null];
   }
 }
 
@@ -224,11 +224,7 @@ export const getAccessToken = async () => {
   if (!token) return token;
 
   try {
-    await axios.get(`${apiAddress}/users`, {
-      headers: {
-        'x-access-token': token,
-      },
-    });
+    if (!await getUserInfo()) throw new Error();
     return token;
   } catch (error) {
     logout();
@@ -247,7 +243,7 @@ export const getUserInfo = async () => {
   const [code, result] = await callAxios<APIGetUserInfoData>({
     method: 'get',
     url: `${apiAddress}/users`,
-  }, 'always');
+  }, 'always', 'ignore');
   
   return result;
 };
@@ -311,12 +307,15 @@ export const getSubscribes = async () => {
     url: `${apiAddress}/users/subscribes`,
   }, 'always', 'ignore');
 
-  return result.map((data) => {
+  console.log(code);
+  console.log(result);
+  if (code < 300) return result.map((data) => {
     return {
       id: data.user_id,
       name: data.nickname,
     } as Channel;
   }) as Channel[];
+  else return null;
 }
 
 export const getSubscribed = async (id : number) => {
