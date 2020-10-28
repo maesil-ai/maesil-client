@@ -12,8 +12,9 @@ export default function usePromise<Type>(promiseCreator: () => Promise<Type>, de
       const result = await promiseCreator();
       setContent(result);
     } catch (error) {
-      dispatch(raiseError(`페이지를 불러오는 오류가 발생했습니다: ${error}`));
-      console.log(error);
+      dispatch(raiseError(`페이지를 불러오면서 오류가 발생했습니다: ${error}`));
+      console.log('While getting promise: ', promiseCreator);
+      console.log('We got an error: ', error);
     }
     setLoading(false);
   };
