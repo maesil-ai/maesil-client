@@ -19,7 +19,7 @@ function Header({ real = true } : HeaderProps) {
   let [query, setQuery] = React.useState<string>();
 
 
-  const dropdownMenu = real && React.useMemo(() => (
+/*  const dropdownMenu = real && React.useMemo(() => (
     <li className="dropdown right" onMouseLeave={() => setMouseHover(false)}>
       <div className="dropdown-content">
       <ArrowForwardIosIcon fontSize="large" onClick={() => setMouseHover(false)} />
@@ -42,7 +42,7 @@ function Header({ real = true } : HeaderProps) {
       )}
       </div>
     </li>
-  ), [user]);
+  ), [user]);*/
 
   return (
     <header>

@@ -224,7 +224,12 @@ export const getAccessToken = async () => {
   if (!token) return token;
 
   try {
-    if (!await getUserInfo()) throw new Error();
+    let res = await axios.get(`${apiAddress}/users`, {
+      headers: {
+        'x-access-token': token,
+      },
+    });
+    if (res.data.code >= 300) throw new Error();
     return token;
   } catch (error) {
     logout();
