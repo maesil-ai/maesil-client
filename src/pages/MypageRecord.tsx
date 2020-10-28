@@ -10,28 +10,31 @@ import Loading from './Loading';
 
 function MypageRecord() {
     let [userInfoLoading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
-    let [recordLoading, record] = usePromise<RecordData[]>(getRecords);
+    let [recordsLoading, records] = usePromise<RecordData[]>(getRecords);
 
-    if (recordLoading || userInfoLoading) return <Loading />;
+    if (!recordsLoading) console.log(records);
+    if (recordsLoading || userInfoLoading) return <Loading />;
     return (
         <>
             <Header />
             <Tabs data={[{
-            name: "정보",
-            link: "/mypage/info",
-            active: false,
+                name: "정보",
+                link: "/mypage/info",
+                active: false,
             }, {
-            name: "운동 기록",
-            link: "/mypage/record",
-            active: true,
+                name: "운동 기록",
+                link: "/mypage/record",
+                active: true,
             }, {
-            name: "내 채널",
-            link: `/user/${userInfo.nickname}`,
-            active: false,
+                name: "내 채널",
+                link: `/user/${userInfo.nickname}`,
+                active: false,
             }]} />
-            <div className='zone'>
-                { record }
-            </div>
+            { records.map((record, index) => (
+                <div key={index} className='zone' style={{marginBottom: '10px'}}>
+                    #{ record.id }: {record.startedAt} { record.score }점
+                </div>
+            )) }
             <Footer />
         </>
     )

@@ -117,7 +117,8 @@ export const getRecords = async () => {
     url: `${apiAddress}/exercises_history`,
   }, 'always');
 
-  if (code < 300) return result.map(processRawRecordData);
+
+  if (code < 300) return result.map(processRawRecordData).sort((x, y) => x.id > y.id ? -1 : 1);
   else return null;
 }
 
