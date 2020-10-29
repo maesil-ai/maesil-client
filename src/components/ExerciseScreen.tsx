@@ -14,6 +14,8 @@ import {
   Pose,
   Pose3D,
 } from 'utility/types';
+import { warningIcon } from 'utility/svg';
+import Music from './Music';
 
 const LEFT_ELBOW = 7;
 const RIGHT_ELBOW = 8;
@@ -417,12 +419,21 @@ class ExerciseScreen extends React.Component<
   render() {
     return (
       <div style={{ width: this.props.videoWidth }}>
+        <Music/>
         <canvas
           ref={this.canvas}
           width={this.props.videoWidth}
           height={this.props.videoHeight}
         >
-          운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
+          <div className='zone'>
+            { warningIcon }
+            <div style={{paddingBottom: '16px'}} />
+            <h1 className='grey'> 이런! </h1>
+            <div style={{paddingBottom: '16px'}} />
+            <div>
+              운동 기능을 이용할 수 없는 브라우저입니다..ㅜㅜ 최신 브라우저로 업데이트해 주세요.
+            </div>
+          </div>
         </canvas>
       </div>
     );
