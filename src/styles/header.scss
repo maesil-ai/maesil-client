@@ -21,31 +21,87 @@ header {
 
   .logo {
     position: absolute;
-    height: 64px;
+    height: 46px;
     left: calc(50% - 32px);
-    top: 21px;
+    top: 30px;
+
+    @media (max-width: $max-tablet-width) {
+      left: 46px;
+    }
+  }
+
+  .blank {
+    padding-left: 64px;
+
+    @media (max-width: $max-tablet-width) {
+      padding-left: 36px;
+    }
+  }
+
+  .mobileOnly {
+    @media (min-width: $min-tablet-width) {
+      display: none;
+    }
+  }
+
+  .mobileTabletOnly {
+    @media (min-width: $min-desktop-width) {
+      display: none;
+    }
+  }
+
+  .desktopOnly {
+    @media (max-width: $max-tablet-width) {
+      display: none;
+    }
+  }
+
+  .desktopTabletOnly {
+    @media (max-width: $max-mobile-width) {
+      display: none;
+    }
+  }
+
+  .tabletOnly {
+    @media (max-width: $max-mobile-width) {
+      display: none;
+    }
+    @media (min-width: $min-desktop-width) {
+      display: none;
+    }
   }
 
   .menu {
     display: flex;
+    flex-grow: 0;
+    flex-wrap: nowrap;
     flex-direction: row;
     align-items: flex-start;
     padding: 0px;
+    top: 0px;
 
     position: absolute;
-    top: 48px;
+    * {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 
   .leftmenu {
-    left: 64px;
+    align-items: flex-start;
+    left: 0px;
+    margin-left: 0;
   }
 
   .rightmenu {
-    right: 64px;
+    align-items: flex-end;
+    right: 0px;
+    margin-right: 0;
   }
 
   .search {
-    width: 200px;
+    width: 300px;
+    flex-shrink: 1;
     border-bottom: 2px solid #555;
     font-size: 20px;
     font-weight: 600;
@@ -78,7 +134,7 @@ header {
         @media (max-width: $max-mobile-width) {
           width: calc(100% - 300px);
         }
-        @media (min-width: $max-mobile-width) {
+        @media (min-width: $min-desktop-width) {
           width: 300px;
         }
       }

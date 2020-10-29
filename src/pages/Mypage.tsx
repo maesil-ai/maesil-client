@@ -40,8 +40,8 @@ function Mypage() {
           active: false,
         }]} />
         <div className="zone">
-          <div>
-            <img src={ userInfo.profile_image } style={{width: '300px', height: '300px'}}/>
+          <div className='profileBox large'>
+            <img src={ userInfo.profile_image } className='profileImage'/>
           </div>
           <div style={{paddingBottom: '32px'}} />
           <h1> { userInfo.nickname }님, 오늘도 파이팅! </h1>

@@ -33,7 +33,7 @@ export const processRawCourseData = (rawData : any) => {
         description: rawData.description,
         playTime: rawData.play_time,
         userId: rawData.user_id,
-        userName: rawData["user.nickname"],
+        userName: rawData.nickname,
         thumbUrl: rawData.thumb_url,
         thumbGifUrl: rawData.thumb_gif_url,
         profileImageUrl: 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png',

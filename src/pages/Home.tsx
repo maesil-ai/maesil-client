@@ -57,18 +57,18 @@ function Home() {
       <>
         <Header />
         <div style={{marginBottom: '-32px'}} />
-        <div style={{height: '360px', background: '#1E1A14'}} >
-          <img style={{position: 'absolute', left: '166px'}} src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png' />
-          <div style={{position: 'absolute', left: '55%', top: '64px', color: 'white', fontWeight: 'bold', fontSize: '36px'}}>
+        <div className='banner' >
+          <img className='bannerImage' src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png' />
+          <div className='bannerTitle'>
             매일매일 실내 트레이닝
           </div>
-          <div style={{position: 'absolute', left: '55%', top: '132px', color: 'white', fontWeight: 'normal', fontSize: '18px', opacity: '0.6', lineHeight: '27px'}}>
+          <div className='bannerText'>
             누구나 운동을 만들고 트레이닝할 수 있는 
             <br/>
             새로운 실내 헬스 트레이닝 플랫폼
           </div>
           <Link to='/studio'>
-            <div style={{position: 'absolute', left: '55%', top: '240px'}} className='neonbox' >
+            <div className='neonbox bannerButton' >
               MAESIL STUDIO
             </div>
           </Link>

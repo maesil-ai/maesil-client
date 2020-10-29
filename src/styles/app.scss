@@ -77,6 +77,84 @@ html, body, #root {
   } 
 }
 
+.banner {
+  height: 360px;
+  background: #1E1A14;
+  .bannerImage {
+    position: absolute;
+    left: calc(35% - 400px);
+  }
+
+  .bannerTitle {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 64px;
+    color: white;
+    font-weight: bold;
+    font-size: 36px;
+    text-align: left;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+      text-align: right;
+    }
+  }
+
+  .bannerText {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 132px;
+    color: white;
+    font-weight: normal;
+    font-size: 18px;
+    opacity: 0.6;
+    line-height: 27px;
+    text-align: left;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+      text-align: right;
+    }
+  }
+
+  .bannerButton {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 240px;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+    }
+  }
+}
+
+.profileBox {
+  border-radius: 42%;
+  overflow: hidden;
+
+  &.small {
+    width: 40px;
+    height: 40px;
+    margin: 3px;
+    margin-top: 15px;
+    position: absolute;
+  }
+
+  &.large {
+    width: 400px;
+    height: 400px;
+  }
+
+  .profileImage {
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+  }
+}
+
 .grey {
   color: grey;
 }
