@@ -25,6 +25,7 @@ import HitTest from 'pages/HitTest';
 import Test3D from 'pages/Test3D';
 import ContentList from 'pages/ContentList';
 import MypageRecord from 'pages/MypageRecord';
+import Tutorial from 'pages/Tutorial';
 
 
 const Root = () => {
@@ -67,6 +68,7 @@ const Root = () => {
           <Route path="/setting/info" component={SettingInfo} />
           <Redirect path="/setting/*" to="/setting/info" />
           <Redirect path="/setting" to="/setting/info" />
+          <Route path="/tutorial" component={Tutorial} />
           <Route path="/fuck" component={Fuck} />
           <Route path="/justload" component={Loading} />
           <Route path="/justerror" component={Error} />

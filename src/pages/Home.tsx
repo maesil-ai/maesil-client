@@ -67,9 +67,9 @@ function Home() {
             <br/>
             새로운 실내 헬스 트레이닝 플랫폼
           </div>
-          <Link to='/studio'>
+          <Link to='/tutorial'>
             <div className='neonbox bannerButton' >
-              MAESIL STUDIO
+              처음 오셨나요?
             </div>
           </Link>
         </div>
