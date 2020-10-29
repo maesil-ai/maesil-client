@@ -3,6 +3,7 @@
 export const RAISE_ERROR = 'RAISE_ERROR' as const;
 export const CLOSE_ERROR = 'CLOSE_ERROR' as const;
 export const SET_TUTORIAL_STEP = 'SET_TUTORIAL_STEP' as const;
+export const SET_TAGS_DATA = 'SET_TAGS_DATA' as const;
 
 // reducers/user
 export const SET_USER = 'SET_USER' as const;

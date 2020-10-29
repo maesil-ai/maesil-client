@@ -1,10 +1,10 @@
 import * as types from 'actions/ActionTypes';
-import { APIGetUserInfoData, Channel, ContentData, PlayRecord } from 'utility/types';
+import { APIGetUserInfoData, Channel, ContentData, PlayRecord, TagData } from 'utility/types';
 
 export const raiseError = (message: string) => {
   return {
     type: types.RAISE_ERROR,
-    message: message,
+    message,
   };
 };
 
@@ -17,14 +17,22 @@ export const closeError = () => {
 export const setTutorialStep = (step: number) => {
   return {
     type: types.SET_TUTORIAL_STEP,
-    step: step,
+    step,
   };
+}
+
+export const setTagsData = (tagsData: TagData[]) => {
+  return {
+    type: types.SET_TAGS_DATA,
+    tagsData,
+  }
 }
 
 export type SystemAction =
   | ReturnType<typeof raiseError>
   | ReturnType<typeof closeError>
   | ReturnType<typeof setTutorialStep>
+  | ReturnType<typeof setTagsData>
   ;
 
 
@@ -32,9 +40,9 @@ export type SystemAction =
 export const setUser = (userInfo: APIGetUserInfoData, subscribes: Channel[], profileImageUrl: string) => {
   return {
     type: types.SET_USER,
-    userInfo: userInfo,
-    subscribes: subscribes,
-    profileImageUrl: profileImageUrl,
+    userInfo,
+    subscribes,
+    profileImageUrl,
   };
 };
 
@@ -47,18 +55,18 @@ export const clearUser = () => {
 export const subscribe = (channel: Channel, ok: boolean) => {
   return {
     type: types.SUBSCRIBE,
-    channel: channel,
-    ok: ok,
+    channel,
+    ok,
   };
 };
 
 export const changeInfo = (name: string, sex: string, height: number, weight: number) => {
   return {
     type: types.CHANGE_INFO,
-    name: name,
-    sex: sex,
-    height: height,
-    weight: weight,
+    name,
+    sex,
+    height,
+    weight,
   };
 }
 
@@ -73,14 +81,14 @@ export type UserAction =
 export const setContent = (content: ContentData) => {
   return {
     type: types.SET_CONTENT,
-    content: content,
+    content,
   };
 }
 
 export const setResult = (record: PlayRecord) => {
   return {
     type: types.SET_RESULT,
-    record: record,
+    record,
   };
 };
 

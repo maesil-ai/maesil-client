@@ -6,12 +6,14 @@ interface SystemState {
     error: boolean;
     message: string;
     tutorialStep: number;
+    tags: TagData[];
 };
 
 const initialState : SystemState = {
     error: false,
     message: "",
     tutorialStep: 0,
+    tags: [],
 };
 
 export default function system(state = initialState, action : SystemAction) {
@@ -32,6 +34,11 @@ export default function system(state = initialState, action : SystemAction) {
       return {
         ...state,
         tutorialStep: action.step,
+      };
+    case types.SET_TAGS_DATA:
+      return {
+        ...state,
+        tags: action.tagsData,
       };
     default:
       return state;

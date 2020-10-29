@@ -11,7 +11,7 @@ import Userpage from 'pages/User';
 
 import { getUserInfo, getSubscribes, getAccessToken, getTags } from 'utility/api';
 import { useDispatch, useStore, useSelector } from 'react-redux';
-import { UserAction, setUser, clearUser, SystemAction } from 'actions';
+import { UserAction, setUser, clearUser, SystemAction, setTagsData } from 'actions';
 import SettingInfo from 'pages/SettingInfo';
 import Content from 'pages/Content';
 import Fuck from 'pages/AccessToken';
@@ -34,18 +34,20 @@ const Root = () => {
   const user = useSelector((state: RootReducerState) => state.user);
   const [userInfoLoading, userInfo] = usePromise(getUserInfo);
   const [subscribesLoading, subscribes] = usePromise(getSubscribes);
+  const [tagsLoading, tags] = usePromise(getTags);
 
   React.useEffect(() => {
-    if (userInfo && subscribes) dispatch(setUser(userInfo, subscribes, null));
+    if (userInfo) dispatch(setUser(userInfo, subscribes, null));
     else dispatch(clearUser());
-  }, [userInfo, subscribes]);
+    dispatch(setTagsData(tags));
+  }, [userInfo, subscribes, tags]);
 
   return (
     <BrowserRouter>
       <Analytics id="UA-178106844-1" debug>
         <Switch>
           { system.error && <Route path="*" component={Error} /> }
-          { (userInfoLoading || subscribesLoading) && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
+          { (userInfoLoading || subscribesLoading || tagsLoading) && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
           <Route path="/logout" component={Logout} />
           { user.loggedIn && !userInfoHasMetadata(user.userInfo) && <Route path="*" component={Signup} /> }
           <Route exact path="/" component={Home} />

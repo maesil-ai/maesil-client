@@ -358,7 +358,7 @@ class ExerciseScreen extends React.Component<
         const x = this.props.videoWidth - 20, y = this.props.videoHeight * 2 / 3 - 20;
 
         ctx.fillStyle = 'rgb(22, 22, 22)';
-        ctx.font = '40px Verdana';
+        ctx.font = '40px Noto Sans CJK';
         ctx.textAlign = 'right';
         if (this.state.liveScores.length) {
           const score = this.state.liveScores[this.state.liveScores.length - 1];
