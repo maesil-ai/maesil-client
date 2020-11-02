@@ -16,6 +16,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [poses, setPoses] = React.useState<Pose2D[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
+  let [tags, setTags] = React.useState<string>('');
   let videoRef = React.useRef<HTMLVideoElement>();
 
   let videoUrl = React.useMemo<string>(() => URL.createObjectURL(video), []);
@@ -51,20 +52,15 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   const upload = async () => {
     setMessage('올리는 중...');
 
-    if (!(1 <= videoRef.current.duration || videoRef.current.duration <= 15)) {
-      setMessage('영상의 길이는 1초에서 15초 사이여야 합니다.');
-      return;
-    }
-
     const success = await postExercise({
       exercise: video,
-      title: title,
+      title,
       description: description,
       play_time: videoRef.current.duration,
-      thumbnail: thumbnail,
+      thumbnail,
       gif_thumbnail: gifThumbnail,
       reward: 103,
-      tag_id: 2,
+      tags,
       level: 4,
       skeleton: JSON.stringify({
         fps: recordFps,
@@ -127,6 +123,18 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
                   accept="image/*"
                   required
                   onChange={(e) => setGifThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 태그 </td>
+              <td className="fill inputbox">
+                <input
+                  className="inputTitle"
+                  value={tags}
+                  onChange={(e) => {
+                    setTags(e.target.value);
+                  }}
                 />
               </td>
             </tr>

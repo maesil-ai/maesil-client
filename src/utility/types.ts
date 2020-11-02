@@ -154,7 +154,7 @@ export interface APIPostExerciseForm {
   thumbnail: Blob;
   gif_thumbnail: Blob;
   reward: number;
-  tag_id: number;
+  tags: string;
   level: number;
   skeleton: string;
 }
@@ -168,7 +168,7 @@ export interface APIPostCourseForm {
   course_name: string;
   gif_thumbnail: Blob;
   exercise_list: string;
-  tag_id: number;
+  tags: string;
 }
 
 export interface APIGetUserInfoData {

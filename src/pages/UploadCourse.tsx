@@ -10,10 +10,12 @@ import Loading from './Loading';
 import ComposeCourse from 'components/ComposeCourse';
 import Tabs from 'components/Tabs';
 import { plusIcon } from 'utility/svg';
+import { useSelector } from 'react-redux';
+import { RootReducerState } from 'reducers';
 
 const emptyContent: CourseContent = {
   phase: 'exercise',
-  id: 11,
+  id: null,
   repeat: 1,
   message: "",
 };
@@ -25,7 +27,10 @@ function UploadCourse() {
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
+  let [tags, setTags] = React.useState<string>('');
   let [exercisesLoading, exercises] = usePromise(getExercises);
+
+  console.log(tags);
 
   const addContent = () => {
     setContents(contents.concat([emptyContent]));
@@ -66,16 +71,15 @@ function UploadCourse() {
   const upload = async () => {
     setMessage('올리는 중...');
     let response = await postCourse({
-      
-      description: description,
+      description,
       play_time: 0,
-      thumbnail: thumbnail,
+      thumbnail,
       reward: 103,
       level: 103103,
       course_name: title,
       gif_thumbnail: gifThumbnail,
       exercise_list: JSON.stringify(contents),
-      tag_id: 0,
+      tags,
     })
     if (response) setMessage('업로드 성공!');
     else setMessage('업로드 실패..');
@@ -139,6 +143,18 @@ function UploadCourse() {
                   accept="image/*"
                   required
                   onChange={(e) => setGifThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 태그 </td>
+              <td className="fill inputbox">
+                <input
+                  className="inputTitle"
+                  value={tags}
+                  onChange={(e) => {
+                    setTags(e.target.value);
+                  }}
                 />
               </td>
             </tr>
