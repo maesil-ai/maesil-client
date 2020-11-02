@@ -306,8 +306,8 @@ export const getLikes = async () => {
   }, 'always');
 
 
-  return (await Promise.all(result.map((content) => getExercise(content.exercise_id)))).filter((content) => content != null);
-//  return result.map(processRawExerciseData);
+//  return (await Promise.all(result.map((content) => getExercise(content.exercise_id)))).filter((content) => content != null);
+  return result.map(processRawExerciseData);
 };
 
 export const getChannel = async (id: number) => {
