@@ -1,20 +1,40 @@
-import { getExercises, getCourses } from 'utility/api';
-
 import React from 'react';
 
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import Loading from 'pages/Loading';
-import Shelf from 'components/Shelf';
-import { ContentData } from 'utility/types';
-import store from 'store';
-import { Link } from 'react-router-dom';
+import { Link, match } from 'react-router-dom';
 import suggestContent from 'utility/suggestContent';
+import Tour, { ReactourStep } from 'reactour';
 
 
-function Home() {
+const tourSteps : ReactourStep[] = [
+  {
+    selector: '.logo',
+    content: '안녕하세요~ 누구나 운동을 만들고 트레이닝할 수 있는 새로운 실내 헬스 트레이닝 플랫폼 매실입니다.',
+  },
+  {
+    selector: '.shelfItem',
+    content: '아래 모든 컨텐츠들이 누구나 따라할 수 있도록 만들어진 운동 컨텐츠입니다.',
+  },
+  {
+    selector: '.shelfItem',
+    content: '이제, 기기를 잘 세워둔 다음, 한 발짝 물러서 서서, 운동을 시작해 봅시다!',
+  },
+];
+
+interface MatchParams {
+  remark?: string;
+};
+
+interface HomeProps {
+  match: match<MatchParams>;
+}
+
+function Home({ match } : HomeProps) {
   let [shelfs, setShelfs] = React.useState<JSX.Element[]>([]);
   let [loadNext, setLoadNext] = React.useState<number>(0);
+  let [isTourOpen, setIsTourOpen] = React.useState<boolean>(match.params.remark == 'tutorial');
   
   let handleScroll = (event? : any) => {
     if (loadNext) return;
@@ -32,7 +52,6 @@ function Home() {
   }, []);
 
   React.useEffect(() => {
-    console.log(loadNext);
     if (loadNext == 0) return;
     const loadNum = loadNext;
     const shelfSize = shelfs.length;
@@ -76,6 +95,11 @@ function Home() {
         { shelfs }
         { loadNext > 0 && <Loading mini={true} /> }
         <Footer />
+        <Tour
+          isOpen={isTourOpen}
+          steps={tourSteps}
+          onRequestClose={() => setIsTourOpen(false) }
+        />
       </>
     );
 }

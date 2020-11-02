@@ -16,7 +16,7 @@ function Signup() {
     setStatus(1);
   }
 
-  if (status) return <Redirect to="/" />;
+  if (status) return <Redirect to="/tutorial" />;
   else
     return (
       <>

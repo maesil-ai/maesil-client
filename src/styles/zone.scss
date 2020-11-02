@@ -103,6 +103,7 @@
 
     button {
       &.submit {
+        cursor: pointer;
         background: $main-gradient;
         border-radius: 32px;
         color: #111111;

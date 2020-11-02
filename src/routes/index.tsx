@@ -50,7 +50,6 @@ const Root = () => {
           { (userInfoLoading || subscribesLoading || tagsLoading) && <Route path="*" component={() => <Loading headerReal={false}/> } /> }
           <Route path="/logout" component={Logout} />
           { user.loggedIn && !userInfoHasMetadata(user.userInfo) && <Route path="*" component={Signup} /> }
-          <Route exact path="/" component={Home} />
           <Route path="/exercise/:id" component={Content} />
           <Route path="/course/:id" component={Content} />
           <Route path="/result" component={Result} />
@@ -70,7 +69,6 @@ const Root = () => {
           <Route path="/setting/info" component={SettingInfo} />
           <Redirect path="/setting/*" to="/setting/info" />
           <Redirect path="/setting" to="/setting/info" />
-          <Route path="/tutorial" component={Tutorial} />
           <Route path="/fuck" component={Fuck} />
           <Route path="/justload" component={Loading} />
           <Route path="/justerror" component={Error} />
@@ -79,6 +77,8 @@ const Root = () => {
           <Route path="/search/:query" component={ContentList} />
           <Route path="/tag/:tag" component={ContentList} />
           <Redirect path="/test3d" to="/3dtest" />
+          <Route path="/:remark" component={Home} />
+          <Route path="/" component={Home} />
           <Redirect path="*" to="/" />
         </Switch>
       </Analytics>

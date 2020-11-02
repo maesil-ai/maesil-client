@@ -26,16 +26,17 @@ const LoginButton = ({}: LoginButtonProps) => {
       }}
       onFailure={console.log}
       render={(props: any) => (
-        <div onClick={() => {
-            setStatus(1);
-            props.onClick();
-          }
-        } 
-          style={{cursor:'pointer'}}
-        >
-          {status == 0 && loginIcon }
-          {status == 1 && ''}
-        </div>
+        <>
+          <span onClick={() => {
+              setStatus(1);
+              props.onClick();
+            }
+          } 
+            style={{cursor: 'pointer'}}
+          >
+            { loginIcon }
+          </span>
+        </>
       )}
       getProfile={true}
     />
