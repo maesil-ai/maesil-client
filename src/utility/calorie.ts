@@ -20,6 +20,7 @@ const calculateKineticEnergy = (velocity: number, mass: number) =>
   0.5 * mass * velocity * velocity;
 
 function estimateEnergy(userPose: Pose[], userInfo: APIGetUserInfoData) {
+  return 0;
   if (!("keypoints" in userPose[0])) return 0;
   let energyBurned = 0;
   let previousPose : Pose2D = null;
