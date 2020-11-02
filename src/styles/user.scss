@@ -21,5 +21,13 @@
         margin-bottom: 80px;
         display: flex;
         justify-content: left;
+
+        button.active {
+            background: $main-gradient;
+        }
+
+        button.inactive {
+            background: grey;
+        }
     }
 }
