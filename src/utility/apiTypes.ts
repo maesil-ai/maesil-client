@@ -21,7 +21,7 @@ export const processRawExerciseData = (rawData : any) => {
         createdAt: rawData.created_at,
         updatedAt: rawData.updated_at,
         heart: rawData.isLike,
-        tagList: (rawData.tag_list && rawData.tag_list.split(',')) || (rawData.tags && rawData.tags.split(',')) || [],
+        tagList: (rawData.tag_list && rawData.tag_list.split(',')) || (rawData.tags && rawData.tags.split(',')) || (rawData.tag_name && rawData.tag_name.split(',')) || [],
     } as ContentData;
 }
 
@@ -46,7 +46,7 @@ export const processRawCourseData = (rawData : any) => {
         createdAt: rawData.created_at,
         updatedAt: rawData.updated_at,
         heart: rawData.isLike,
-        tagList: (rawData.tag_list && rawData.tag_list.split(',')) || (rawData.tags && rawData.tags.split(',')) || [],
+        tagList: (rawData.tag_list && rawData.tag_list.split(',')) || (rawData.tags && rawData.tags.split(',')) || (rawData.tag_name && rawData.tag_name.split(',')) || [],
     } as ContentData;
   }
   

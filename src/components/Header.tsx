@@ -91,7 +91,7 @@ function Header({ real = true } : HeaderProps) {
         { !user.loggedIn && (
           <>
             <span className='blank' />
-            <div style={{top: '36px', height: '32px'}}>
+            <div style={{top: '15px', height: '32px'}}>
               <LoginButton/>
             </div>
           </>

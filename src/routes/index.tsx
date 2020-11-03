@@ -79,7 +79,7 @@ const Root = () => {
           <Route path="/tag/:tag" component={ContentList} />
           <Redirect path="/test3d" to="/3dtest" />
           <Route path="/:remark" component={Home} />
-          { !user.userInfo && <Route path="/" component={Hello} /> }
+          { false && !user.userInfo && <Route path="/" component={Hello} /> }
           <Route path="/" component={Home} />
           <Redirect path="*" to="/" />
         </Switch>
