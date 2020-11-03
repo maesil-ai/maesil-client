@@ -26,6 +26,7 @@ import Test3D from 'pages/Test3D';
 import ContentList from 'pages/ContentList';
 import MypageRecord from 'pages/MypageRecord';
 import Tutorial from 'pages/Tutorial';
+import Hello from 'pages/Hello';
 
 
 const Root = () => {
@@ -78,6 +79,7 @@ const Root = () => {
           <Route path="/tag/:tag" component={ContentList} />
           <Redirect path="/test3d" to="/3dtest" />
           <Route path="/:remark" component={Home} />
+          { !user.userInfo && <Route path="/" component={Hello} /> }
           <Route path="/" component={Home} />
           <Redirect path="*" to="/" />
         </Switch>

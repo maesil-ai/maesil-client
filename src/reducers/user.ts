@@ -9,24 +9,8 @@ interface UserState {
   subscribes: Channel[];
 };
 
-const defaultUserInfo : APIGetUserInfoData = {
-  user_id: null,
-  email: null,
-  password: null,
-  nickname: null,
-  gender: 'female',
-  weight: 60,
-  height: 170,
-  level: null,
-  points: null,
-  status: null,
-  created_at: null,
-  updated_at: null,
-  profile_image: null,
-};
-
 const initialState : UserState = {
-  userInfo: defaultUserInfo,
+  userInfo: null,
   loggedIn: false,
   subscribes: null,
 };
@@ -43,7 +27,7 @@ export default function user(state = initialState, action : UserAction) {
     case types.CLEAR_USER:
       return {
         ...state,
-        userInfo: defaultUserInfo,
+        userInfo: null,
         subscribes: null,
         loggedIn: false,
       }
