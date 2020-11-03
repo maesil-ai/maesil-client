@@ -34,8 +34,13 @@ interface HomeProps {
 function Home({ match } : HomeProps) {
   let [shelfs, setShelfs] = React.useState<JSX.Element[]>([]);
   let [loadNext, setLoadNext] = React.useState<number>(0);
-  let [isTourOpen, setIsTourOpen] = React.useState<boolean>(match.params.remark == 'tutorial');
+  let isTutorial = React.useMemo(() => match.params.remark == 'tutorial', [match]);
+  let [isTourOpen, setIsTourOpen] = React.useState<boolean>(false);
   
+  React.useEffect(() => {
+    setIsTourOpen(isTutorial);
+  }, [isTutorial]);
+
   let handleScroll = (event? : any) => {
     if (loadNext) return;
     const scrollTop = event ? event.srcElement.scrollingElement.scrollTop : 0;
