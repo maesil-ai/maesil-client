@@ -13,6 +13,9 @@ import { plusIcon } from 'utility/svg';
 import { useSelector } from 'react-redux';
 import { RootReducerState } from 'reducers';
 
+import Tags from "@yaireo/tagify/dist/react.tagify"
+import "@yaireo/tagify/dist/tagify.css" 
+
 const emptyContent: CourseContent = {
   phase: 'exercise',
   id: null,
@@ -27,11 +30,10 @@ function UploadCourse() {
   let [message, setMessage] = React.useState<string>('');
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
-  let [tags, setTags] = React.useState<string>('');
+  let [tags, setTags] = React.useState<number[]>([]);
   let [exercisesLoading, exercises] = usePromise(getExercises);
-
-  console.log(tags);
-
+  let tagList = useSelector((state: RootReducerState) => state.system.tags);
+  console.log(JSON.stringify(tags.map((id) => ({tag_id: id}))));
   const addContent = () => {
     setContents(contents.concat([emptyContent]));
   }
@@ -79,7 +81,7 @@ function UploadCourse() {
       course_name: title,
       gif_thumbnail: gifThumbnail,
       exercise_list: JSON.stringify(contents),
-      tags,
+      tags: JSON.stringify(tags.map((id) => ({tag_id: id}))),
     })
     if (response) setMessage('업로드 성공!');
     else setMessage('업로드 실패..');
@@ -149,14 +151,22 @@ function UploadCourse() {
             <tr>
               <td> 태그 </td>
               <td className="fill inputbox">
-                <input
-                  className="inputTitle"
-                  value={tags}
-                  onChange={(e) => {
-                    setTags(e.target.value);
-                  }}
-                />
-              </td>
+              <Tags
+                settings={{
+                  whitelist: tagList.map((tag) => tag.name),
+                  enforceWhitelist: true,
+                  maxTags: 10,
+                }}
+                onChange={e => {
+                  e.persist();
+                  if (e.target.value) setTags(JSON.parse(e.target.value).map((x) => tagList.find((tag) => tag.name == x.value).id));
+                  else setTags([]);
+                }}
+                style={{
+                  border: '0px',
+                }}
+              />
+                  </td>
             </tr>
           </tbody>
         </table>

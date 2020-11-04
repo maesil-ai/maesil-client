@@ -5,6 +5,11 @@ import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
 import { PoseData2D, Pose2D } from 'utility/types';
 
+import Tags from "@yaireo/tagify/dist/react.tagify"
+import "@yaireo/tagify/dist/tagify.css" 
+import { RootReducerState } from 'reducers';
+import { useSelector } from 'react-redux';
+
 interface UploadExerciseBProps {
   video: File;
 }
@@ -16,8 +21,9 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   let [poses, setPoses] = React.useState<Pose2D[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
   let [gifThumbnail, setGifThumbnail] = React.useState<File>();
-  let [tags, setTags] = React.useState<string>('');
+  let [tags, setTags] = React.useState<number[]>([]);
   let videoRef = React.useRef<HTMLVideoElement>();
+  let tagList = useSelector((state: RootReducerState) => state.system.tags);
 
   let videoUrl = React.useMemo<string>(() => URL.createObjectURL(video), []);
 
@@ -60,7 +66,7 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
       thumbnail,
       gif_thumbnail: gifThumbnail,
       reward: 103,
-      tags,
+      tags: JSON.stringify(tags.map((id) => ({tag_id: id}))),
       level: 4,
       skeleton: JSON.stringify({
         fps: recordFps,
@@ -129,14 +135,21 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
             <tr>
               <td> 태그 </td>
               <td className="fill inputbox">
-                <input
-                  className="inputTitle"
-                  value={tags}
-                  onChange={(e) => {
-                    setTags(e.target.value);
-                  }}
-                />
-              </td>
+              <Tags
+                settings={{
+                  whitelist: tagList.map((tag) => tag.name),
+                  enforceWhitelist: true,
+                  maxTags: 10,
+                }}
+                onChange={e => {
+                  e.persist();
+                  if (e.target.value) setTags(JSON.parse(e.target.value).map((x) => tagList.find((tag) => tag.name == x.value).id));
+                  else setTags([]);
+                }}
+                style={{
+                  border: '0px',
+                }}
+              />              </td>
             </tr>
           </tbody>
         </table>

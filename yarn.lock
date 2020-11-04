@@ -2339,6 +2339,11 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@yaireo/tagify@^3.20.3":
+  version "3.20.3"
+  resolved "https://registry.yarnpkg.com/@yaireo/tagify/-/tagify-3.20.3.tgz#445d540282aab4c5c74b924bac2ca4833178ced5"
+  integrity sha512-fvUH59AxiY8Ga4rY8ZmA70llHXP7a0vcHkAtFc7Xysq6tw+rZB1Wq6GMnAJ9oDyvxbp16ZtNLOyb3VFvkSV6TQ==
+
 JSONStream@^1.3.4, JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"

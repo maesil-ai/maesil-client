@@ -51,6 +51,16 @@
       margin-bottom: 24px;
     }
 
+    .tagify {
+      border: 0px;
+      margin: 3px 10px;
+      
+      * {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+
     input,
     textarea,
     select,
@@ -59,9 +69,7 @@
       margin: 10px 24px;
       padding: 5px;
       font-size: inherit;
-      font-weight: inherit;
       border: 1px;
-      text-align: left;
       font-weight: bold;
       width: inherit;
       text-align: center;
