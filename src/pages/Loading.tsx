@@ -36,11 +36,11 @@ function Loading({ headerReal = true, mini = false } : LoadingProps) {
     <ReactLoading type='bars' color={color(mix)} height='7%' width='7%' />
   );
   return (
-    <div style={{top: '43%'}}>
-    <ReactLoading type='bars' color={color(mix)} height='10%' width='10%' />
-    <div style={{textAlign: 'center', fontSize: '20px', fontWeight: 300, color: 'grey'}}>
-      불러오는 중..
-    </div>
+    <div style={{position: 'absolute', left: 'calc(50% - 50px)', top: 'calc(50% - 50px)'}}>
+      <ReactLoading type='bars' color={color(mix)} height='100px' width='100px' />
+      <div style={{textAlign: 'center', fontSize: '20px', fontWeight: 300, color: 'grey', height: '20px'}}>
+        불러오는 중..
+      </div>
     </div>
   );
 }
