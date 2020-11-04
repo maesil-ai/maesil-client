@@ -140,7 +140,9 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
                   whitelist: tagList.map((tag) => tag.name),
                   enforceWhitelist: true,
                   maxTags: 10,
+                  "dropdown.enabled": 1,
                 }}
+                value='상체,하체,유산소,무산소'
                 onChange={e => {
                   e.persist();
                   if (e.target.value) setTags(JSON.parse(e.target.value).map((x) => tagList.find((tag) => tag.name == x.value).id));
