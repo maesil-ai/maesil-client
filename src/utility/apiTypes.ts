@@ -1,5 +1,7 @@
 import { ContentData, DailyRecordData, RecordData, TagData } from "./types";
 
+export const defaultProfileImageUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png';
+
 export const processRawExerciseData = (rawData : any) => {
     return {
         type: "exercise",
@@ -11,7 +13,7 @@ export const processRawExerciseData = (rawData : any) => {
         userName: rawData.nickname,
         thumbUrl: rawData.thumb_url,
         thumbGifUrl: rawData.thumb_gif_url,
-        profileImageUrl: rawData.profile_image || 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png',
+        profileImageUrl: rawData.profile_image || defaultProfileImageUrl,
         videoUrl: rawData.video_url,
         innerData: rawData.skeleton,
         reward: rawData.reward,
@@ -36,7 +38,7 @@ export const processRawCourseData = (rawData : any) => {
         userName: rawData.nickname,
         thumbUrl: rawData.thumb_url,
         thumbGifUrl: rawData.thumb_gif_url,
-        profileImageUrl: 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png',
+        profileImageUrl: rawData.profile_image || defaultProfileImageUrl,
         videoUrl: rawData.video_url,
         innerData: rawData.exercise_list,
         reward: rawData.reward,

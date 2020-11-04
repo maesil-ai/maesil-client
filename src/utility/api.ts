@@ -13,7 +13,7 @@ import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
 import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
 import Axios from 'axios';
-import { processRawExerciseData, processRawCourseData, processRawTagData, processRawRecordData, processRawDailyRecordData } from './apiTypes';
+import { processRawExerciseData, processRawCourseData, processRawTagData, processRawRecordData, processRawDailyRecordData, defaultProfileImageUrl } from './apiTypes';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -221,6 +221,7 @@ export const login = async (
   profileImageUrl: string,
   accessToken: string,
 ) => {
+  profileImageUrl = profileImageUrl || defaultProfileImageUrl;
   const response = await axios.post(`${apiAddress}/users`, {
     id: id,
     profile_image_url: profileImageUrl,
