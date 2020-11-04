@@ -44,10 +44,15 @@ table {
 	border-spacing: 0;
 }
 
+#root {
+  padding-bottom: 116px;
+}
+
 html, body, #root {
-  height: 100%;
+  min-height: calc(100vh - 116px);
   width: 100%;
   font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
 
   >.title {
     padding-left: 30px;  
@@ -277,6 +282,10 @@ footer {
   text-align: left;
   color: rgb(236, 236, 236);
   display: block;
+  width: 100%;
+  
+  position: absolute;
+  bottom: 0;
 
   .item {
     position: relative;
