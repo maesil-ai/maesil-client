@@ -33,7 +33,7 @@ function Loading({ headerReal = true, mini = false } : LoadingProps) {
   };
 
   if (mini) return (
-    <ReactLoading type='bars' color={color(mix)} height='7%' width='7%' />
+    <ReactLoading type='bars' color={color(mix)} height='80px' width='80px' />
   );
   return (
     <div style={{position: 'absolute', left: 'calc(50% - 50px)', top: 'calc(50% - 50px)'}}>

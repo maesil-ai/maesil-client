@@ -16,11 +16,14 @@ import {
 } from 'utility/types';
 import { warningIcon } from 'utility/svg';
 import Music from './Music';
+import Loading from 'pages/Loading';
 
 const LEFT_ELBOW = 7;
 const RIGHT_ELBOW = 8;
 const LEFT_WRIST = 9;
 const RIGHT_WRIST = 10;
+
+const waitingFrames = 89;
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -72,6 +75,7 @@ interface ExerciseScreenState {
   progress: number;
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
+  beforeStart: number;
 }
 
 /**
@@ -115,6 +119,7 @@ class ExerciseScreen extends React.Component<
       liveScores: [],
       viewConfig: this.props.viewConfig,
       useKalmanFilters: true,
+      beforeStart: waitingFrames + 2,
     };
 
     this.views.forEach((view) =>
@@ -124,6 +129,20 @@ class ExerciseScreen extends React.Component<
     );
 
     if (this.props.phase == 'exercise') this.views[0].video.onended = this.finish;
+  }
+
+  start = () => {
+    console.log('Starting!');
+    this.views.forEach((view) => view.video.load());
+    console.log('Loaded!');
+    this.views[1].video.onloadeddata = () => {
+      this.views.forEach((view) => view.calculator.readyToUse = true );
+      if (this.state.count == 0) this.setState({
+        ...this.state,
+        beforeStart: waitingFrames + 1,
+      })
+      else this.views.forEach((view) => view.video.play());
+    };
   }
 
   finish = () => {
@@ -165,12 +184,7 @@ class ExerciseScreen extends React.Component<
           calorie: exerciseCalorie(userRecord, guideRecord.length),
         });
       } else {
-        this.views[0].video.load();
-        this.views[0].video.onloadeddata = () => {
-          this.views[0].calculator.readyToUse = true;
-          this.views[1].calculator.readyToUse = true;
-          this.views[0].video.play();
-        };
+        this.start();
       }
     }
 
@@ -206,6 +220,7 @@ class ExerciseScreen extends React.Component<
       )
     );
 
+    this.start();
     this.drawCanvas();
   };
 
@@ -215,10 +230,6 @@ class ExerciseScreen extends React.Component<
 
   drawCanvas = () => {
     const ctx = this.ctx!;
-
-    for (let view of this.views) {
-      view.video.play();
-    }
 
     const drawVideoPose = (
       video: CanvasImageSource,
@@ -314,6 +325,9 @@ class ExerciseScreen extends React.Component<
     };
 
     executeEveryFrame(() => {
+      if (this.state.beforeStart > 0)
+        return;
+
       this.setState({
         ...this.state,
         progress: 
@@ -328,9 +342,12 @@ class ExerciseScreen extends React.Component<
 
     executeEveryFrame(() => {
       ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
+
+      if (this.state.beforeStart > waitingFrames + 1) return;
+
       let poses : Pose[] = [];
       this.views.forEach((view) => {
-        view.calculator.getPoseResult();
+        view.calculator.getPoseResult(this.state.beforeStart == 0);
         if (view.calculator.record.length > 0)
           poses.push(view.calculator.record[view.calculator.record.length - 1]);
         drawVideoPose(
@@ -352,7 +369,7 @@ class ExerciseScreen extends React.Component<
           h = 10,
           w = this.props.videoWidth;
 
-        ctx.fillStyle = 'rgb(188, 188, 188)';
+        ctx.fillStyle = 'rgb(222, 222, 222)';
         ctx.fillRect(x, y, w, h);
 
         let i = 0;
@@ -361,10 +378,26 @@ class ExerciseScreen extends React.Component<
           if (score < 0) score = 0;
           score = Math.floor(score * 100);
           if (this.props.phase == 'break') score = 100;
-          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 122)`;
+          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 100)`;
           ctx.fillRect(x + i * w * this.state.progress / this.state.liveScores.length - 1, y, 
                       w * this.state.progress / this.state.liveScores.length + 2, h);
           i++;
+        }
+      }
+
+      if (this.state.beforeStart > 0) {
+        ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
+        this.setState({
+          ...this.state,
+          beforeStart: this.state.beforeStart - 1,
+        });
+
+        if (this.state.beforeStart <= 0) {
+          this.setState({
+            ...this.state,
+            liveScores: [],
+          })
+          this.views.forEach((view) => view.video.play());
         }
       }
     });
@@ -393,7 +426,8 @@ class ExerciseScreen extends React.Component<
   };
 
   scoreMessage = (score: number) => {
-    if (score < 0.1) return "Bad..";
+    if (score == 0) return '파이팅!';
+    else if (score < 0.1) return "Bad..";
     else if (score < 0.45) return "Good";
     else if (score < 0.8) return "Nice!";
     else return "Great!!";
@@ -423,6 +457,16 @@ class ExerciseScreen extends React.Component<
         { this.state.viewConfig.showCount && this.props.repeat > 1 &&
           <div className='zone mini fly' style={{transform: `translate(${this.props.videoWidth - 180}px, 30px)`}}>
             { `${this.state.count+1} / ${this.props.repeat}` }
+          </div>
+        }
+        { waitingFrames < this.state.beforeStart &&
+          <div style={{position: 'absolute', left: 'calc(50% - 40px)', top: 'calc(50% - 40px'}}>
+            <Loading mini={true} />
+          </div>
+        }
+        { 0 < this.state.beforeStart && this.state.beforeStart <= waitingFrames &&
+          <div className='zone fly' style={{transform: `translate(${this.props.videoWidth/2 - 48}px, ${this.props.videoHeight/2 - 48}px)`, width: '88px'}}>
+            { Math.ceil(this.state.beforeStart / fps) }
           </div>
         }
         <canvas

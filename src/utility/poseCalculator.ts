@@ -56,7 +56,7 @@ class PoseCalculator {
 
   // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
 
-  getPoseResult = async () => {
+  getPoseResult = async (recordResult: boolean = true) => {
     if (!this.readyToUse) {
       return false;
     }
@@ -110,7 +110,7 @@ class PoseCalculator {
       this.modelInUse = false;
     }
     if (poses[0]) {
-      this.record.push(poses[0]);
+      if (recordResult) this.record.push(poses[0]);
       this.resultPoses = poses;
     }
     return true;
