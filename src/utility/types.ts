@@ -124,6 +124,7 @@ export interface ContentData {
   createdAt: string;
   updatedAt: string;
   heart?: boolean;
+  customData?: string;
 }
 
 export interface RecordData {

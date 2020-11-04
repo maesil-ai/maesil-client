@@ -104,10 +104,17 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
 
           <div className='info' style={{width: '100%', height: '10%'}}>
             <div style={{marginLeft: '0px'}}>
-              <span style={{marginLeft: '4px'}}> { smallViewIcon } </span>
-              <span> { content.viewCount } </span>
-              <span style={{marginLeft: '20px'}}> { smallHeartIcon } </span>
-              <span> { content.heartCount } </span>
+              { content.customData 
+              ? <span>
+                  { content.customData }
+                </span>
+              : <>
+                  <span style={{marginLeft: '4px'}}> { smallViewIcon } </span>
+                  <span> { content.viewCount } </span>
+                  <span style={{marginLeft: '20px'}}> { smallHeartIcon } </span>
+                  <span> { content.heartCount } </span>
+                </>
+              }
             </div>
           </div>
         </div>

@@ -1,9 +1,11 @@
 import Footer from 'components/Footer';
 import Header from 'components/Header';
+import Shelf from 'components/Shelf';
 import Tabs from 'components/Tabs';
 import React from 'react';
-import { getRecords, getUserInfo } from 'utility/api';
-import { APIGetUserInfoData, RecordData } from 'utility/types';
+import { getExercises, getRecords, getUserInfo } from 'utility/api';
+import { defaultProfileImageUrl } from 'utility/apiTypes';
+import { APIGetUserInfoData, ContentData, RecordData } from 'utility/types';
 import usePromise from 'utility/usePromise';
 import Loading from './Loading';
 
@@ -11,9 +13,9 @@ import Loading from './Loading';
 function MypageRecord() {
     let [userInfoLoading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
     let [recordsLoading, records] = usePromise<RecordData[]>(getRecords);
+    let [allExercisesLoading, allExercises] = usePromise<ContentData[]>(getExercises);
 
-    if (!recordsLoading) console.log(records);
-    if (recordsLoading || userInfoLoading) return <Loading />;
+    if (recordsLoading || userInfoLoading || allExercisesLoading) return <Loading />;
     return (
         <>
             <Header />
@@ -30,11 +32,13 @@ function MypageRecord() {
                 link: `/user/${userInfo.nickname}`,
                 active: false,
             }]} />
-            { records.map((record, index) => (
-                <div key={index} className='zone' style={{marginBottom: '10px'}}>
-                    { record.contentName }: { record.playTime }초 플레이, { record.calorie }칼로리 소모, { record.score }점
-                </div>
-            )) }
+            <Shelf contents={
+                records.map((record) => ({
+                    ...allExercises.find((exercise) => exercise.id == record.contentId),
+                    customData: `${record.playTime} 플레이 | ${record.calorie}kcal 소모`,
+                }))} 
+                control={() => {}}
+            />
             <Footer />
         </>
     )
