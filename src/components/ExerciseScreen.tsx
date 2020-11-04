@@ -68,8 +68,8 @@ interface ExerciseScreenState {
   isPlaying: boolean;
   records: Pose2D[][][];
   scores: number[];
-  liveScores: number[],
-  progress: number,
+  liveScores: number[];
+  progress: number;
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
 }
@@ -346,37 +346,13 @@ class ExerciseScreen extends React.Component<
         liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : (this.state.liveScores.length > 0 ? [] : [0])),
       });
 
-      if (this.state.viewConfig.showCount) {
-        const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
-
-        for (let i = 0; i < this.props.repeat; i++) {
-          ctx.fillStyle = this.state.count > i ? 'rgb(22, 22, 22)' : 'rgb(222, 222, 222)';
-          ctx.fillRect(x - 40 * (this.props.repeat - i - 1), y, w, h);
-        }
-      }
-      if (this.props.phase == 'exercise' && this.state.viewConfig.showScore) {
-        const x = this.props.videoWidth - 20, y = this.props.videoHeight * 2 / 3 - 20;
-
-        ctx.fillStyle = 'rgb(22, 22, 22)';
-        ctx.font = '40px Noto Sans CJK';
-        ctx.textAlign = 'right';
-        if (this.state.liveScores.length) {
-          const score = this.state.liveScores[this.state.liveScores.length - 1];
-          let text : string;
-          if (score < 0.1) text = "Bad..";
-          else if (score < 0.45) text = "Good";
-          else if (score < 0.8) text = "Nice!";
-          else text = "Great!!";
-          ctx.fillText(text, x, y);
-        }
-      }
       if (this.state.viewConfig.showProgress) {
-        const x = 20,
-          y = this.props.videoHeight - 20,
+        const x = 0,
+          y = this.props.videoHeight - 10,
           h = 10,
-          w = this.props.videoWidth - 40;
+          w = this.props.videoWidth;
 
-        ctx.fillStyle = 'rgb(22, 22, 22)';
+        ctx.fillStyle = 'rgb(188, 188, 188)';
         ctx.fillRect(x, y, w, h);
 
         let i = 0;
@@ -385,7 +361,7 @@ class ExerciseScreen extends React.Component<
           if (score < 0) score = 0;
           score = Math.floor(score * 100);
           if (this.props.phase == 'break') score = 100;
-          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 22)`;
+          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 122)`;
           ctx.fillRect(x + i * w * this.state.progress / this.state.liveScores.length - 1, y, 
                       w * this.state.progress / this.state.liveScores.length + 2, h);
           i++;
@@ -416,10 +392,39 @@ class ExerciseScreen extends React.Component<
     });
   };
 
+  scoreMessage = (score: number) => {
+    if (score < 0.1) return "Bad..";
+    else if (score < 0.45) return "Good";
+    else if (score < 0.8) return "Nice!";
+    else return "Great!!";
+  }
+
+  scoreColor = (score: number) => {
+    if (score < 0.1) return 'red';
+    else if (score < 0.45) return 'black';
+    else if (score < 0.8) return 'green';
+    else return 'blue';
+  }
+
   render() {
     return (
       <div style={{ width: this.props.videoWidth }}>
-        <Music/>
+        { this.state.viewConfig.showScore && this.state.liveScores.length > 0 &&
+          <div className='zone mini fly' 
+                style={{
+                  transform: `translate(20px, ${this.props.videoHeight - 94}px)`, 
+                  fontWeight: 600, 
+                  color: this.scoreColor(this.state.liveScores[this.state.liveScores.length - 1])
+                }}
+          >
+            { this.scoreMessage(this.state.liveScores[this.state.liveScores.length - 1]) }
+          </div>
+        }
+        { this.state.viewConfig.showCount && this.props.repeat > 1 &&
+          <div className='zone mini fly' style={{transform: `translate(${this.props.videoWidth - 180}px, 30px)`}}>
+            { `${this.state.count+1} / ${this.props.repeat}` }
+          </div>
+        }
         <canvas
           ref={this.canvas}
           width={this.props.videoWidth}
@@ -435,7 +440,7 @@ class ExerciseScreen extends React.Component<
             </div>
           </div>
         </canvas>
-      </div>
+        </div>
     );
   }
 }

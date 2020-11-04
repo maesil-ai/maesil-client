@@ -131,6 +131,19 @@ html, body, #root {
   }
 }
 
+.profile {
+  height: 60px;
+
+  .profileName {
+    position: absolute;
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    left: 60px;
+    top: 20px;
+  }
+}
+
 .profileBox {
   border-radius: 42%;
   overflow: hidden;
@@ -321,9 +334,16 @@ video.previewVideo {
   }
 }
 
+.line {
+  width: 100%;
+  height: 0px;
+  border: 1px black solid;
+  opacity: 0.08;
+}
+
 .contentInfo {
-  width: calc(100% - 100px);
-  padding: 32px;
+  width: 100%;
+  padding: 20px 0px;
 
   h1 {
     font-style: normal;
@@ -339,4 +359,5 @@ video.previewVideo {
     line-height: 24px;
     color: grey;
   }
+
 }

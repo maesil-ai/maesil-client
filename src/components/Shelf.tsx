@@ -100,7 +100,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
             </div>
           </div>
           
-          <div style={{width: '100%', height: '0px', border: '1px black solid', opacity: '0.08', marginBottom: '4px'}} />
+          <div className='line' style={{marginBottom: '4px'}} />
 
           <div className='info' style={{width: '100%', height: '10%'}}>
             <div style={{marginLeft: '0px'}}>

@@ -6,9 +6,22 @@
     width: calc(100% - 100px);
     padding: 36px 0px;
   
+    background-color: white;
+    color: #555;
+
     display: block;
   
     text-align: center;
+
+    &.mini {
+      width: 160px;
+      border-radius: 32px;
+      padding: 24px 0px;
+    }
+
+    &.fly {
+      position: absolute;
+    }
 
     h1 {
       font-style: normal;
@@ -24,8 +37,6 @@
       line-height: 26px;
     }
 
-    background-color: white;
-    color: #555;
 
     &.invisible {
       background: none;

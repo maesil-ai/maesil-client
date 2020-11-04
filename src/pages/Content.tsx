@@ -232,8 +232,8 @@ function Content({match} : CourseProps) {
                 },
                 {
                     video: userVideo,
-                    scale: 0.3,
-                    offset: [0.7*videoWidth-20, 0.7*videoHeight-20],
+                    scale: 0.35,
+                    offset: [0.65*videoWidth, 0.65*videoHeight-10],
                 },
                 ]}
                 repeat={repeat}
@@ -256,7 +256,9 @@ function Content({match} : CourseProps) {
                 time={repeat}
             />
             }
-            <ContentDetail data={ store.getState().content.content } />
+            <div style={{width: videoWidth}}>
+                <ContentDetail data={ store.getState().content.content } />
+            </div>
             <Footer />
         </>
       );
