@@ -27,10 +27,6 @@ function UploadExercise() {
         name: "운동 업로드",
         link: "/studio/exercise",
         active: true,
-      }, {
-        name: "운동 코스 제작",
-        link: "/studio/course",
-        active: false,
       }]} />
       {phase == 1 && <UploadExerciseA onFinish={handleAFinish} />}
       {phase == 2 && <UploadExerciseB video={video} />}

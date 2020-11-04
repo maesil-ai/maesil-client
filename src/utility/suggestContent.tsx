@@ -17,12 +17,12 @@ export default async function suggestContent(rowNumber: number) {
         <Shelf key={rowNumber} title={title} contents={contents} />
     );
 
-    if (user.loggedIn && dice % 9 == 0) return makeShelf(`${user.userInfo.nickname}님이 좋아하는 운동들`, await getLikes());
-    if (dice % 2 == 0) {
+    if (user.loggedIn && dice % 7 == 0) return makeShelf(`${user.userInfo.nickname}님이 좋아하는 운동들`, await getLikes());
+    if (dice % 4 > 0) {
         let tag = tags[Math.floor(Math.random() * tags.length)];
         let result = await searchTag(tag.name);
         return makeShelf(`#${tag.name}`, result.exerciseResult.concat(result.courseResult));
     }
-    if (rowNumber % 2 == 0) return makeShelf("모든 운동들", await getExercises());
-    else return makeShelf("모든 운동 코스들", await getCourses());
+    return makeShelf("모든 운동들", await getExercises());
+//    else return makeShelf("모든 운동 코스들", await getCourses());
 }
