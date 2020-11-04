@@ -2,6 +2,7 @@ import * as types from 'actions/ActionTypes';
 import { APIGetUserInfoData, Channel } from 'utility/types';
 import { UserAction } from 'actions';
 import { userInfo } from 'os';
+import { defaultProfileImageUrl } from 'utility/apiTypes';
 
 interface UserState {
   userInfo: APIGetUserInfoData;
@@ -9,8 +10,24 @@ interface UserState {
   subscribes: Channel[];
 };
 
+const defaultUserInfo : APIGetUserInfoData = {	
+  user_id: null,	
+  email: null,	
+  password: null,	
+  nickname: null,	
+  gender: 'female',	
+  weight: 60,	
+  height: 170,	
+  level: null,	
+  points: null,	
+  status: null,	
+  created_at: null,	
+  updated_at: null,	
+  profile_image: defaultProfileImageUrl,	
+};
+
 const initialState : UserState = {
-  userInfo: null,
+  userInfo: defaultUserInfo,
   loggedIn: false,
   subscribes: null,
 };
@@ -27,7 +44,7 @@ export default function user(state = initialState, action : UserAction) {
     case types.CLEAR_USER:
       return {
         ...state,
-        userInfo: null,
+        userInfo: defaultUserInfo,
         subscribes: null,
         loggedIn: false,
       }
