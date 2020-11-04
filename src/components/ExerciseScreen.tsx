@@ -444,7 +444,7 @@ class ExerciseScreen extends React.Component<
     return (
       <div style={{ width: this.props.videoWidth }}>
         { this.state.viewConfig.showScore && this.state.liveScores.length > 0 &&
-          <div className='zone mini fly' 
+          <div className='zone mini fly'
                 style={{
                   transform: `translate(20px, ${this.props.videoHeight - 94}px)`, 
                   fontWeight: 600, 

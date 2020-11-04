@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootReducerState } from 'reducers';
 import { smallViewIcon, smallHeartIcon } from 'utility/svg';
+import Profile from './Profile';
 
 interface ContentDetailProps {
   data : ContentData;
 };
 
 function ContentDetail({ data }: ContentDetailProps) {
-  let user = useSelector((state : RootReducerState) => state.user );
 
-  console.log(data);
   return (
     <div className='contentInfo'>
       <h1> { `${data.name}` } </h1>
@@ -26,20 +25,7 @@ function ContentDetail({ data }: ContentDetailProps) {
 
       <div className='line' style={{marginTop: '24px', marginBottom: '8px'}} />
 
-      <div className='profile' >
-        <Link to={`user/${data.userName}`}> 
-          <div className='profileBox small'>
-            <img className='profileImage' src={data.profileImageUrl}/>
-          </div>
-        </Link>
-        <div className='profileName'>
-          <span style={{marginRight: '7px'}}> 
-            <Link to={`/user/${data.userName}`}> 
-              { data.userName } 
-            </Link>
-          </span>
-        </div>
-      </div>
+      <Profile id={data.userId} name={data.userName} profileImageUrl={data.profileImageUrl} />
 
       <div className='line' style={{marginTop: '16px', marginBottom: '8px'}} />
 
