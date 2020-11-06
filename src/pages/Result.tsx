@@ -41,10 +41,6 @@ function Result() {
               <td className='labelColumn'> 소모 칼로리 </td>
               <td className='contentColumn'> { record.calorie.toFixed(3) } kcal </td>
             </tr>
-            <tr style={{height: '48px'}}>
-              <td className='labelColumn'> 점수 </td>
-              <td className='contentColumn'> { Math.round(record.score * 100) } 점 </td>
-            </tr>
           </tbody>
         </table>
         <span onClick={() => {
