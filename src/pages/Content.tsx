@@ -10,7 +10,6 @@ import { getExercise, postResult, getCourse } from "utility/api";
 import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
 import store from 'store';
-import Title from "components/Title";
 import ContentDetail from "components/ContentDetail";
 import { warningIcon } from "utility/svg";
 
@@ -62,7 +61,7 @@ function Content({match} : CourseProps) {
                 innerData: JSON.stringify([{
                     phase: "exercise",
                     id: id,
-                    repeat: 3,
+                    repeat: data.playTime >= "00:00:30" ? 1 : 3,
                 }]),
             } as ContentData;
         }
@@ -77,6 +76,10 @@ function Content({match} : CourseProps) {
     let [playRecord, setPlayRecord] = React.useState<PlayRecord>({
         playTime: 0, calorie: 0, score: 0,
     });
+
+    useEffect(() => {
+        console.log(userLoading, guideLoading, userStreamLoading, courseDataLoading);
+    }, [userLoading, guideLoading, userStreamLoading, courseDataLoading]);
 
     useEffect(() => {
         userVideo.height = guideVideo.height = videoHeight;
@@ -107,7 +110,11 @@ function Content({match} : CourseProps) {
     useEffect(() => {
         if (currentExercise) {
             guideVideo.src = currentExercise.videoUrl;
-            setGuidePose(JSON.parse(currentExercise.innerData));
+            try {
+                setGuidePose(JSON.parse(currentExercise.innerData));
+            } catch {
+                
+            }
 
             guideVideo.load();
 
@@ -133,8 +140,6 @@ function Content({match} : CourseProps) {
         console.log(userStream);
         if (userStream) {
             userStream.getTracks().forEach((track) => {
-                console.log(track);
-                console.log('이게 안돼?');
                 track.stop();
             });
         }
@@ -173,7 +178,6 @@ function Content({match} : CourseProps) {
     }
 
 
-
     if (redirectToResult) {
         return (
             <Redirect
@@ -207,7 +211,7 @@ function Content({match} : CourseProps) {
             </>
         );
     }
-    else if (userLoading || guideLoading || courseDataLoading) return <Loading/>;
+    else if (userLoading || guideLoading || userStreamLoading || courseDataLoading) return <Loading/>;
     else return (
         <>
             <Header />

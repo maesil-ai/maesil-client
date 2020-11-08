@@ -1,5 +1,31 @@
 @import './index.scss';
 
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: white;
+  z-index: 10001;
+
+  @media (max-width: $max-mobile-width) {
+    width: 100%;
+  }
+}
+
+.sidebarShadow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 10000;
+
+  opacity: 0.6;
+  background: black;
+}
+
 header {
   top: 0;
   left: 0;
@@ -19,6 +45,7 @@ header {
   
   opacity: 0.7;
 
+
   .logo {
     position: absolute;
     height: 46px;
@@ -26,7 +53,7 @@ header {
     top: 30px;
 
     @media (max-width: $max-tablet-width) {
-      left: 46px;
+      left: 98px;
     }
   }
 

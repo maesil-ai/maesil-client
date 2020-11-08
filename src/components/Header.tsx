@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
-import { headerLogo, searchIcon, userIcon, settingIcon, logoutIcon, headerLogoHorizontal, backIcon } from 'utility/svg';
+import { headerLogo, searchIcon, userIcon, settingIcon, logoutIcon, headerLogoHorizontal, backIcon, sidebarIcon, closeIcon } from 'utility/svg';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
@@ -17,27 +17,43 @@ function Header({ real = true } : HeaderProps) {
   let [mouseHover, setMouseHover] = React.useState(false);
   let [query, setQuery] = React.useState<string>();
   let [searchPhase, setSearchPhase] = React.useState<boolean>(false);
+  let [sidebarOn, setSidebarOn] = React.useState<boolean>(true);
 
-  if (searchPhase) return (
-    <header>
-      <div className='menu leftMenu' style={{width: '100%'}}>
-        <div style={{top: '44px', height: '32px', marginLeft: '20px' }} onClick={() => setSearchPhase(false)}>
-          { backIcon }
-        </div>
-        <span className='blank' />
-        <div style={{top: '33px', height: '33px', flexGrow: 1}}>
-          <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } style={{width: '100%'}} />	
-        </div>
-        <span className='blank' />
-        <div style={{top: '36px', height: '32px', marginRight: '39px'}}>
-          <Link to={`/search/${query}`}>
-            { searchIcon }
-          </Link>
+  let sidebar = (
+    <>
+      <div className='sidebarShadow'/>
+      <div className='sidebar'>
+        <div onClick={() => setSidebarOn(false) } style={{top: '40px', left: '230px'}}>
+          { closeIcon }
         </div>
       </div>
-    </header>
+    </>
+  );
+
+  if (searchPhase) return (
+    <>
+      <header>
+        <div className='menu leftMenu' style={{width: '100%'}}>
+          <div style={{top: '44px', height: '32px', marginLeft: '20px' }} onClick={() => setSearchPhase(false)}>
+            { backIcon }
+          </div>
+          <span className='blank' />
+          <div style={{top: '33px', height: '33px', flexGrow: 1}}>
+            <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } style={{width: '100%'}} />	
+          </div>
+          <span className='blank' />
+          <div style={{top: '36px', height: '32px', marginRight: '39px'}}>
+            <Link to={`/search/${query}`}>
+              { searchIcon }
+            </Link>
+          </div>
+        </div>
+      </header>
+      { sidebarOn && sidebar }
+    </>
   )
   else return (
+    <>
     <header>
       <div className="logo">
           <Link to="/" onClick={() => { system.error && store.dispatch(closeError()); } }>
@@ -45,6 +61,10 @@ function Header({ real = true } : HeaderProps) {
           </Link>
       </div>
       <div className="menu leftmenu">
+        <span className='blank' />
+        <div style={{top: '35px', height: '31px'}} onClick={() => setSidebarOn(true) }>
+          { sidebarIcon }
+        </div>
         <span className='blank' />
         <div className='desktopOnly' style={{top: '37px', height: '33px'}}>
           <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
@@ -96,9 +116,11 @@ function Header({ real = true } : HeaderProps) {
             </div>
           </>
         )}
-                <span className='blank' />
+        <span className='blank' />
       </div>
     </header>
+    { sidebarOn && sidebar }
+    </>
   );
 }
 

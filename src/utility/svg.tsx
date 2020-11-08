@@ -54,8 +54,20 @@ export const mainLogo = (
             </linearGradient>
         </defs>
     </svg>
-
 )
+
+export const sidebarIcon = (
+    <svg width="34" height="31" viewBox="0 0 34 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.50991 8.65273L26.4901 8.6527M7.50991 15.5001L26.4901 15.5M7.50991 22.3473L26.4901 22.3473" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+);
+
+export const closeIcon = (
+    <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2L21.0918 21.092" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M2 21.0919L21.092 2.00006" stroke="black" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+);
 
 export const searchIcon = (
     <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
