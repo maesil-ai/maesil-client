@@ -1,3 +1,4 @@
+import Logo from 'components/Logo';
 import Shelf from 'components/Shelf';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -11,18 +12,37 @@ export default async function suggestContent(rowNumber: number) {
     let user = store.getState().user;
     let tags = store.getState().system.tags;
     
-    let dice = Math.floor(Math.random() * 1000000);
-    
+    const maxRow = tags.length + 1;
+
+    if (rowNumber >= maxRow) return null;
+
     const makeShelf = (title: string, contents: ContentData[]) => (
         <Shelf key={rowNumber} title={title} contents={contents} />
     );
 
-    if (user.loggedIn && dice % 7 == 0) return makeShelf(`${user.userInfo.nickname}님이 좋아하는 운동들`, await getLikes());
-    if (dice % 4 > 0) {
-        let tag = tags[Math.floor(Math.random() * tags.length)];
-        let result = await searchTag(tag.name);
+    if (rowNumber == tags.length) {
+        return (
+            <Logo 
+                background='rgb(222, 222, 222)'
+                title='배~고~팡~'
+                text={(
+                <>
+                    여기 뭐 넣지?
+                </>
+                )}
+                button={(
+                    <div className='neonbox bannerButton' >
+                        처음 오셨나요?
+                    </div>  
+                )}
+          />
+
+        )
+    }
+
+    if (rowNumber < tags.length) {
+        const tag = tags[rowNumber];
+        const result = await searchTag(tag.name);
         return makeShelf(`#${tag.name}`, result.exerciseResult.concat(result.courseResult));
     }
-    return makeShelf("모든 운동들", await getExercises());
-//    else return makeShelf("모든 운동 코스들", await getCourses());
 }

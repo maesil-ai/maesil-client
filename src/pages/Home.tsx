@@ -6,6 +6,7 @@ import Loading from 'pages/Loading';
 import { Link, match } from 'react-router-dom';
 import suggestContent from 'utility/suggestContent';
 import Tour, { ReactourStep } from 'reactour';
+import Logo from 'components/Logo';
 
 
 const tourSteps : ReactourStep[] = [
@@ -34,6 +35,7 @@ interface HomeProps {
 function Home({ match } : HomeProps) {
   let [shelfs, setShelfs] = React.useState<JSX.Element[]>([]);
   let [loadNext, setLoadNext] = React.useState<number>(0);
+  let [loadDone, setLoadDone] = React.useState<boolean>(false);
   let isTutorial = React.useMemo(() => match.params.remark == 'tutorial', [match]);
   let [isTourOpen, setIsTourOpen] = React.useState<boolean>(false);
   
@@ -57,6 +59,10 @@ function Home({ match } : HomeProps) {
   }, []);
 
   React.useEffect(() => {
+    if (loadDone) {
+      setLoadNext(0);
+      return;
+    }
     if (loadNext == 0) return;
     const loadNum = loadNext;
     const shelfSize = shelfs.length;
@@ -72,6 +78,10 @@ function Home({ match } : HomeProps) {
         });
       }
     }).then((newShelfs) => {
+      newShelfs = newShelfs.filter((element) => element !== null);
+      if (newShelfs.length != loadNum) {
+        setLoadDone(true);
+      }
       setShelfs(shelfs.concat(newShelfs));
       setLoadNext(0);
     });
@@ -81,24 +91,24 @@ function Home({ match } : HomeProps) {
       <>
         <Header />
         <div style={{marginBottom: '-32px'}} />
-        <div className='banner' >
-          <img className='bannerImage' src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png' />
-          <div className='bannerTitle'>
-            매일매일 실내 트레이닝
-          </div>
-          <div className='bannerText'>
-            누구나 운동을 만들고 트레이닝할 수 있는 
-            <br/>
-            새로운 실내 헬스 트레이닝 플랫폼
-          </div>
-          <Link to='/tutorial'>
-            <div className='neonbox bannerButton' >
-              처음 오셨나요?
-            </div>
-          </Link>
-        </div>
+        <Logo imageUrl='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png'
+              title='매일매일 실내 트레이닝'
+              text={(
+                <>
+                  누구나 운동을 만들고 트레이닝할 수 있는
+                  <br/>
+                  새로운 실내운동 플랫폼
+                </>
+              )}
+              button={(
+                <div className='neonbox bannerButton' >
+                  처음 오셨나요?
+                </div>  
+              )}
+            />
+
         { shelfs }
-        { loadNext > 0 && <Loading mini={true} /> }
+        { !loadDone && loadNext > 0 && <Loading mini={true} /> }
         <Footer />
         <Tour
           isOpen={isTourOpen}
