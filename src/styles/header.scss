@@ -12,6 +12,101 @@
   @media (max-width: $max-mobile-width) {
     width: 100%;
   }
+
+  * {
+    position: absolute;
+  }
+
+  .closeButton {
+    top: 24px;
+    right: 52px;
+    @media (min-width: $min-tablet-width) {
+      display: none;
+    }
+  }
+
+  .profilePart {
+    top: 0;
+    left: 0;
+    height: 72px;
+    width: 100%;
+    background: $main-gradient-opaque;
+
+    .profileBox {
+      top: 11px;
+      left: 15px;
+    }
+
+    .profileName {
+      top: 24px;
+      left: 80px;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 400;
+
+      b {
+        font-weight: 700;
+      }
+    }
+  }
+
+  .bottomPart {
+    bottom: 0;
+    left: 0;
+    height: 72px;
+    width: 100%;
+    background: #EEEEEE;
+
+    .leftButton {
+      left: 24px;
+      bottom: 48px;
+    }
+    .rightButton {
+      right: 52px;
+      bottom: 48px;
+    }
+  }
+
+  .menuPart {
+    top: 80px;
+    height: calc(100% - 152px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    * {
+      position: relative;
+    }
+
+    > * {
+      width: 100%;
+    }
+
+    .menu {
+      height: 20px;
+      font-size: 20px;
+      padding: 12px 16px;
+    }
+
+    .title {
+      height: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #666666;
+      padding: 16px;
+      padding-bottom: 8px;
+    }
+
+    .line {
+      height: 0px;
+      border-bottom: 1px grey solid;
+      margin: 6px 0px;
+    }
+  }
 }
 
 .sidebarShadow {
@@ -30,8 +125,10 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  height: 96px;
-  margin-bottom: 36px;
+  height: 72px;
+  margin-bottom: 26px;
+  position: fixed;
+  z-index: 1;
   
 //  color: #00816c;
   background: #fff;
@@ -42,15 +139,12 @@ header {
   align-items: center;
   
   color: #000000;
-  
-  opacity: 0.7;
-
 
   .logo {
     position: absolute;
-    height: 46px;
-    left: calc(50% - 32px);
-    top: 30px;
+    height: 49px;
+    left: 130px;
+    top: 17px;
 
     @media (max-width: $max-tablet-width) {
       left: 98px;
@@ -58,7 +152,7 @@ header {
   }
 
   .blank {
-    padding-left: 64px;
+    padding-left: 48px;
 
     @media (max-width: $max-tablet-width) {
       padding-left: 36px;
@@ -115,13 +209,11 @@ header {
   }
 
   .leftmenu {
-    align-items: flex-start;
     left: 0px;
     margin-left: 0;
   }
 
   .rightmenu {
-    align-items: flex-end;
     right: 0px;
     margin-right: 0;
   }
@@ -129,6 +221,7 @@ header {
   .search {
     width: 270px;
     flex-shrink: 1;
+    //background: #dddddd;
     border-bottom: 2px solid #555;
     font-size: 20px;
     font-weight: 600;

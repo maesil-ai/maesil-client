@@ -14,17 +14,59 @@ interface HeaderProps {
 function Header({ real = true } : HeaderProps) {
   let user = useSelector((state : RootReducerState) => state.user );
   let system = useSelector((state : RootReducerState) => state.system );
-  let [mouseHover, setMouseHover] = React.useState(false);
   let [query, setQuery] = React.useState<string>();
   let [searchPhase, setSearchPhase] = React.useState<boolean>(false);
-  let [sidebarOn, setSidebarOn] = React.useState<boolean>(true);
+  let [sidebarOn, setSidebarOn] = React.useState<boolean>(false);
 
   let sidebar = (
     <>
-      <div className='sidebarShadow'/>
+      <div className='sidebarShadow' onClick={() => setSidebarOn(false) }/>
       <div className='sidebar'>
-        <div onClick={() => setSidebarOn(false) } style={{top: '40px', left: '230px'}}>
+        <div className='profilePart'>
+          <div className='profileBox middle'>
+            <img className='profileImage' src={user.userInfo.profile_image}/>
+          </div>
+          <Link to={user.loggedIn ? '/mypage' : '/'} className='profileName'>
+            { user.loggedIn ? `${user.userInfo.nickname}님, 안녕하세요!` : '먼저 로그인해 주세요.' }
+          </Link>
+        </div>
+        <div className='closeButton' onClick={() => setSidebarOn(false) }>
           { closeIcon }
+        </div>
+        <div className='menuPart'>
+          { user.loggedIn && (
+            <>
+              <Link to='/mypage' className='menu'>
+                마이페이지
+              </Link>
+              <Link to='/studio' className='menu'>
+                새로운 운동 올리기
+              </Link>
+            </>
+          )}
+          { user.loggedIn && user.subscribes.length > 0 && (
+            <>
+              <div className='line' />
+              <div className='title'>
+                { user.userInfo.nickname }님이 구독한 채널
+              </div>
+              { user.subscribes.map((channel) => (
+                <Link to={`/user/${channel.name}`} className='menu' key={ channel.name }>
+                  { channel.name }
+                </Link>
+              )) }
+            </>
+          )}
+        </div>
+        <div className='bottomPart'>
+          <Link className='leftButton' to='/setting'>
+            { settingIcon }
+          </Link>
+          { user.loggedIn && (
+            <Link className='rightButton' to="/logout">
+              { logoutIcon }
+            </Link>
+          )}
         </div>
       </div>
     </>
@@ -34,15 +76,15 @@ function Header({ real = true } : HeaderProps) {
     <>
       <header>
         <div className='menu leftMenu' style={{width: '100%'}}>
-          <div style={{top: '44px', height: '32px', marginLeft: '20px' }} onClick={() => setSearchPhase(false)}>
+          <div style={{top: '32px', height: '32px', marginLeft: '20px' }} onClick={() => setSearchPhase(false)}>
             { backIcon }
           </div>
           <span className='blank' />
-          <div style={{top: '33px', height: '33px', flexGrow: 1}}>
+          <div style={{top: '23px', height: '33px', flexGrow: 1}}>
             <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } style={{width: '100%'}} />	
           </div>
           <span className='blank' />
-          <div style={{top: '36px', height: '32px', marginRight: '39px'}}>
+          <div style={{top: '26px', height: '32px', marginRight: '39px'}}>
             <Link to={`/search/${query}`}>
               { searchIcon }
             </Link>
@@ -50,6 +92,7 @@ function Header({ real = true } : HeaderProps) {
         </div>
       </header>
       { sidebarOn && sidebar }
+      <div style={{paddingBottom: '98px'}} />
     </>
   )
   else return (
@@ -62,56 +105,38 @@ function Header({ real = true } : HeaderProps) {
       </div>
       <div className="menu leftmenu">
         <span className='blank' />
-        <div style={{top: '35px', height: '31px'}} onClick={() => setSidebarOn(true) }>
+        <div style={{top: '22px', height: '31px'}} onClick={() => setSidebarOn(true) }>
           { sidebarIcon }
-        </div>
-        <span className='blank' />
-        <div className='desktopOnly' style={{top: '37px', height: '33px'}}>
-          <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
-        </div>
-        <span className='desktopOnly' style={{paddingLeft: '48px'}} />
-        <div className='desktopOnly' style={{top: '37px', height: '32px'}}>
-          <Link to={`/search/${query}`}>
-            { searchIcon }
-          </Link>
         </div>
       </div>
 
       <div className="menu rightmenu">
-        <div className='tabletOnly' style={{top: '37px', height: '33px'}}>
+        <div className='desktopTabletOnly' style={{top: '23px', height: '33px'}}>
           <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
         </div>
-        <span className='tabletOnly blank' />
-        <div className='tabletOnly' style={{top: '37px', height: '32px'}}>
+        <span className='desktopTabletOnly blank' />
+        <div className='desktopTabletOnly' style={{top: '26px', height: '32px'}}>
           <Link to={`/search/${query}`}>
             { searchIcon }
           </Link>
         </div>
-        <div className='mobileOnly' style={{top: '37px', height: '32px'}} onClick={() => setSearchPhase(true)}>
+        <div className='mobileOnly' style={{top: '26px', height: '32px'}} onClick={() => setSearchPhase(true)}>
           { searchIcon }
         </div>
         { user.loggedIn && (
           <>
-            <div style={{top: '34px', height: '32px'}}>
-                <span className='blank' />
-                <Link to="/mypage">
-                  { userIcon }
-                </Link>
-                <span className='blank' />
-                <Link to="/setting">
-                  { settingIcon }
-                </Link>
-                <span className='blank tabletDesktopOnly' />
-                <Link className='tabletDesktopOnly' to="/logout">
-                  { logoutIcon }
-                </Link>
-            </div>
+            <span className='blank' />
+            <Link to='/mypage' style={{transform: 'translateY(11px)'}}>
+                <div className='profileBox middle'>
+                  <img className='profileImage' src={user.userInfo.profile_image}/>
+                </div>
+            </Link>
           </>
         )}
         { !user.loggedIn && (
           <>
             <span className='blank' />
-            <div style={{top: '15px', height: '32px'}}>
+            <div style={{top: '0px', height: '32px'}}>
               <LoginButton/>
             </div>
           </>
@@ -120,6 +145,7 @@ function Header({ real = true } : HeaderProps) {
       </div>
     </header>
     { sidebarOn && sidebar }
+    <div style={{paddingBottom: '98px'}} />
     </>
   );
 }

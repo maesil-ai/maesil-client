@@ -90,7 +90,7 @@ function Home({ match } : HomeProps) {
   return (
       <>
         <Header />
-        <div style={{marginBottom: '-32px'}} />
+        <div style={{marginBottom: '-26px'}} />
         <Logo imageUrl='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png'
               title='매일매일 실내 트레이닝'
               text={(
