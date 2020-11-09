@@ -106,7 +106,6 @@ function Home({ match } : HomeProps) {
                 </div>  
               )}
             />
-
         { shelfs }
         { !loadDone && loadNext > 0 && <Loading mini={true} /> }
         <Footer />

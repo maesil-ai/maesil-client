@@ -22,17 +22,17 @@ function Header({ real = true } : HeaderProps) {
   React.useEffect(() => {
     let halt = false;
     setTimeout(() => {
-      let nextSidebar = (sidebarOn * 3 + (sidebarNext ? 1 : 0)) / 4; 
-      if (nextSidebar < 0.002) setRealSidebarOn(0);
-      else if (nextSidebar > 0.998) setRealSidebarOn(1);
+      let nextSidebar = (sidebarOn * 9 + (sidebarNext ? 1 : 0)) / 10; 
+      if (nextSidebar < 0.001) setRealSidebarOn(0);
+      else if (nextSidebar > 0.999) setRealSidebarOn(1);
       else setRealSidebarOn(nextSidebar);
-    }, 30);
+    }, 12);
     return () => halt = true;
   }, [sidebarOn, sidebarNext]);
 
   let sidebar = (
     <>
-      <div className='sidebarShadow' style={{opacity: sidebarOn * 0.6}} onClick={() => setSidebarOn(false) }/>
+      { sidebarOn > 0.04 && <div className='sidebarShadow' style={{opacity: sidebarOn * 0.7}} onClick={() => setSidebarOn(false) }/> }
       <div className='sidebar' style={{transform: `translateX(${(1-sidebarOn) * -(100)}%)`}}>
         <div className='profilePart'>
           <div className='profileBox middle'>
@@ -117,7 +117,7 @@ function Header({ real = true } : HeaderProps) {
       </div>
       <div className="menu leftmenu">
         <span className='blank' />
-        <div style={{top: '22px', height: '31px'}} onClick={() => setSidebarOn(true) }>
+        <div style={{top: '22px', height: '31px', cursor: 'pointer'}} onClick={() => setSidebarOn(true) }>
           { sidebarIcon }
         </div>
       </div>

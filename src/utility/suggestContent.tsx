@@ -12,7 +12,7 @@ export default async function suggestContent(rowNumber: number) {
     let user = store.getState().user;
     let tags = store.getState().system.tags;
     
-    const maxRow = tags.length + 1;
+    const maxRow = tags.length;
 
     if (rowNumber >= maxRow) return null;
 
