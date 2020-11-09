@@ -9,11 +9,29 @@
   padding-left: 30px;
   padding-right: 30px;
   margin-bottom: 24px;
+  padding-top: 18px;
+  margin-top: -18px;
+
+  .progress {
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    width: 160px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    
+    >.bar {
+      height: 100%;
+      width: 20px;
+      margin-left: 0;
+      background: $color1;
+    }
+  }
 
   .arrow {
     position: absolute;
     width: 16px;
-    top: 0;
+    top: 18px;
     background: #000000;
     opacity: 0.4;
     padding: 152px 24px;

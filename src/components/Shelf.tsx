@@ -27,6 +27,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
   let [selected, select] = React.useState<number>(-1);
   let [position, setPosition] = React.useState<number>(0);
   let [currentPosition, setCurrentPosition] = React.useState<number>(0);
+  const maxX = contents.length * 320 - screen.width + 60;
   const defaultThumbUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
   const defaultThumbGifUrl = 'https://thumbs.gfycat.com/AdmiredTangibleBeardedcollie-size_restricted.gif';
 
@@ -38,7 +39,6 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
     let halt = false;
     setTimeout(() => {
       if (halt) return;
-      let maxX = contents.length * 320 - screen.width + 60;
       let nextPosition = (9 * currentPosition + position) / 10;
       if (Math.abs(currentPosition - position) < 1) setCurrentPosition(position);
       if (maxX > 0 && nextPosition > maxX) {
@@ -120,7 +120,12 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
         </div>
       ))}
       { position > 0 && <div className='arrow leftArrow' onClick={moveLeft}> { leftArrow } </div> }
-      { position < contents.length * 320 - screen.width + 60 && <div className='arrow rightArrow' onClick={moveRight}> { rightArrow } </div> }
+      { position < maxX && <div className='arrow rightArrow' onClick={moveRight}> { rightArrow } </div> }
+      { maxX > 0 && (
+        <div className='progress'>
+          <div className='bar' style={{left: `${currentPosition / maxX * 140}px`}} />
+        </div>
+      )}
       </div>
     </>
   );
