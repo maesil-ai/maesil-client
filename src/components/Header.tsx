@@ -16,12 +16,24 @@ function Header({ real = true } : HeaderProps) {
   let system = useSelector((state : RootReducerState) => state.system );
   let [query, setQuery] = React.useState<string>();
   let [searchPhase, setSearchPhase] = React.useState<boolean>(false);
-  let [sidebarOn, setSidebarOn] = React.useState<boolean>(false);
+  let [sidebarOn, setRealSidebarOn] = React.useState<number>(0);
+  let [sidebarNext, setSidebarOn] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    let halt = false;
+    setTimeout(() => {
+      let nextSidebar = (sidebarOn * 3 + (sidebarNext ? 1 : 0)) / 4; 
+      if (nextSidebar < 0.002) setRealSidebarOn(0);
+      else if (nextSidebar > 0.998) setRealSidebarOn(1);
+      else setRealSidebarOn(nextSidebar);
+    }, 30);
+    return () => halt = true;
+  }, [sidebarOn, sidebarNext]);
 
   let sidebar = (
     <>
-      <div className='sidebarShadow' onClick={() => setSidebarOn(false) }/>
-      <div className='sidebar'>
+      <div className='sidebarShadow' style={{opacity: sidebarOn * 0.6}} onClick={() => setSidebarOn(false) }/>
+      <div className='sidebar' style={{transform: `translateX(${(1-sidebarOn) * -(100)}%)`}}>
         <div className='profilePart'>
           <div className='profileBox middle'>
             <img className='profileImage' src={user.userInfo.profile_image}/>
@@ -91,7 +103,7 @@ function Header({ real = true } : HeaderProps) {
           </div>
         </div>
       </header>
-      { sidebarOn && sidebar }
+      { sidebarOn > 0 && sidebar }
       <div style={{paddingBottom: '98px'}} />
     </>
   )
@@ -144,7 +156,7 @@ function Header({ real = true } : HeaderProps) {
         <span className='blank' />
       </div>
     </header>
-    { sidebarOn && sidebar }
+    { sidebarOn > 0 && sidebar }
     <div style={{paddingBottom: '98px'}} />
     </>
   );
