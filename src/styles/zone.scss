@@ -50,7 +50,6 @@
       display: block;
       width: 100%;
     }
-
     
     .inputbox {
       border: 1px solid #D0D0D0;
@@ -60,6 +59,17 @@
       width: inherit;
       height: 48px;
       margin-bottom: 24px;
+
+
+      .unit {
+        width: 24px;
+        padding: 10px;
+        right: 0;
+        top: 0;
+        color: #d0d0d0;
+        font-size: 16px;
+        font-weight: 400;
+      }
     }
 
     .tagify {
@@ -108,7 +118,13 @@
     select {
       width: calc(100% - 48px);
       padding: 0px;
+
+      &.withunit {
+        width: calc(100% - 96px);        
+      }
     }
+
+
 
     .grey {
       color: grey;
@@ -119,6 +135,7 @@
         border-bottom: 1px solid grey;
       }
     }
+
 
     button {
       &.submit {
@@ -137,6 +154,24 @@
         font-size: 16px;
       }
       min-width: 44px;
+    }
+
+
+    .select {
+      cursor: pointer;
+      background: white;
+      border-radius: 24px;
+      width: 64px;
+      height: 64px;
+      border: 1px #d0d0d0 solid;
+
+      &.selected.red {
+        border: 3px #F53B3B solid;
+      }
+
+      &.selected.blue {
+        border: 3px #1B80F7 solid;
+      }
     }
   
     textarea {

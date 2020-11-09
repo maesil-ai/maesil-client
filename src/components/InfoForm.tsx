@@ -1,4 +1,5 @@
 import React from 'react';
+import { femaleIcon, maleIcon } from 'utility/svg';
 import { APIGetUserInfoData } from 'utility/types';
 
 interface InfoFormProps {
@@ -14,7 +15,7 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
   let [weight, setWeight] = React.useState<string>(defaultInfo ? defaultInfo.weight.toString() : '');
   let [message, setMessage] = React.useState<string>('');
 
-  const sexList = ['여성', '남성', '기타'].sort(() => Math.random() - 0.5);
+  const sexList = ['남성', '여성'];
 
   const isParsable = (str: string) => {
     try {
@@ -61,22 +62,13 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
           </tr>
           <tr>
             <td> 성별 </td>
-            <td className="fill inputbox">
-              <select
-                value={sex ? sex : 0}
-                onChange={(event) => {
-                  let i = event.target.selectedIndex;
-                  if (i > 0) {
-                    setSex(sexList[i - 1]);
-                  }
-                }}
-              >
-                {['골라주세요.'].concat(sexList).map((value) => (
-                  <option value={value} key={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
+            <td className="fill">
+              <button className={'select' + ((sex == '남성') ? ' selected blue' : '')} onClick={() => setSex('남성')}>
+                { maleIcon }
+              </button>
+              <button className={'select' + ((sex == '여성') ? ' selected red' : '')} onClick={() => setSex('여성')} style={{transform: 'translateY(-2px)'}}>
+                { femaleIcon }
+              </button>
             </td>
           </tr>
           <tr>
@@ -84,9 +76,11 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
             <td className="fill inputbox">
               <input
                 type="number"
+                className='withunit'
                 value={height.toString()}
                 onChange={(e) => setHeight(e.target.value)}
               />
+              <span className='unit'> cm </span>
             </td>
           </tr>
           <tr>
@@ -94,9 +88,11 @@ function InfoForm({ defaultInfo = null, onSubmit, buttonMessage } : InfoFormProp
             <td className="fill inputbox">
               <input
                 type="number"
+                className='withunit'
                 value={weight.toString()}
                 onChange={(e) => setWeight(e.target.value)}
               />
+              <span className='unit'> kg </span>
             </td>
           </tr>
         </tbody>
