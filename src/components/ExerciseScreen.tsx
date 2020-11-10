@@ -13,6 +13,7 @@ import {
   PoseData,
   Pose,
   Pose3D,
+  PoseData2D,
 } from 'utility/types';
 import { warningIcon } from 'utility/svg';
 import Music from './Music';
@@ -23,7 +24,7 @@ const RIGHT_ELBOW = 8;
 const LEFT_WRIST = 9;
 const RIGHT_WRIST = 10;
 
-const waitingFrames = 89;
+const waitingFrames = 1;
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -43,7 +44,7 @@ const defaultViewConfig = {
   showVideo: true,
   showSkeleton: true,
   showPoints: true,
-  showBoundingBox: true,
+  showBoundingBox: false,
   showProgress: true,
   showCount: true,
   showScore: true,
@@ -59,7 +60,7 @@ interface ExerciseScreenProps {
   views: ScreenView[];
   viewConfig: ViewConfig;
   time?: number;
-  guidePose?: PoseData;
+  guidePose?: PoseData2D;
   onExerciseFinish: (record: PlayRecord) => any;
   repeat: number;
   showHits: boolean;
@@ -108,6 +109,7 @@ class ExerciseScreen extends React.Component<
   constructor(props: ExerciseScreenProps) {
     super(props);
 
+    console.log(this.props.views);
     this.canvas = React.createRef<HTMLCanvasElement>();
     this.views = this.props.views;
     this.state = {
@@ -135,7 +137,7 @@ class ExerciseScreen extends React.Component<
     console.log('Starting!');
     this.views.forEach((view) => view.video.load());
     console.log('Loaded!');
-    this.views[1].video.onloadeddata = () => {
+    this.views[this.views.length - 1].video.onloadeddata = () => {
       this.views.forEach((view) => view.calculator.readyToUse = true );
       if (this.state.count == 0) this.setState({
         ...this.state,
@@ -260,7 +262,12 @@ class ExerciseScreen extends React.Component<
 
       if (poses && poses.length > 0) {
         if ("keypoints" in poses[0]) poses.forEach((pose : Pose2D) => {
-            const keypoints = pose.keypoints;
+            let keypoints = JSON.parse(JSON.stringify(pose.keypoints));
+            keypoints.forEach((keypoint) => {
+              keypoint.position.x *= this.props.videoWidth;
+              keypoint.position.y *= this.props.videoHeight;
+            });
+
             const score = pose.score;
             if (score >= this.state.viewConfig.minPoseConfidence) {
               if (this.state.viewConfig.showPoints)

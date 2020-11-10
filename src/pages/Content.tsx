@@ -12,6 +12,7 @@ import { setResult, setContent } from 'actions';
 import store from 'store';
 import ContentDetail from "components/ContentDetail";
 import { warningIcon } from "utility/svg";
+import Title from "components/Title";
 
 const videoWidth = 800;
 const videoHeight = 600;
@@ -45,6 +46,7 @@ function Content({match} : CourseProps) {
     let userVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
     let guideVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
     let [guidePose, setGuidePose] = React.useState<PoseData2D>();
+    let video3dRef = React.useRef();
 
     let [contents, setContents] = React.useState<CourseContent[]>();
     let [courseDataLoading, courseData] = usePromise(async () => {
@@ -58,7 +60,13 @@ function Content({match} : CourseProps) {
             return {
                 type: 'course',
                 name: data.name,
-                innerData: JSON.stringify([{
+                innerData: JSON.stringify([
+                {
+                    phase: 'break',
+                    repeat: 10,
+                    message: '카메라 앞에 서 주세요..',
+                },
+                {
                     phase: "exercise",
                     id: id,
                     repeat: data.playTime >= 30 ? 1 : 10,
@@ -214,32 +222,38 @@ function Content({match} : CourseProps) {
             <Header />
             <div style={{marginBottom: '-16px'}} />
             { message && (
-                <div className='zone'>
-                    { message }
-                </div>
+                <div style={{width: '800px'}}> <Title title={message} size='small'/> </div>
             )}
             <div style={{marginBottom: '16px'}} />
             { phase == 'exercise' && 
-            <ExerciseScreen
-                onExerciseFinish={handleExerciseFinish}
-                videoWidth={videoWidth}
-                videoHeight={videoHeight}
-                phase='exercise'
-                views={[
-                {
-                    video: guideVideo,
-                    scale: 1,
-                    offset: [0, 0],
-                },
-                {
-                    video: userVideo,
-                    scale: 0.35,
-                    offset: [0.65*videoWidth, 0.65*videoHeight-10],
-                },
-                ]}
-                repeat={repeat}
-                guidePose={guidePose}
-            />
+            <>
+                <ExerciseScreen
+                    onExerciseFinish={handleExerciseFinish}
+                    videoWidth={videoWidth}
+                    videoHeight={videoHeight}
+                    phase='exercise'
+                    views={[
+                    {
+                        video: guideVideo,
+                        scale: 1,
+                        offset: [0, 0],
+                    },
+                    {
+                        video: userVideo,
+                        scale: 0.35,
+                        offset: [0.65*videoWidth, 0.65*videoHeight-10],
+                    },
+                    ]}
+                    repeat={repeat}
+                    guidePose={guidePose}
+                />
+                <video src={`https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/${id}_vibe_result.mp4`} autoPlay loop ref={video3dRef} style={{
+                    position: 'fixed',
+                    right: '30px',
+                    bottom: '30px',
+                    width: '300px'
+                }} />
+            </>
             }
             { phase == 'break' && 
             <ExerciseScreen 
