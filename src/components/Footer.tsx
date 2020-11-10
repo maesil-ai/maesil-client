@@ -1,11 +1,11 @@
 import React from 'react';
-import { headerLogo } from 'utility/svg';
+import { headerLogo, headerLogoHorizontal } from 'utility/svg';
 
 function Footer() {
   return (
     <footer>
       <div className='item logo'> 
-        { headerLogo } 
+        { headerLogoHorizontal } 
       </div>
       <div className='item text'>
         © SW마에스트로 11기 코드블루팀
