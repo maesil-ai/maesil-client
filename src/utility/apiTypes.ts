@@ -15,7 +15,7 @@ export const processRawExerciseData = (rawData : any) => {
         thumbGifUrl: rawData.thumb_gif_url,
         profileImageUrl: rawData.profile_image || defaultProfileImageUrl,
         videoUrl: rawData.video_url,
-        innerData: rawData.skeleton,
+        innerData: rawData.skeleton || rawData.pose_data,
         reward: rawData.reward,
         heartCount: rawData.like_counts,
         viewCount: rawData.view_counts,

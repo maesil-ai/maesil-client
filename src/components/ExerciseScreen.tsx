@@ -360,7 +360,7 @@ class ExerciseScreen extends React.Component<
 
       this.setState({
         ...this.state,
-        liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : (this.state.liveScores.length > 0 ? [] : [0])),
+        liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : [0]),
       });
 
       if (this.state.viewConfig.showProgress) {
@@ -426,8 +426,7 @@ class ExerciseScreen extends React.Component<
   };
 
   scoreMessage = (score: number) => {
-    if (score == 0) return '파이팅!';
-    else if (score < 0.1) return "Bad..";
+    if (score < 0.1) return "Bad..";
     else if (score < 0.45) return "Good";
     else if (score < 0.8) return "Nice!";
     else return "Great!!";
@@ -443,15 +442,15 @@ class ExerciseScreen extends React.Component<
   render() {
     return (
       <div style={{ width: this.props.videoWidth }}>
-        { this.state.viewConfig.showScore && this.state.liveScores.length > 0 &&
+        { this.state.viewConfig.showScore && 
           <div className='zone mini fly'
                 style={{
                   transform: `translate(20px, ${this.props.videoHeight - 94}px)`, 
                   fontWeight: 600, 
-                  color: this.scoreColor(this.state.liveScores[this.state.liveScores.length - 1])
+                  color: this.state.liveScores.length ? this.scoreColor(this.state.liveScores[this.state.liveScores.length - 1]) : 'red',
                 }}
           >
-            { this.scoreMessage(this.state.liveScores[this.state.liveScores.length - 1]) }
+            { this.state.liveScores.length ? this.scoreMessage(this.state.liveScores[this.state.liveScores.length - 1]) : "파이팅!" }
           </div>
         }
         { this.state.viewConfig.showCount && this.props.repeat > 1 &&
