@@ -7,6 +7,7 @@ import { Link, match } from 'react-router-dom';
 import suggestContent from 'utility/suggestContent';
 import Tour, { ReactourStep } from 'reactour';
 import Logo from 'components/Logo';
+import { getPoseData } from 'utility/api';
 
 
 const tourSteps : ReactourStep[] = [

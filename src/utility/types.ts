@@ -108,7 +108,7 @@ export interface ContentData {
   id: number;
   name: string;
   description: string;
-  playTime: string;
+  playTime: number;
   userId: number;
   userName: string;
   thumbUrl: string;

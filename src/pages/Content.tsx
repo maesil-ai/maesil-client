@@ -6,7 +6,7 @@ import Footer from "components/Footer";
 import usePromise from "utility/usePromise";
 import Loading from "pages/Loading";
 import { ContentData, PoseData2D, PlayRecord, CourseContent } from "utility/types";
-import { getExercise, postResult, getCourse } from "utility/api";
+import { getExercise, postResult, getCourse, getPoseData } from "utility/api";
 import { match, Redirect, RouteComponentProps } from "react-router-dom";
 import { setResult, setContent } from 'actions';
 import store from 'store';
@@ -61,7 +61,7 @@ function Content({match} : CourseProps) {
                 innerData: JSON.stringify([{
                     phase: "exercise",
                     id: id,
-                    repeat: data.playTime >= "00:00:30" ? 1 : 3,
+                    repeat: data.playTime >= 30 ? 1 : 300,
                 }]),
             } as ContentData;
         }
@@ -109,20 +109,24 @@ function Content({match} : CourseProps) {
     // 새로운 운동이 로딩되었을 때
     useEffect(() => {
         if (currentExercise) {
-            guideVideo.src = currentExercise.videoUrl;
-            try {
-                setGuidePose(JSON.parse(currentExercise.innerData));
-            } catch {
-                
-            }
+            const f = async () => {
+                guideVideo.src = currentExercise.videoUrl;
+                if (!currentExercise.innerData) {
+                    currentExercise.innerData = JSON.stringify(await getPoseData(currentExercise.id));
+                }
+                try {
+                    setGuidePose(JSON.parse(currentExercise.innerData));
+                } catch (error) { }
 
-            guideVideo.load();
+                guideVideo.load();
 
-            new Promise((resolve) => {
-                guideVideo.onloadeddata = resolve;
-            }).then(() => {
-                setGuideLoading(false);
-            });
+                new Promise((resolve) => {
+                    guideVideo.onloadeddata = resolve;
+                }).then(() => {
+                    setGuideLoading(false);
+                });
+            };
+            f();
         }
     }, [currentExercise]);
 
@@ -137,7 +141,6 @@ function Content({match} : CourseProps) {
     }, [progress]);
 
     const finish = async () => {
-        console.log(userStream);
         if (userStream) {
             userStream.getTracks().forEach((track) => {
                 track.stop();

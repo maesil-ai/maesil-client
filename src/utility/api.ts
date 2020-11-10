@@ -8,12 +8,15 @@ import {
   APIPostCourseForm,
   TagData,
   DailyRecordData,
+  Pose2D,
+  PoseData2D,
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
 import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
 import Axios from 'axios';
 import { processRawExerciseData, processRawCourseData, processRawTagData, processRawRecordData, processRawDailyRecordData, defaultProfileImageUrl } from './apiTypes';
+import { Keypoint } from '@tensorflow-models/posenet';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -406,4 +409,32 @@ export const getTags = async () => {
   });
 
   return result.map((rawData) => processRawTagData(rawData));
+}
+
+export const getPoseData = async (id : number) => {
+  let poseS3Address = `https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/2d3d.json`;
+
+  // 61 62
+
+  try {
+    let result = await axios.get(poseS3Address);
+    if (result.status >= 300) throw new Error();
+    let rawData = result.data;
+    return {
+      dimension: '2d',
+      fps: rawData.fps,
+      poses: rawData["0"].joints2d.map((rawPose : number[][]) => ({
+        score: 1,
+        keypoints: rawPose.map((joint : number[]) => ({
+            score: joint[2],
+            position: {
+              x: joint[0],
+              y: joint[1],
+            },
+        } as Keypoint))
+      } as Pose2D))
+    } as PoseData2D;
+  } catch (error) {
+    return null;
+  }
 }
