@@ -44,7 +44,7 @@ export const headerLogoHorizontal = (
 
 */
 export const headerLogoHorizontal = (
-    <img src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/maesil_logo.jpg' width={150} height={50} style={{objectFit: 'cover', transform: 'translate(-20px, -4px)'}} />
+    <img src='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/logo_tranparent.png' width={150} height={50} style={{objectFit: 'cover', transform: 'translate(-20px, -4px)'}} />
 )
 
 export const mainLogo = (
