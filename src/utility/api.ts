@@ -412,9 +412,7 @@ export const getTags = async () => {
 }
 
 export const getPoseData = async (id : number) => {
-  let poseS3Address = `https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/2d3d.json`;
-
-  // 61 62
+  let poseS3Address = `https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/data.json`;
 
   try {
     let result = await axios.get(poseS3Address);
