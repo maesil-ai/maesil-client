@@ -289,7 +289,7 @@ footer {
   text-align: left;
   color: rgb(236, 236, 236);
   display: block;
-  width: 100%;
+  width: calc(100% - 20px);
   
   position: absolute;
   bottom: 0;
