@@ -61,7 +61,7 @@ function Content({match} : CourseProps) {
                 innerData: JSON.stringify([{
                     phase: "exercise",
                     id: id,
-                    repeat: data.playTime >= 30 ? 1 : 300,
+                    repeat: data.playTime >= 30 ? 1 : 10,
                 }]),
             } as ContentData;
         }
@@ -76,10 +76,6 @@ function Content({match} : CourseProps) {
     let [playRecord, setPlayRecord] = React.useState<PlayRecord>({
         playTime: 0, calorie: 0, score: 0,
     });
-
-    useEffect(() => {
-        console.log(userLoading, guideLoading, userStreamLoading, courseDataLoading);
-    }, [userLoading, guideLoading, userStreamLoading, courseDataLoading]);
 
     useEffect(() => {
         userVideo.height = guideVideo.height = videoHeight;
@@ -146,9 +142,6 @@ function Content({match} : CourseProps) {
                 track.stop();
             });
         }
-        const loggedIn = store.getState().user.loggedIn;
-        if (loggedIn && contentType == 'exercise') 
-            await postResult(id, playRecord.score, playRecord.playTime, playRecord.calorie);
         store.dispatch(setResult(playRecord));
 
         
@@ -171,6 +164,7 @@ function Content({match} : CourseProps) {
     }
 
     const handleExerciseFinish = (nowRecord: PlayRecord) => {
+        if (store.getState().user.loggedIn) postResult(id, nowRecord.score, nowRecord.playTime, nowRecord.calorie);
         setPlayRecord({
             playTime: playRecord.playTime + nowRecord.playTime,
             calorie: playRecord.calorie + nowRecord.calorie,
