@@ -12,7 +12,7 @@ interface LoadingProps {
 };
 
 function Loading({ headerReal = true, mini = false } : LoadingProps) {
-  let rgb1 = [24, 223, 187], rgb2 = [57, 223, 54];
+  let rgb1 = [0, 190, 120], rgb2 = [45, 50, 150];
   let [mix, setMix] = React.useState(0);
 
   React.useEffect(() => {
@@ -44,11 +44,5 @@ function Loading({ headerReal = true, mini = false } : LoadingProps) {
     </div>
   );
 }
-
-/*
-        spinnerColor='#9ee5f8'
-        textColor='#676767'
-        text="불러오는 중..."
-*/
 
 export default Loading;

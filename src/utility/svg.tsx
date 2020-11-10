@@ -1,9 +1,7 @@
 import React from "react";
 
-//export const mainColor1 = '#59FF56';
-export const mainColor1 = '#39DF36';
-//export const mainColor2 = '#38FFDB';
-export const mainColor2 = '#18DFBB';
+export const mainColor1 = '#00BE78';
+export const mainColor2 = '#2D3296';
 
 export const headerLogo = (
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
