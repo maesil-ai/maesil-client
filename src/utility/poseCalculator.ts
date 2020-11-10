@@ -62,7 +62,9 @@ class PoseCalculator {
     }
 
     if (this.modelInUse) {
-      if (this.record.length > 0) this.record.push(this.resultPoses[0]);
+      if (recordResult) {
+        if (this.resultPoses.length > 0) this.record.push(this.resultPoses[0]);
+      }
       return false;
     }
     let poses: Pose[] = [];

@@ -350,6 +350,7 @@ class ExerciseScreen extends React.Component<
         view.calculator.getPoseResult(this.state.beforeStart == 0);
         if (view.calculator.record.length > 0)
           poses.push(view.calculator.record[view.calculator.record.length - 1]);
+        
         drawVideoPose(
           view.video,
           view.calculator.resultPoses,
@@ -358,7 +359,7 @@ class ExerciseScreen extends React.Component<
         );
       });
 
-      this.setState({
+      if (this.state.beforeStart == 0) this.setState({
         ...this.state,
         liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : [0]),
       });
