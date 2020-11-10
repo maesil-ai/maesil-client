@@ -1,8 +1,23 @@
-import { ContentData, DailyRecordData, RecordData, TagData } from "./types";
+import { ContentData, DailyRecordData, Pose2D, RecordData, TagData } from "./types";
 
 export const defaultProfileImageUrl = 'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/apple.png';
 
 export const processRawExerciseData = (rawData : any) => {
+    let innerData = rawData.skeleton || rawData.pose_data;
+
+    try {
+        let rawData = JSON.parse(innerData);
+        rawData.poses.forEach((pose : Pose2D) => {
+            pose.keypoints.forEach((keypoint) => {
+                keypoint.position.x /= 800;
+                keypoint.position.y /= 600;
+            });
+        });
+        innerData = JSON.stringify(rawData);
+    } catch (error) {
+
+    }
+
     return {
         type: "exercise",
         id: rawData.exercise_id,
@@ -15,7 +30,7 @@ export const processRawExerciseData = (rawData : any) => {
         thumbGifUrl: rawData.thumb_gif_url,
         profileImageUrl: rawData.profile_image || defaultProfileImageUrl,
         videoUrl: rawData.video_url,
-        innerData: rawData.skeleton || rawData.pose_data,
+        innerData,
         reward: rawData.reward,
         heartCount: rawData.like_counts,
         viewCount: rawData.view_counts,
