@@ -15,7 +15,7 @@ import {
   Pose3D,
   PoseData2D,
 } from 'utility/types';
-import { mainColor1, warningIcon } from 'utility/svg';
+import { mainColor1, mainColor2, warningIcon } from 'utility/svg';
 import Music from './Music';
 import Loading from 'pages/Loading';
 
@@ -435,17 +435,17 @@ class ExerciseScreen extends React.Component<
   };
 
   scoreMessage = (score: number) => {
-    if (score < 0.1) return "Bad..";
-    else if (score < 0.45) return "Good";
+    if (score < 0.15) return "Bad..";
+    else if (score < 0.5) return "Good";
     else if (score < 0.8) return "Nice!";
     else return "Great!!";
   }
 
   scoreColor = (score: number) => {
-    if (score < 0.1) return 'red';
-    else if (score < 0.45) return 'black';
-    else if (score < 0.8) return 'green';
-    else return 'blue';
+    if (score < 0.15) return 'red';
+    else if (score < 0.5) return 'black';
+    else if (score < 0.8) return mainColor1;
+    else return mainColor2;
   }
 
   render() {

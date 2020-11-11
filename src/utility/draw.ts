@@ -18,10 +18,11 @@
 
 import * as posenet from '@tensorflow-models/posenet';
 import * as tf from '@tensorflow/tfjs';
+import { mainColor1 } from './svg';
 
-const color = 'aqua';
+const color = mainColor1;
 const boundingBoxColor = 'red';
-const lineWidth = 1;
+const lineWidth = 2;
 
 /**
  * 접속한 기기가 Android인지 판단
@@ -157,7 +158,7 @@ export function drawKeypoints(
     }
 
     const { y, x } = keypoint.position;
-    drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 3, color);
+    drawPoint(ctx, y * scale + offsety, x * scale + offsetx, 4, color);
   }
 }
 

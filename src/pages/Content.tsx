@@ -224,11 +224,6 @@ function Content({match} : CourseProps) {
     else return (
         <>
             <Header />
-            <div style={{marginBottom: '-16px'}} />
-            { message && (
-                <div style={{width: '800px'}}> <Title title={message} size='small'/> </div>
-            )}
-            <div style={{marginBottom: '16px'}} />
             { phase == 'exercise' && 
             <>
                 <ExerciseScreen
@@ -277,6 +272,9 @@ function Content({match} : CourseProps) {
                 time={repeat}
             />
             }
+            { message && (
+                <div style={{width: '800px'}}> <Title title={message} size='small'/> </div>
+            )}
             <div style={{width: videoWidth}}>
                 <ContentDetail data={ store.getState().content.content } />
             </div>
