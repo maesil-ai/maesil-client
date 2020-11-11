@@ -15,7 +15,7 @@ import {
   Pose3D,
   PoseData2D,
 } from 'utility/types';
-import { warningIcon } from 'utility/svg';
+import { mainColor1, warningIcon } from 'utility/svg';
 import Music from './Music';
 import Loading from 'pages/Loading';
 
@@ -23,8 +23,6 @@ const LEFT_ELBOW = 7;
 const RIGHT_ELBOW = 8;
 const LEFT_WRIST = 9;
 const RIGHT_WRIST = 10;
-
-const waitingFrames = 1;
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -62,6 +60,7 @@ interface ExerciseScreenProps {
   time?: number;
   guidePose?: PoseData2D;
   onExerciseFinish: (record: PlayRecord) => any;
+  waitBefore: number;
   repeat: number;
   showHits: boolean;
 }
@@ -76,6 +75,7 @@ interface ExerciseScreenState {
   progress: number;
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
+  loadingData: boolean;
   beforeStart: number;
 }
 
@@ -100,6 +100,7 @@ class ExerciseScreen extends React.Component<
     viewConfig: defaultViewConfig,
     repeat: 1,
     showHits: false,
+    waitBefore: 0,
   };
   
   ctx: CanvasRenderingContext2D;
@@ -121,7 +122,8 @@ class ExerciseScreen extends React.Component<
       liveScores: [],
       viewConfig: this.props.viewConfig,
       useKalmanFilters: true,
-      beforeStart: waitingFrames + 2,
+      loadingData: true,
+      beforeStart: this.props.waitBefore,
     };
 
     this.views.forEach((view) =>
@@ -134,16 +136,15 @@ class ExerciseScreen extends React.Component<
   }
 
   start = () => {
-    console.log('Starting!');
     this.views.forEach((view) => view.video.load());
-    console.log('Loaded!');
     this.views[this.views.length - 1].video.onloadeddata = () => {
       this.views.forEach((view) => view.calculator.readyToUse = true );
-      if (this.state.count == 0) this.setState({
+      this.setState({
         ...this.state,
-        beforeStart: waitingFrames + 1,
-      })
-      else this.views.forEach((view) => view.video.play());
+        loadingData: false,
+      });
+
+      if (this.state.beforeStart == 0) this.views.forEach((view) => view.video.play());
     };
   }
 
@@ -350,7 +351,7 @@ class ExerciseScreen extends React.Component<
     executeEveryFrame(() => {
       ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
 
-      if (this.state.beforeStart > waitingFrames + 1) return;
+      if (this.state.loadingData) return;
 
       let poses : Pose[] = [];
       this.views.forEach((view) => {
@@ -386,7 +387,7 @@ class ExerciseScreen extends React.Component<
           if (score < 0) score = 0;
           score = Math.floor(score * 100);
           if (this.props.phase == 'break') score = 100;
-          ctx.fillStyle = `rgb(${222-2*score}, ${2*score+22}, 100)`;
+          ctx.fillStyle = `rgb(${200-2*score}, ${score*3/2+40}, 120)`;
           ctx.fillRect(x + i * w * this.state.progress / this.state.liveScores.length - 1, y, 
                       w * this.state.progress / this.state.liveScores.length + 2, h);
           i++;
@@ -450,7 +451,12 @@ class ExerciseScreen extends React.Component<
   render() {
     return (
       <div style={{ width: this.props.videoWidth }}>
-        { this.state.viewConfig.showScore && 
+        { (true) &&
+          <div style={{position: 'absolute', left: 'calc(50% - 40px)', top: 'calc(50% - 40px)', zIndex: -1}}>
+            <Loading mini={true} />
+          </div>
+        }
+        { this.state.viewConfig.showScore && this.props.phase == 'exercise' &&
           <div className='zone mini fly'
                 style={{
                   transform: `translate(20px, ${this.props.videoHeight - 94}px)`, 
@@ -462,17 +468,12 @@ class ExerciseScreen extends React.Component<
           </div>
         }
         { this.state.viewConfig.showCount && this.props.repeat > 1 &&
-          <div className='zone mini fly' style={{transform: `translate(${this.props.videoWidth - 180}px, 30px)`}}>
+          <div className='zone mini fly invisible' style={{transform: `translate(${this.props.videoWidth - 150}px, 0px)`, fontWeight: 600, fontSize: 20}}>
             { `${this.state.count+1} / ${this.props.repeat}` }
           </div>
         }
-        { waitingFrames < this.state.beforeStart &&
-          <div style={{position: 'absolute', left: 'calc(50% - 40px)', top: 'calc(50% - 40px'}}>
-            <Loading mini={true} />
-          </div>
-        }
-        { 0 < this.state.beforeStart && this.state.beforeStart <= waitingFrames &&
-          <div className='zone fly' style={{transform: `translate(${this.props.videoWidth/2 - 48}px, ${this.props.videoHeight/2 - 48}px)`, width: '88px'}}>
+        { !this.state.loadingData && 0 < this.state.beforeStart &&
+          <div className='zone fly ball' style={{transform: `translate(${this.props.videoWidth/2 - 50}px, ${this.props.videoHeight/2 - 50}px)`}}>
             { Math.ceil(this.state.beforeStart / fps) }
           </div>
         }

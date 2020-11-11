@@ -70,6 +70,7 @@ function Content({match} : CourseProps) {
                     phase: "exercise",
                     id: id,
                     repeat: data.playTime >= 30 ? 1 : 10,
+                    waitBefore: 90,
                 }]),
             } as ContentData;
         }
@@ -79,6 +80,7 @@ function Content({match} : CourseProps) {
     let [currentExercise, setCurrentExercise] = React.useState<ContentData>();
     let [phase, setPhase] = React.useState<string>('');
     let [message, setMessage] = React.useState<string>('');
+    let [waitBefore, setWaitBefore] = React.useState<number>(0);
     let [repeat, setRepeat] = React.useState<number>(100);
 
     let [playRecord, setPlayRecord] = React.useState<PlayRecord>({
@@ -163,6 +165,8 @@ function Content({match} : CourseProps) {
         setPhase(content.phase);
         setMessage(content.message);
         setRepeat(content.repeat);
+        if (content.waitBefore) setWaitBefore(content.waitBefore);
+        else setWaitBefore(0);
         if (content.phase == 'exercise') {
             let exercise = await getExercise(content.id);
             setCurrentExercise(exercise);
@@ -244,15 +248,16 @@ function Content({match} : CourseProps) {
                         offset: [0.65*videoWidth, 0.65*videoHeight-10],
                     },
                     ]}
+                    waitBefore={waitBefore}
                     repeat={repeat}
                     guidePose={guidePose}
                 />
-                <video src={`https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/${id}_vibe_result.mp4`} autoPlay loop ref={video3dRef} style={{
+                { /* <video src={`https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/${id}_vibe_result.mp4`} autoPlay loop ref={video3dRef} style={{
                     position: 'fixed',
                     right: '30px',
                     bottom: '30px',
                     width: '300px'
-                }} />
+                }} /> */ }
             </>
             }
             { phase == 'break' && 
@@ -268,6 +273,7 @@ function Content({match} : CourseProps) {
                         offset: [0, 0],
                     },
                 ]}
+                waitBefore={waitBefore}
                 time={repeat}
             />
             }

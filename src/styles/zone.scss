@@ -19,6 +19,16 @@
       padding: 24px 0px;
     }
 
+    &.ball {
+      width: 100px;
+      padding: 30px 0px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 40px;
+      color: $color1;
+      border: 5px $color1 solid;
+    }
+
     &.fly {
       position: absolute;
     }

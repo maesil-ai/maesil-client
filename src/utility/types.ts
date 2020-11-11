@@ -87,6 +87,7 @@ export interface CourseContent {
   id: number;
   repeat: number;
   message: string;
+  waitBefore?: number;
 };
 
 export interface ScreenView {

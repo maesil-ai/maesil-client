@@ -54,18 +54,18 @@ html, body, #root {
   font-family: 'Noto Sans KR', sans-serif;
   position: relative;
 
-  >.title {
+  .title {
     padding-left: 30px;  
     height: 32px;
   }
 
-  >.title.large {
+  .title.large {
     margin: 45px 25px auto;
     font-size: 25px;
     font-weight: 500;
   }
 
-  >.title.small {
+  .title.small {
     margin-top: 50px;
     font-size: 23px;
     margin-bottom: 15px;
