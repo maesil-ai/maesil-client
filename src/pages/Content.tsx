@@ -67,7 +67,7 @@ function Content({match} : CourseProps) {
                 {
                     phase: 'break',
                     repeat: 10,
-                    message: '카메라 앞에 서 주세요..',
+                    message: '카메라 앞에 서 주세요.',
                 },
                 {
                     phase: "exercise",

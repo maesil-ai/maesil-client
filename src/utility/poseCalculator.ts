@@ -1,6 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
-import { PosenetConfig, defaultPosenetConfig, PoseData2D, PoseData, Pose } from 'utility/types';
+import { PosenetConfig, defaultPosenetConfig, PoseData2D, PoseData, Pose, Pose2D } from 'utility/types';
 
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
@@ -16,10 +16,10 @@ class PoseCalculator {
   config: PosenetConfig;
   readyToUse: boolean;
   modelInUse: boolean;
-  resultPoses: Pose[];
-  record: Pose[];
+  resultPoses: Pose2D[];
+  record: Pose2D[];
   filters: KalmanFilter[];
-  poseData?: PoseData;
+  poseData?: PoseData2D;
   useFilters: boolean;
 
   constructor(video: HTMLVideoElement, config = defaultPosenetConfig) {
@@ -31,7 +31,7 @@ class PoseCalculator {
     this.clearRecord();
   }
 
-  load = async (inputPoseData: PoseData | null = null) => {
+  load = async (inputPoseData: PoseData2D | null = null) => {
     if (inputPoseData) {
       this.poseData = inputPoseData;
     } else {
@@ -67,7 +67,7 @@ class PoseCalculator {
       }
       return false;
     }
-    let poses: Pose[] = [];
+    let poses: Pose2D[] = [];
 
     if (this.poseData) {
       poses = poses.concat(
@@ -100,7 +100,7 @@ class PoseCalculator {
           break;
       }
 
-      if (poses[0] && "keypoints" in poses[0] && this.useFilters) {
+      if (poses[0] && this.useFilters) {
         poses[0].keypoints.forEach((keypoint, i) => {
           keypoint.position.x = this.filters[2 * i].filter(keypoint.position.x);
           keypoint.position.y = this.filters[2 * i + 1].filter(
@@ -108,6 +108,11 @@ class PoseCalculator {
           );
         });
       }
+
+      poses.forEach((pose) => pose.keypoints.forEach((keypoint) => {
+        keypoint.position.x /= this.video.width;
+        keypoint.position.y /= this.video.height;
+      }));
 
       this.modelInUse = false;
     }
