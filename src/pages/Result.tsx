@@ -43,17 +43,19 @@ function Result() {
             </tr>
           </tbody>
         </table>
-        <span onClick={() => {
-          if (content.type == 'exercise') {
-            toggleLike(content.id, !content.heart);
-            store.dispatch(setContent({
-              ...content,
-              heart: !content.heart,
-            }));
-          }
-        }}> 
-          { content.heart ? filledHeartIcon : emptyHeartIcon } 
-        </span>
+        { store.getState().user.loggedIn && 
+          <span onClick={() => {
+            if (content.type == 'exercise') {
+              toggleLike(content.id, !content.heart);
+              store.dispatch(setContent({
+                ...content,
+                heart: !content.heart,
+              }));
+            }
+          }}> 
+            { content.heart ? filledHeartIcon : emptyHeartIcon } 
+          </span>
+        }
         <Link to={`/${content.type}/${content.id}`}><button className='submit' style={{transform: 'translate(12px, -2px)'}}> 한 번 더 하기 </button></Link>
       </div>
       <Shelf title="다음에 할 운동들" contents={nextExercises} />

@@ -59,7 +59,7 @@ function Header({ real = true } : HeaderProps) {
           { user.loggedIn && user.subscribes.length > 0 && (
             <>
               <div className='line' />
-              <div className='title'>
+              <div className='headerTitle'>
                 { user.userInfo.nickname }님이 구독한 채널
               </div>
               { user.subscribes.map((channel) => (

@@ -91,7 +91,7 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
             <div className='profileBox small'>
               <img className='profileImage' src={content.profileImageUrl}/>
             </div>
-            <div className='title'> {content.name.length > 17 ? content.name.substr(0, 17) + '...' : content.name } </div>
+            <div className='shelfTitle'> {content.name.length > 17 ? content.name.substr(0, 17) + '...' : content.name } </div>
             <div className='creator'>
               { content.userName && <span style={{marginRight: '7px'}}> <Link to={`/user/${content.userName}`}> { content.userName } </Link> </span> }
               { content.tagList.map((tag) => (
