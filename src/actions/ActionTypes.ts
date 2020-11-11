@@ -13,5 +13,6 @@ export const CHANGE_INFO = 'CHANGE_INFO' as const;
 
 // reducers/contents
 export const SET_CONTENT = 'SET_CONTENT' as const;
+export const SET_STREAM = 'SET_STREAM' as const;
 export const SET_RESULT = 'SET_RESULT' as const;
 export const CLEAR_CONTENT = 'CLEAR_CONTENT' as const;

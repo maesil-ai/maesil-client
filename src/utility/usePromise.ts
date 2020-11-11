@@ -2,7 +2,7 @@ import { raiseError } from 'actions';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-export default function usePromise<Type>(promiseCreator: () => Promise<Type>, deps: React.DependencyList = [], ifError: 'abort' | 'ignore' = 'abort') {
+export default function usePromise<Type>(promiseCreator: () => Promise<Type>, deps: React.DependencyList = [], ifError: 'abort' | 'ignore' = 'abort', collector : () => void = () => {} ) {
   const [loading, setLoading] = useState<boolean>(true);
   const [content, setContent] = useState<Type>(null);
   const [error, setError] = useState<Error>(null);
@@ -24,6 +24,7 @@ export default function usePromise<Type>(promiseCreator: () => Promise<Type>, de
 
   useEffect(() => {
     process();
+    return collector;
   }, deps);
 
   return [loading, content, error] as [boolean, Type, Error];

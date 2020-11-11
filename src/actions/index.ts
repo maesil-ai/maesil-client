@@ -85,6 +85,13 @@ export const setContent = (content: ContentData) => {
   };
 }
 
+export const setStream = (stream: MediaStream) => {
+  return {
+    type: types.SET_STREAM,
+    stream,
+  };
+}
+
 export const setResult = (record: PlayRecord) => {
   return {
     type: types.SET_RESULT,
@@ -100,6 +107,7 @@ export const clearContent = () => {
 
 export type ContentAction =
   | ReturnType<typeof setContent>
+  | ReturnType<typeof setStream>
   | ReturnType<typeof setResult>
   | ReturnType<typeof clearContent>
   ;

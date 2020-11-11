@@ -228,7 +228,9 @@ class ExerciseScreen extends React.Component<
   };
 
   componentWillUnmount = () => {
-    this.views.map((view) => view.video.remove());
+    this.views.map((view) => {
+      view.video.remove();
+    });
   };
 
   drawCanvas = () => {

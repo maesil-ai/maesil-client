@@ -150,11 +150,11 @@ header {
   .logo {
     position: absolute;
     height: 49px;
-    left: 130px;
+    left: 114px;
     top: 17px;
 
     @media (max-width: $max-tablet-width) {
-      left: 98px;
+      left: 86px;
     }
 
     @media (max-width: $max-mobile-width) {
@@ -163,10 +163,10 @@ header {
   }
 
   .blank {
-    padding-left: 48px;
+    padding-left: 40px;
 
     @media (max-width: $max-tablet-width) {
-      padding-left: 36px;
+      padding-left: 30px;
     }
 
     @media (max-width: $max-mobile-width) {
@@ -201,7 +201,7 @@ header {
   }
 
   .search {
-    width: 200px;
+    width: 240px;
     flex-shrink: 1;
     //background: #dddddd;
     border-bottom: 2px solid #555;

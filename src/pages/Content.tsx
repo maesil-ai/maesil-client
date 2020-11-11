@@ -8,17 +8,17 @@ import Loading from "pages/Loading";
 import { ContentData, PoseData2D, PlayRecord, CourseContent } from "utility/types";
 import { getExercise, postResult, getCourse, getPoseData } from "utility/api";
 import { match, Redirect, RouteComponentProps } from "react-router-dom";
-import { setResult, setContent } from 'actions';
+import { setResult, setContent, setStream } from 'actions';
 import store from 'store';
 import ContentDetail from "components/ContentDetail";
-import { warningIcon } from "utility/svg";
+import { mainColor1, warningIcon } from "utility/svg";
 import Title from "components/Title";
 
 const videoWidth = 800;
 const videoHeight = 600;
 
 const loadStream = async () => {
-    return await navigator.mediaDevices.getUserMedia({
+    let stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
         video: {
             facingMode: 'user',
@@ -26,6 +26,9 @@ const loadStream = async () => {
             height: videoHeight,
         },
     });
+
+    store.dispatch(setStream(stream));
+    return stream;
 };
 
 interface MatchParams {
@@ -43,8 +46,8 @@ function Content({match} : CourseProps) {
     let [userLoading, setUserLoading] = React.useState<boolean>(true);
     let [guideLoading, setGuideLoading] = React.useState<boolean>(true);
     let [redirectToResult, setRedirectToResult] = React.useState<boolean>(false);
-    let userVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
-    let guideVideo = React.useMemo<HTMLVideoElement>(() => document.createElement('video'), []);
+    let [userVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
+    let [guideVideo] = React.useState<HTMLVideoElement>(document.createElement('video'));
     let [guidePose, setGuidePose] = React.useState<PoseData2D>();
     let video3dRef = React.useRef();
 
@@ -98,6 +101,18 @@ function Content({match} : CourseProps) {
         }).then(() => {
             setUserLoading(false);
         });
+
+        return () => {
+            let stream = store.getState().content.stream;
+            stream.getTracks().forEach((track) => {
+                track.stop();
+            });
+            store.dispatch(setStream(null));
+            userVideo.pause();
+            userVideo.remove();
+            guideVideo.pause();
+            guideVideo.remove();
+        }
     }, []);
 
     // 내 카메라 스트림이 로딩되었을 때
@@ -273,7 +288,10 @@ function Content({match} : CourseProps) {
             />
             }
             { message && (
-                <div style={{width: '800px'}}> <Title title={message} size='small'/> </div>
+                <div style={{width: '800px', margin: '5px auto', border: `2px ${mainColor1} solid`, borderRadius: '10px'}}> 
+                    <div style={{marginBottom: '-30px'}} />
+                    <Title title={message} size='small'/> 
+                </div>
             )}
             <div style={{width: videoWidth}}>
                 <ContentDetail data={ store.getState().content.content } />

@@ -5,11 +5,13 @@ import { ContentData, PlayRecord } from 'utility/types';
 interface ContentState {
     content: ContentData,
     record: PlayRecord,
+    stream: MediaStream,
 };
 
 const initialState : ContentState = {
     content: null,
     record: null,
+    stream: null,
 };
 
 export default function content(state = initialState, action : ContentAction) {
@@ -19,6 +21,11 @@ export default function content(state = initialState, action : ContentAction) {
             ...state,
             content: action.content,
         };
+    case types.SET_STREAM:
+        return {
+            ...state,
+            stream: action.stream,
+        }
     case types.SET_RESULT:
         return {
             ...state,
