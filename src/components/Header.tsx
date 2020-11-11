@@ -167,7 +167,7 @@ function Header({ real = true } : HeaderProps) {
       </div>
     </header>
     { sidebarOn > 0 && sidebar }
-    <div style={{paddingBottom: '72px'}} />
+    <div style={{paddingBottom: '122px'}} />
     </>
   );
 }

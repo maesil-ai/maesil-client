@@ -27,6 +27,7 @@ function Result() {
     <>
       <Header />
       <div className='zone'>
+        <div style={{paddingBottom: '16px'}} />
         { mainLogo }
         <div style={{paddingBottom: '32px'}} />
         <h1> 운동을 완료했습니다! </h1>

@@ -58,8 +58,9 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
+        <div style={{marginBottom: '-50px'}} />
         <UserIntroduce name={name} id={id} />
-        <Shelf title={`${name}님이 올린 영상들`} contents={exercises} control={ myUserInfo?.nickname == name ? "remove" : null } />
+        <Shelf title={`${name}님이 올린 운동들`} contents={exercises} control={ myUserInfo?.nickname == name ? "remove" : null } />
         <Footer />
       </>
     );

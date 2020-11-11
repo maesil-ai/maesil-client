@@ -75,14 +75,14 @@ function Shelf({ contents: initialContents, control = null, title }: ShelfProps)
                 src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
                 onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
                 onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
-                style={{width: '100%', height: '65%', cursor: 'pointer'}}
+                className='shelfImage'
               />
             </Link>
           :   <img 
                 src={content.thumbUrl ? content.thumbUrl : defaultThumbUrl}
                 onMouseOver={changeImageFunc(content.thumbGifUrl ? content.thumbGifUrl : defaultThumbGifUrl)}
                 onMouseOut={changeImageFunc(content.thumbUrl ? content.thumbUrl : defaultThumbUrl)}
-                style={{width: '100%', height: '65%', cursor: 'pointer'}}
+                className='shelfImage'
                 onClick={ () => control(content) }
               />
           }
