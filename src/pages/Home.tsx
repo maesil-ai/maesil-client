@@ -93,12 +93,16 @@ function Home({ match } : HomeProps) {
         <Header />
         <div style={{marginBottom: '-26px'}} />
         <Logo imageUrl='https://maesil-storage.s3.ap-northeast-2.amazonaws.com/main.png'
-              title='매일매일 실내 트레이닝'
+              title={(
+                <>
+                  <span className='nobr'>매일매일</span> <span className='nobr'>실내</span> <span className='nobr'>트레이닝</span>
+                </>
+              )}
               text={(
                 <>
-                  누구나 운동을 만들고 트레이닝할 수 있는
+                  <span className='nobr'>누구나 운동을 만들고</span> <span className='nobr'>트레이닝할 수 있는</span>
                   <br/>
-                  새로운 실내운동 플랫폼
+                  <span className='nobr'>새로운 실내운동 플랫폼</span>
                 </>
               )}
               button={(

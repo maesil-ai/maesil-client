@@ -22,11 +22,13 @@ function Header({ real = true } : HeaderProps) {
   React.useEffect(() => {
     let halt = false;
     setTimeout(() => {
-      let nextSidebar = (sidebarOn * 9 + (sidebarNext ? 1 : 0)) / 10; 
+      let nextSidebar = (sidebarOn * 11 + (sidebarNext ? 1 : 0)) / 12;
+      if (sidebarNext && nextSidebar < sidebarOn + 0.004) nextSidebar = sidebarOn + 0.004;
+      if (!sidebarNext && nextSidebar > sidebarOn - 0.004) nextSidebar = sidebarOn - 0.004;
       if (nextSidebar < 0.001) setRealSidebarOn(0);
       else if (nextSidebar > 0.999) setRealSidebarOn(1);
       else setRealSidebarOn(nextSidebar);
-    }, 12);
+    }, 10);
     return () => halt = true;
   }, [sidebarOn, sidebarNext]);
 
@@ -46,6 +48,13 @@ function Header({ real = true } : HeaderProps) {
           { closeIcon }
         </div>
         <div className='menuPart'>
+          { !user.loggedIn && (
+            <>
+              <div className='mobileOnly loginButtonParent' style={{width: '100%', paddingLeft: 'calc(50% - 121px)'}}>
+                <LoginButton/>
+              </div>
+            </>
+          )}
           { user.loggedIn && (
             <>
               <Link to='/mypage' className='menu'>
@@ -87,8 +96,8 @@ function Header({ real = true } : HeaderProps) {
   if (searchPhase) return (
     <>
       <header>
-        <div className='menu leftMenu' style={{width: '100%'}}>
-          <div style={{top: '32px', height: '32px', marginLeft: '20px' }} onClick={() => setSearchPhase(false)}>
+        <div className='menu rightMenu' style={{width: '100%'}}>
+          <div style={{top: '32px', height: '32px', margin: '0px 10px' }} onClick={() => setSearchPhase(false)}>
             { backIcon }
           </div>
           <span className='blank' />
@@ -96,11 +105,12 @@ function Header({ real = true } : HeaderProps) {
             <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } style={{width: '100%'}} />	
           </div>
           <span className='blank' />
-          <div style={{top: '26px', height: '32px', marginRight: '39px'}}>
+          <div style={{top: '26px', height: '32px'}}>
             <Link to={`/search/${query}`}>
               { searchIcon }
             </Link>
           </div>
+          <span className='blank' />
         </div>
       </header>
       { sidebarOn > 0 && sidebar }
@@ -147,17 +157,17 @@ function Header({ real = true } : HeaderProps) {
         )}
         { !user.loggedIn && (
           <>
-            <span className='blank' />
-            <div style={{top: '0px', height: '32px'}}>
+            <span className='blank desktopTabletOnly' />
+            <div className='desktopTabletOnly' style={{top: '0px', height: '32px'}}>
               <LoginButton/>
             </div>
           </>
         )}
-        <span className='blank' />
+        <span className='blank ' />
       </div>
     </header>
     { sidebarOn > 0 && sidebar }
-    <div style={{paddingBottom: '98px'}} />
+    <div style={{paddingBottom: '72px'}} />
     </>
   );
 }
