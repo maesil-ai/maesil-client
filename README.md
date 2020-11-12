@@ -20,61 +20,85 @@
 
 “홈 트레닝계의 유튜브”
 
-매실은 많은 사람들이 매일매일 실내운동을 할 수 있게 도와주는 운동 콘텐츠 플랫폼이다. 누구나 자신만의 운동 동영상 콘텐츠를 올릴 수 있고 이를 보고 홈 트레이닝을 할 수 있다. 이 때 운동 영상을 보면서 운동을 할 때 AI가 동작을 잘 따라하는지에 대한 점수를 매겨준다. 또한 운동들을 모아서 운동 코스를 제작할 수 있고, 개인에게 맞는 추천 기능, 커뮤니티, 업적, 레벨 등의 기능등을 통해 재미를 느껴 매일매일할 수 있는 동기부여를 유저에게 제공한다.
+매실은 많은 사람들이 매일매일 실내운동을 할 수 있게 도와주는 운동 콘텐츠 플랫폼이다. 누구나 자신만의 운동 동영상 콘텐츠를 올릴 수 있고 이를 보고 홈 트레이닝을 할 수 있다. 이 때 운동 영상을 보면서 운동을 할 때 AI가 동작을 잘 따라하는지에 대한 점수를 매겨준다. 또한 운동들을 모아서 운동 코스를 제작할 수 있고, 개인별로 원하는 운동을 모아 코스를 제작할 수 있다.
+개인 운동 기록을 원활히 할 수 있도록 돕는다.
+또한, Maesil School을 도입하여, 언택트 시대의 체육 수업 및 강의를 돕는 운동수업 플랫폼이다.
 
-### Play
+### 1. Play
 
-![main](https://i.imgur.com/3Q85jq7.png)
+![main](https://i.imgur.com/LqqYDEb.png)
 
-사용자는 메인화면에서 자신이 원하는 운동 동작을 고를 수 있다.
+<b>사용자는 메인화면에서 자신이 원하는 운동 동작을 고를 수 있다.</b>
+<br><br><br>
 
-![play](https://i.imgur.com/dhA0m9Q.gif)
+![practice](https://i.imgur.com/NZMPrwV.png)
 
-자신이 가이드의 자세를 잘 따라하고 있는지 AI 기반으로 실시간으로 점수를 피드백 받을 수 있다.
+![play](https://i.imgur.com/cYCgofQ.png)
 
-### Upload
+<b>자신이 가이드의 자세를 잘 따라하고 있는지 AI 기반으로 실시간으로 점수를 피드백 받을 수 있다.</b>
+<br><br><br>
 
-![upload](https://i.imgur.com/g0EpWXg.gif)
+### 2. Upload
 
-자신만의 운동을 업로드 할 수 있다
+![upload](https://i.imgur.com/Y5VS2fI.gif)
 
-### Course
+<b>자신만의 운동을 업로드 할 수 있다.<br>
+<br><br><br>
 
-![코스](https://i.imgur.com/qmfm1gE.png)
 
-여러 운동들을 모아서 자신만의 운동 코스를 제작할 수 있다.
+### 3. Feedback
+![feedback](https://i.imgur.com/ExkNyMd.png)
 
-### Feedback
 
-미구현: 사용자가 운동을 계속하도록 자극하는 장치
-업적, 레벨, 통계 시스템 등
+<b> 운동 최종결과를 정량화된 숫자로 볼 수 있다.</b>
+<br><br><br>
 
-### Community
+### 4. Coach
+![coach](https://i.imgur.com/l32RbLR.png)
 
-미구현:컨텐츠 제작자와 상호작용하며 혼자 하는 운동이 아닌 다같이 하는 운동이라는 재미를 주는 기능피드, 게시글 기능
+<b>통계 시스템, 내가 운동한 기록을 볼 수 있다.</b>
+<br><br><br>
 
-### Coach
-
-미구현: 자신의 체형과 운동 기록에 맞게 필요한 운동을 추천해주는 기술기존 유저들의 플레이를 분석하여 데이터에서 의미를 찾아내는 과정
 
 ## 🐾 튜토리얼
 
-TO-DO
+![tutorial](https://i.imgur.com/7zUuP0G.gif)
 
+
+## 🐾 Mobile
+<img src="https://i.imgur.com/rbEMqPC.png" width="300px" height="450px"/>
+
+## 🐾 Tablet
+<img src="https://i.imgur.com/tNnYDke.png"
+width="400px" height="700px"/>
 
 ## ⚙️ 시스템 구성도
 
+### User
+<img height="50px" width="50px" src="https://i.imgur.com/53PN7sU.png"/> Oauth2를 사용한 Social Login
+
 ### 시스템 아키텍처
 
-![architecture](https://i.imgur.com/2O3UcMM.png)
+![architecture](https://i.imgur.com/tFJZW8u.png)
+
+
+<img src="https://i.imgur.com/g9renu4.png"/>
+
+1. ML Server와 통신을 위해 sqs를 이용
+2. 긴 영상 업로드를 원활하게 하기 위해 S3에 5MB씩 나눠서 분할 업로드
+3. 후에 많아질 트래픽을 대비해 ELB 이용
 
 ### DB 설계
 
-![database](https://i.imgur.com/hTrCjef.png)
+![database](https://i.imgur.com/GirWqq0.png)
 
 ### CI/CD
 
 ![CI/CD](https://i.imgur.com/EfdPlQw.png)
+
+### ML Architecture
+
+![](https://i.imgur.com/Cift9oW.png)
 
 ## 🌏 브라우저 지원
 
@@ -96,8 +120,8 @@ TO-DO
 ##### 프로젝트 클론
 
 ```sh
-git clone https://github.com/maesil-ai/maesil-client.git
-cd maesil-client
+git clone https://github.com/maesil-ai/maesil-server.git
+cd maesil-server
 yarn
 ```
 
@@ -152,3 +176,4 @@ PR을 하기 전에는 에러가 없는지 체크를 해야합니다. 그리고 
 [MIT License](https://github.com/maesil-ai/maesil-client/LICENSE) © [매실 - Maesil](https://github.com/maesil-ai).
 
 ![codeblue](https://i.imgur.com/QtKhI7x.jpg)
+![Maesil](https://i.imgur.com/SgHl9Ur.jpg)
