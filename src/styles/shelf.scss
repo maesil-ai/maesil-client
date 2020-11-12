@@ -1,46 +1,107 @@
+@import './index.scss';
+
 .shelf {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  overflow: auto;
+  overflow: hidden;
   justify-content: flex-start;
   padding-left: 30px;
   padding-right: 30px;
-}
+  margin-bottom: 24px;
+  padding-top: 18px;
+  margin-top: -18px;
 
-.gridList {
-  width: 222px;
-  height: 222px;
-  flex-wrap: nowrap;
-  display: inline-block;
-}
+  .progress {
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    width: 160px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.1);
+    
+    >.bar {
+      height: 100%;
+      width: 20px;
+      margin-left: 0;
+      background: $color1;
+    }
+  }
 
-titleText {
-  font-family: 'Noto Sans KR';
-  font-weight: 700;
-}
+  .arrow {
+    position: absolute;
+    width: 16px;
+    top: 18px;
+    background: #000000;
+    opacity: 0.4;
+    padding: 152px 24px;
+  }
 
-titleBar {
-  background: rgba(100, 100, 100, 0.54);
-}
+  .leftArrow {
+    left: 0;
+  }
 
-.detail {
-  width: calc(100% - 100px);
-  padding: 20px;
+  .rightArrow {
+    right: 0;
+  }
 
-  display: block;
+  .shelfItem {
+    margin: 10px;
+    width: 300px;
+    height: 300px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    
+    .shelfImage {
+      width: 100%;
+      height: 65%;
+      cursor: pointer;
+      box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.15);
+    }
 
-  font-size: 18px;
-  font-weight: 400;
+    .shelfTitle {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 25px;
+      left: 45px;
+      padding-left: 10px;
+      padding-top: 15px;
+      display: flex;
+      align-items: center;
 
-  background-color: white;
-  color: #555;
+      color: #000000;
+    }
 
-  letter-spacing: 0.1rem;
-  text-align: left;
+    .line {
+      width: 100%;
+      opacity: 0.08;
+      border: 1px solid #000000;
+    }
+    
+    .creator {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 20px;
+      left: 45px;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+      
+      color: #999999;    
+    }
 
-  h1 {
-    font-size: 30px;
-    font-weight: 600;
+    .info {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+
+      color: #999999;
+
+    }
   }
 }

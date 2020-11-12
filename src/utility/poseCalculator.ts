@@ -1,6 +1,6 @@
 import * as posenet from '@tensorflow-models/posenet';
 import KalmanFilter from 'kalmanjs';
-import { PosenetConfig, defaultPosenetConfig, PoseData } from 'utility/types';
+import { PosenetConfig, defaultPosenetConfig, PoseData2D, PoseData, Pose, Pose2D } from 'utility/types';
 
 // const defaultResNetMultiplier = 1.0;
 // const defaultResNetStride = 32;
@@ -16,10 +16,10 @@ class PoseCalculator {
   config: PosenetConfig;
   readyToUse: boolean;
   modelInUse: boolean;
-  resultPoses: posenet.Pose[];
-  record: posenet.Pose[];
+  resultPoses: Pose2D[];
+  record: Pose2D[];
   filters: KalmanFilter[];
-  poseData?: PoseData;
+  poseData?: PoseData2D;
   useFilters: boolean;
 
   constructor(video: HTMLVideoElement, config = defaultPosenetConfig) {
@@ -31,7 +31,7 @@ class PoseCalculator {
     this.clearRecord();
   }
 
-  load = async (inputPoseData: PoseData | null = null) => {
+  load = async (inputPoseData: PoseData2D | null = null) => {
     if (inputPoseData) {
       this.poseData = inputPoseData;
     } else {
@@ -56,16 +56,18 @@ class PoseCalculator {
 
   // 기존의 applyPosenetChange는 'on...Change'식의 함수로 사용할 것.
 
-  getPoseResult = async () => {
+  getPoseResult = async (recordResult: boolean = true) => {
     if (!this.readyToUse) {
       return false;
     }
 
     if (this.modelInUse) {
-      if (this.record.length > 0) this.record.push(this.resultPoses[0]);
+      if (recordResult) {
+        if (this.resultPoses.length > 0) this.record.push(this.resultPoses[0]);
+      }
       return false;
     }
-    let poses: posenet.Pose[] = [];
+    let poses: Pose2D[] = [];
 
     if (this.poseData) {
       poses = poses.concat(
@@ -107,10 +109,17 @@ class PoseCalculator {
         });
       }
 
+      poses.forEach((pose) => pose.keypoints.forEach((keypoint) => {
+        keypoint.position.x /= this.video.width;
+        keypoint.position.y /= this.video.height;
+      }));
+
       this.modelInUse = false;
     }
-    if (poses[0]) this.record.push(poses[0]);
-    this.resultPoses = poses;
+    if (poses[0]) {
+      if (recordResult) this.record.push(poses[0]);
+      this.resultPoses = poses;
+    }
     return true;
   };
 }

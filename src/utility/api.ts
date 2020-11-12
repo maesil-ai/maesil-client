@@ -6,10 +6,17 @@ import {
   APIGetUserInfoData,
   Channel,
   APIPostCourseForm,
+  TagData,
+  DailyRecordData,
+  Pose2D,
+  PoseData2D,
 } from 'utility/types';
 import { SET_USER, CLEAR_USER, SUBSCRIBE } from 'actions/ActionTypes';
 import store from 'store';
-import { UserAction, setUser, subscribe, clearUser, raiseError } from 'actions';
+import { UserAction, setUser, subscribe, clearUser, raiseError, changeInfo, setResult } from 'actions';
+import Axios from 'axios';
+import { processRawExerciseData, processRawCourseData, processRawTagData, processRawRecordData, processRawDailyRecordData, defaultProfileImageUrl } from './apiTypes';
+import { Keypoint } from '@tensorflow-models/posenet';
 
 const apiAddress = 'https://api.maesil.ai';
 
@@ -28,44 +35,6 @@ function secondToString(time: number) {
   return `${hr}:${min}:${sec}`;
 }
 
-export interface RawAPIExerciseData {
-  exercise_id: number;
-  title: string;
-  description: string;
-  play_time: string;
-  user_id: number;
-  "user.nickname": string;
-  thumb_url: string;
-  thumb_gif_url: string;
-  video_url: string;
-  skeleton: string;
-  reward: number;
-  like_counts: number;
-  view_counts: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  isLike?: boolean;
-}
-
-export interface RawAPICourseData {
-  course_id: number;
-  course_name: string;
-  description: string;
-  play_time: string;
-  user_id: number;
-  thumb_url: string;
-  thumb_gif_url: string;
-  video_url: string;
-  exercise_list: string;
-  reward: number;
-  like_counts: number;
-  view_counts: number;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  isLike?: boolean;
-}
 
 // 현재 postExercise, login, getAccessToken를 제외한 모든 api 호출이 callAxios를 거쳐서 이루어지고 있음.
 // useToken = 'always': api 호출하기 전 access token을 무조건 가져와서 헤더에 넣음. 없으면 null 반환
@@ -76,7 +45,7 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
     if (ifError == 'abort') store.dispatch(raiseError(
       `로그인해야만 받아올 수 있는 정보를 로그인하지 않고 받아오려 했습니다. 받아오려던 정보: ${config.url}`
     ));
-    return [null, null];
+    return [403, null];
   }
 
   if (token) {
@@ -95,44 +64,48 @@ async function callAxios<Type> (config: AxiosRequestConfig, useToken : "never" |
     if (ifError == 'abort') store.dispatch(raiseError(
       `API 서버에서 정보를 받아오는 데에 문제가 생겼습니다. 받아오려던 정보 : ${config.url} 발생한 오류 : ${error}`
     ));
-    return [null, null];
+    return [500, null];
   }
 }
 
 export const getExercises = async () => {
-  const [code, result] = await callAxios<RawAPIExerciseData[]>({
+  const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/exercises/`,
   }, "sometimes");
 
-  return result.map(processRawExerciseData);
+  if (code < 300) return result.map(processRawExerciseData);
+  else return null;
 };
 
 export const getExercise = async (id: number) => {
-  const [code, result] = await callAxios<RawAPIExerciseData>({
+  const [code, result] = await callAxios<any>({
     method: 'GET',
     url: `${apiAddress}/exercises/${id}`,
   }, "sometimes");
 
-  return processRawExerciseData(result);
+  if (code < 300) return processRawExerciseData(result);
+  else return null;
 };
 
 export const getCourses = async () => {
-  const [code, result] = await callAxios<RawAPICourseData[]>({
+  const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/courses`,
   }, "sometimes");
 
-  return result.map(processRawCourseData);
+  if (code < 300) return result.map(processRawCourseData);
+  else return null;
 }
 
 export const getCourse = async (id: number) => {
-  const [code, result] = await callAxios<RawAPICourseData>({
+  const [code, result] = await callAxios<any>({
     method: 'GET',
     url: `${apiAddress}/courses/${id}`,
   }, "sometimes");
 
-  return processRawCourseData(result);
+  if (code < 300) return processRawCourseData(result);
+  else return null;
 }
 
 export const deleteExercise = async (id : number) => {  
@@ -141,6 +114,40 @@ export const deleteExercise = async (id : number) => {
     url: `${apiAddress}/exercises/${id}`,
   }, 'always');
 };
+
+export const getRecords = async () => {
+  const [code, result] = await callAxios<any[]>({
+    method: 'GET',
+    url: `${apiAddress}/exercises_history`,
+  }, 'always');
+
+
+  if (code < 300) return result.map(processRawRecordData).sort((x, y) => x.contentId < y.contentId ? 1 : -1);
+  else return null;
+}
+
+export const getDailyRecords = async () => {
+  const [code, result] = await callAxios<any[]>({
+    method: 'GET',
+    url: `${apiAddress}/users/today`,
+  }, 'always');
+
+  if (code < 300) return result.map(processRawDailyRecordData).sort((x, y) => x.dateString < y.dateString ? 1 : -1);
+}
+
+export const getRecord = (record : DailyRecordData[], day: Date) => {
+  let year = day.getFullYear(), month = day.getMonth()+1, date = day.getDate();
+  let todayRecord = record.filter((record: DailyRecordData) => record.year == year && record.month == month && record.date == date);
+
+  if (todayRecord.length > 0) return todayRecord[0];
+  else return {
+    dateString: `${year}-${month}-${date}`,
+    year, month, date,
+    calorie: 0,
+    playTime: "00:00:00",
+    score: 0,
+  } as DailyRecordData;
+}
 
 export const postResult = async (id : number, score : number, playTime : number, calorie : number) => {
   await callAxios<void>({
@@ -157,7 +164,6 @@ export const postResult = async (id : number, score : number, playTime : number,
 export const postExercise = async (data: APIPostExerciseForm) => {
   const token = await getAccessToken();
   if (!token) return null;
-
   const form = new FormData();
 
   for (const [key, value] of Object.entries(data)) {
@@ -218,6 +224,7 @@ export const login = async (
   profileImageUrl: string,
   accessToken: string,
 ) => {
+  profileImageUrl = profileImageUrl || defaultProfileImageUrl;
   const response = await axios.post(`${apiAddress}/users`, {
     id: id,
     profile_image_url: profileImageUrl,
@@ -245,11 +252,12 @@ export const getAccessToken = async () => {
   if (!token) return token;
 
   try {
-    await axios.get(`${apiAddress}/users`, {
+    let res = await axios.get(`${apiAddress}/users`, {
       headers: {
         'x-access-token': token,
       },
     });
+    if (res.data.code >= 300) throw new Error();
     return token;
   } catch (error) {
     logout();
@@ -268,7 +276,7 @@ export const getUserInfo = async () => {
   const [code, result] = await callAxios<APIGetUserInfoData>({
     method: 'get',
     url: `${apiAddress}/users`,
-  }, 'always');
+  }, 'always', 'ignore');
   
   return result;
 };
@@ -292,18 +300,22 @@ export const postUserInfo = async (
       height: height,
     },
   }, 'always');
+
+  store.dispatch(changeInfo(nickname, gender, height, weight));
 };
 
 export const getLikes = async () => {
-  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+  let [code, result] = await callAxios<any[]>({
     url: `${apiAddress}/likes`
   }, 'always');
 
+
+//  return (await Promise.all(result.map((content) => getExercise(content.exercise_id)))).filter((content) => content != null);
   return result.map(processRawExerciseData);
 };
 
 export const getChannel = async (id: number) => {
-  let [code, result] = await callAxios<RawAPIExerciseData[]>({
+  let [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/channel/${id}`,
   });
@@ -326,14 +338,17 @@ export const getSubscribes = async () => {
   const [code, result] = await callAxios<any[]>({
     method: 'GET',
     url: `${apiAddress}/users/subscribes`,
-  }, 'always');
+  }, 'always', 'ignore');
 
-  return result.map((data) => {
+  console.log(code);
+  console.log(result);
+  if (code < 300) return result.map((data) => {
     return {
       id: data.user_id,
       name: data.nickname,
     } as Channel;
   }) as Channel[];
+  else return null;
 }
 
 export const getSubscribed = async (id : number) => {
@@ -354,48 +369,70 @@ export const getId = async (name: string) => {
   return result.user_id;
 }
 
-const processRawExerciseData = (rawData : RawAPIExerciseData) => {
-  return {
-      type: "exercise",
-      id: rawData.exercise_id,
-      name: rawData.title,
-      description: rawData.description,
-      playTime: rawData.play_time,
-      userId: rawData.user_id,
-      userName: rawData["user.nickname"],
-      thumbUrl: rawData.thumb_url,
-      thumbGifUrl: rawData.thumb_gif_url,
-      videoUrl: rawData.video_url,
-      innerData: rawData.skeleton,
-      reward: rawData.reward,
-      heartCount: rawData.like_counts,
-      viewCount: rawData.view_counts,
-      status: rawData.status,
-      createdAt: rawData.created_at,
-      updatedAt: rawData.updated_at,
-      heart: rawData.isLike,
-  } as ContentData;
+export const searchContent = async (query : string) => {
+  let result = await Axios({
+    method: 'GET',
+    url: `${apiAddress}/all/search?title=${query}`,
+  });
+
+  if (result.data.code < 300) return {
+    exerciseResult: result.data.exerciseResult.map((result) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result) => processRawCourseData(result) ) as ContentData[],
+  };
+  else return {
+    exerciseResult: [], 
+    courseResult: [],
+  }
 }
 
-const processRawCourseData = (rawData : RawAPICourseData) => {
-  return {
-      type: "course",
-      id: rawData.course_id,
-      name: rawData.course_name,
-      description: rawData.description,
-      playTime: rawData.play_time,
-      userId: rawData.user_id,
-      userName: rawData["user.nickname"],
-      thumbUrl: rawData.thumb_url,
-      thumbGifUrl: rawData.thumb_gif_url,
-      videoUrl: rawData.video_url,
-      innerData: rawData.exercise_list,
-      reward: rawData.reward,
-      heartCount: rawData.like_counts,
-      viewCount: rawData.view_counts,
-      status: rawData.status,
-      createdAt: rawData.created_at,
-      updatedAt: rawData.updated_at,
-      heart: rawData.isLike,
-  } as ContentData;
+
+export const searchTag = async (tag : string) => {
+  let result = await Axios({
+    method: 'GET',
+    url: `${apiAddress}/tags/search?tag_name=${tag}`,
+  });
+
+  if (result.data.code < 300) return {
+    exerciseResult: result.data.exerciseResult.map((result) => processRawExerciseData(result) ) as ContentData[], 
+    courseResult: result.data.courseResult.map((result) => processRawCourseData(result) ) as ContentData[],
+  };
+  else return {
+    exerciseResult: [], 
+    courseResult: [],
+  }
+}
+
+export const getTags = async () => {
+  let [code, result] = await callAxios<any[]>({
+    method: 'GET',
+    url: `${apiAddress}/tags`,
+  });
+
+  return result.map((rawData) => processRawTagData(rawData));
+}
+
+export const getPoseData = async (id : number) => {
+  let poseS3Address = `https://maesil-storage.s3.ap-northeast-2.amazonaws.com/pose/${id}/data.json`;
+
+  try {
+    let result = await axios.get(poseS3Address);
+    if (result.status >= 300) throw new Error();
+    let rawData = result.data;
+    return {
+      dimension: '2d',
+      fps: rawData.fps,
+      poses: rawData["0"].joints2d.map((rawPose : number[][]) => ({
+        score: 1,
+        keypoints: rawPose.map((joint : number[]) => ({
+            score: joint[2],
+            position: {
+              x: joint[0],
+              y: joint[1],
+            },
+        } as Keypoint))
+      } as Pose2D))
+    } as PoseData2D;
+  } catch (error) {
+    return null;
+  }
 }

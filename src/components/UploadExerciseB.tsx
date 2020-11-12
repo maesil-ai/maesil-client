@@ -3,25 +3,29 @@ import React from 'react';
 import { postExercise } from 'utility/api';
 import { validateVideoLength } from 'utility/validation';
 import { recordFps, extractPoseFromVideo } from 'utility/processVideo';
-import { PoseData, Pose } from 'utility/types';
+import { PoseData2D, Pose2D } from 'utility/types';
+
+import Tags from "@yaireo/tagify/dist/react.tagify"
+import "@yaireo/tagify/dist/tagify.css" 
+import { RootReducerState } from 'reducers';
+import { useSelector } from 'react-redux';
 
 interface UploadExerciseBProps {
   video: File;
 }
 
 export function UploadExerciseB({ video }: UploadExerciseBProps) {
-  let [title, setTitle] = React.useState<string>(
-    '그대 기억이 지난 사랑이 내 안을 파고드는 가시가 되어'
-  );
-  let [description, setDescription] = React.useState<string>(
-    '머 그렇게 만들어진 영상입니다 긴 말 안하겠습니다 이 영상은 개 쩌는 영상입니다 운동효과 완전 개굿입니다'
-  );
+  let [title, setTitle] = React.useState<string>('');
+  let [description, setDescription] = React.useState<string>('');
   let [message, setMessage] = React.useState<string>('영상 처리 중...');
-  let [poses, setPoses] = React.useState<Pose[]>([]);
+  let [poses, setPoses] = React.useState<Pose2D[]>([]);
   let [thumbnail, setThumbnail] = React.useState<File>();
+  let [gifThumbnail, setGifThumbnail] = React.useState<File>();
+  let [tags, setTags] = React.useState<number[]>([]);
   let videoRef = React.useRef<HTMLVideoElement>();
+  let tagList = useSelector((state: RootReducerState) => state.system.tags);
 
-  let [videoUrl, setVideoUrl] = React.useState<string>(URL.createObjectURL(video));
+  let videoUrl = React.useMemo<string>(() => URL.createObjectURL(video), []);
 
   const handleExtractProgress = (ratio: number) => {
     setMessage(`영상 ${Math.round(ratio * 100)}% 처리 중...`);
@@ -52,31 +56,22 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
   ), [videoUrl]);
 
   const upload = async () => {
-    const defaultThumbnailUrl =
-      'https://maesil-storage.s3.ap-northeast-2.amazonaws.com/images/boyunImage.jpg';
-    const defaultThumbnail = await fetch(defaultThumbnailUrl, {
-      mode: 'no-cors',
-    }).then((r) => r.blob());
     setMessage('올리는 중...');
-
-    if (!(await validateVideoLength(videoRef.current))) {
-      setMessage('영상의 길이는 1초에서 15초 사이여야 합니다.');
-      return;
-    }
 
     const success = await postExercise({
       exercise: video,
-      title: title,
+      title,
       description: description,
       play_time: videoRef.current.duration,
-      thumbnail: thumbnail ? thumbnail : defaultThumbnail,
+      thumbnail,
+      gif_thumbnail: gifThumbnail,
       reward: 103,
-      tag_id: 2,
+      tags: JSON.stringify(tags.map((id) => ({tag_id: id}))),
       level: 4,
       skeleton: JSON.stringify({
         fps: recordFps,
         poses: poses,
-      } as PoseData),
+      } as PoseData2D),
     });
 
     if (success) {
@@ -88,52 +83,83 @@ export function UploadExerciseB({ video }: UploadExerciseBProps) {
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'center', width: 1200 }}>
-        { guideVideo }
         <div className="zone">
-          <table>
-            <tbody>
-              <tr>
-                <td> 제목 </td>
-                <td className="fill">
-                  <input
-                    className="inputTitle"
-                    value={title}
-                    onChange={(e) => {
-                      setTitle(e.target.value);
-                    }}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td> 설명 </td>
-                <td className="fill">
-                  <textarea
-                    className="inputDescription"
-                    rows={5}
-                    value={description}
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td> 썸네일 이미지 </td>
-                <td className="fill">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    required
-                    onChange={(e) => setThumbnail(e.target.files[0])}
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          {message ? message : <button onClick={upload}> 올리기! </button>}
+        { guideVideo }
+        <table>
+          <tbody>
+            <tr>
+              <td> 제목 </td>
+              <td className="fill inputbox">
+                <input
+                  className="inputTitle"
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td > 설명 </td>
+              <td className="fill inputbox" style={{height: '96px'}}>
+                <textarea
+                  className="inputDescription"
+                  rows={3}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value) }
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 썸네일 이미지 </td>
+              <td className="fill inputbox">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 움직이는 썸네일 이미지 </td>
+              <td className="fill inputbox">
+                <input
+                  type="file"
+                  accept="image/*"
+                  required
+                  onChange={(e) => setGifThumbnail(e.target.files[0])}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td> 태그 </td>
+              <td className="fill inputbox">
+              <Tags
+                settings={{
+                  whitelist: tagList.map((tag) => tag.name),
+                  enforceWhitelist: true,
+                  maxTags: 10,
+                  "dropdown.enabled": 1,
+                }}
+                value='상체,하체,유산소,무산소'
+                onChange={e => {
+                  e.persist();
+                  if (e.target.value) setTags(JSON.parse(e.target.value).map((x) => tagList.find((tag) => tag.name == x.value).id));
+                  else setTags([]);
+                }}
+                style={{
+                  border: '0px',
+                }}
+              />              </td>
+            </tr>
+          </tbody>
+        </table>
         </div>
-      </div>
+        <div className='zone invisible'>
+          { message ? <div> { message } </div> : <> </> }
+          { poses.length > 0 && <button onClick={upload} className='submit'> 올리기! </button> }
+        </div>
     </>
   );
 }

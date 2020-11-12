@@ -1,11 +1,8 @@
 import { poseSimilarity } from 'posenet-similarity';
 import * as posenet from '@tensorflow-models/posenet';
-/**
- * view에서 포즈를 추출하는 함수
- * @export
- * @param {*} view
- * @return {*} pose
- */
+import { Pose } from './types';
+
+
 export function extractPose(view) {
   if (!view || !view.poses || !view.poses.poses) return null;
   // if (!view.poses.hasOwnProperty('poses')) return null;
@@ -16,14 +13,7 @@ export function extractPose(view) {
   return view.poses.poses[0];
 }
 
-/**
- * 두 프레임을 받아서 유사도를 리턴
- * @export
- * @param {*} modelPose 모델 포즈
- * @param {*} userPose 유저 포즈
- * @return {*} score 유사도
- */
-export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
+export function posePoseSimilarity(modelPose : Pose, userPose : Pose, bias = 0.85) {
   // 0일수록 비슷 아마 1넘어가기 힘들듯?
   // return poseSimilarity(modelPose, userPose, {strategy: 'weightedDistance'});
   // 0일수록 비슷 0~2사이 값
@@ -31,9 +21,9 @@ export function posePoseSimilarity(modelPose, userPose, bias = 0.85) {
   // -1~1 사이 값, -1이면 방향 완전 반대, 1이면 완전 똑같음
 
   const weight = 1 / (1 - bias);
-  const similarity = poseSimilarity(modelPose, userPose, {
+  const similarity = ("keypoints" in modelPose && "keypoints" in userPose) ? poseSimilarity(modelPose, userPose, {
     strategy: 'cosineSimilarity',
-  });
+  }) : 0;
   if (typeof similarity == 'number') {
     return ((1 + similarity) / 2 - bias) * weight;
   }
@@ -64,8 +54,8 @@ export async function scorePoseSimilarity(views) {
  * @return {*} score
  */
 export function exerciseScore(
-  modelPose: posenet.Pose[],
-  userPose: posenet.Pose[]
+  modelPose: Pose[],
+  userPose: Pose[]
 ) {
   let score = 0;
 

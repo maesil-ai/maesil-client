@@ -1,19 +1,28 @@
 import React from 'react';
 import PoseCalculator from 'utility/poseCalculator';
-import { drawBoundingBox, drawKeypoints, drawSkeleton } from 'utility/draw';
-import { exerciseScore } from 'utility/score';
+import { draw3DPoints, drawBoundingBox, drawKeypoints, drawSegment, drawSkeleton, toTuple } from 'utility/draw';
+import { exerciseScore, posePoseSimilarity } from 'utility/score';
 import { exerciseCalorie } from 'utility/calorie';
 import { Switch } from '@material-ui/core';
 
 import {
-  APIGetUserInfoData,
   ScreenView,
-  Pose,
+  Pose2D,
   PlayRecord,
   fps,
   PoseData,
+  Pose,
+  Pose3D,
+  PoseData2D,
 } from 'utility/types';
-import store from 'store';
+import { mainColor1, mainColor2, warningIcon } from 'utility/svg';
+import Music from './Music';
+import Loading from 'pages/Loading';
+
+const LEFT_ELBOW = 7;
+const RIGHT_ELBOW = 8;
+const LEFT_WRIST = 9;
+const RIGHT_WRIST = 10;
 
 interface ViewConfig {
   flipPoseHorizontal: boolean;
@@ -33,7 +42,7 @@ const defaultViewConfig = {
   showVideo: true,
   showSkeleton: true,
   showPoints: true,
-  showBoundingBox: true,
+  showBoundingBox: false,
   showProgress: true,
   showCount: true,
   showScore: true,
@@ -41,29 +50,33 @@ const defaultViewConfig = {
   minPartConfidence: 0.1,
 };
 
+// showHits: show testing hit record for view[0];
 interface ExerciseScreenProps {
   phase: 'exercise' | 'break';
-  userInfo?: APIGetUserInfoData;
   videoWidth: number;
   videoHeight: number;
   views: ScreenView[];
   viewConfig: ViewConfig;
   time?: number;
-  guidePose?: PoseData;
+  guidePose?: PoseData2D;
   onExerciseFinish: (record: PlayRecord) => any;
+  waitBefore: number;
   repeat: number;
-  match?: any;
+  showHits: boolean;
 }
 
 // Records[view 번호][exercise 번호][frame 번호] => 해당 시점의 Pose
 interface ExerciseScreenState {
   count: number;
   isPlaying: boolean;
-  records: Pose[][][];
+  records: Pose2D[][][];
   scores: number[];
-  progress: number,
+  liveScores: number[];
+  progress: number;
   viewConfig: ViewConfig;
   useKalmanFilters: boolean;
+  loadingData: boolean;
+  beforeStart: number;
 }
 
 /**
@@ -86,6 +99,8 @@ class ExerciseScreen extends React.Component<
     onExerciseFinish: () => {},
     viewConfig: defaultViewConfig,
     repeat: 1,
+    showHits: false,
+    waitBefore: 0,
   };
   
   ctx: CanvasRenderingContext2D;
@@ -95,6 +110,7 @@ class ExerciseScreen extends React.Component<
   constructor(props: ExerciseScreenProps) {
     super(props);
 
+    console.log(this.props.views);
     this.canvas = React.createRef<HTMLCanvasElement>();
     this.views = this.props.views;
     this.state = {
@@ -103,8 +119,11 @@ class ExerciseScreen extends React.Component<
       progress: 0,
       records: [],
       scores: [],
+      liveScores: [],
       viewConfig: this.props.viewConfig,
       useKalmanFilters: true,
+      loadingData: true,
+      beforeStart: this.props.waitBefore,
     };
 
     this.views.forEach((view) =>
@@ -114,6 +133,19 @@ class ExerciseScreen extends React.Component<
     );
 
     if (this.props.phase == 'exercise') this.views[0].video.onended = this.finish;
+  }
+
+  start = () => {
+    this.views.forEach((view) => view.video.load());
+    this.views[this.views.length - 1].video.onloadeddata = () => {
+      this.views.forEach((view) => view.calculator.readyToUse = true );
+      this.setState({
+        ...this.state,
+        loadingData: false,
+      });
+
+      if (this.state.beforeStart == 0) this.views.forEach((view) => view.video.play());
+    };
   }
 
   finish = () => {
@@ -128,6 +160,7 @@ class ExerciseScreen extends React.Component<
         ...this.state,
         count: newCount,
         scores: Array.prototype.concat(this.state.scores, [newScore]),
+        liveScores: [],
         progress: 0,
       });
 
@@ -148,20 +181,13 @@ class ExerciseScreen extends React.Component<
         const scores = this.state.scores;
         const averageScore = scores.reduce((x, y) => x + y, 0) / scores.length;
         
-        const userInfo = store.getState().user.userInfo;
-
         this.props.onExerciseFinish({
           score: averageScore,
-          time: (guideRecord.length / fps) * this.props.repeat,
-          calorie: exerciseCalorie(userRecord, guideRecord.length, userInfo),
+          playTime: (guideRecord.length / fps) * this.props.repeat,
+          calorie: exerciseCalorie(userRecord, guideRecord.length),
         });
       } else {
-        this.views[0].video.load();
-        this.views[0].video.onloadeddata = () => {
-          this.views[0].calculator.readyToUse = true;
-          this.views[1].calculator.readyToUse = true;
-          this.views[0].video.play();
-        };
+        this.start();
       }
     }
 
@@ -181,7 +207,7 @@ class ExerciseScreen extends React.Component<
         });
         this.props.onExerciseFinish({
           score: 1,
-          time: 0,
+          playTime: 0,
           calorie: 0,
         });
       }
@@ -197,19 +223,18 @@ class ExerciseScreen extends React.Component<
       )
     );
 
+    this.start();
     this.drawCanvas();
   };
 
   componentWillUnmount = () => {
-    this.views.map((view) => view.video.remove());
+    this.views.map((view) => {
+      view.video.remove();
+    });
   };
 
   drawCanvas = () => {
     const ctx = this.ctx!;
-
-    for (let i = 0; i < this.views.length; i++) {
-      this.views[i].video.play();
-    }
 
     const drawVideoPose = (
       video: CanvasImageSource,
@@ -238,29 +263,67 @@ class ExerciseScreen extends React.Component<
         ctx.restore();
       }
 
-      if (poses) {
-        poses.forEach(({ score, keypoints }) => {
-          if (score >= this.state.viewConfig.minPoseConfidence) {
-            if (this.state.viewConfig.showPoints)
-              drawKeypoints(
-                keypoints,
-                this.state.viewConfig.minPartConfidence,
-                ctx,
-                scale,
-                offset
-              );
-            if (this.state.viewConfig.showSkeleton)
-              drawSkeleton(
-                keypoints,
-                this.state.viewConfig.minPartConfidence,
-                ctx,
-                scale,
-                offset
-              );
-            if (this.state.viewConfig.showBoundingBox)
-              drawBoundingBox(keypoints, ctx, scale, offset);
-          }
+      if (poses && poses.length > 0) {
+        if ("keypoints" in poses[0]) poses.forEach((pose : Pose2D) => {
+            let keypoints = JSON.parse(JSON.stringify(pose.keypoints));
+            keypoints.forEach((keypoint) => {
+              keypoint.position.x *= this.props.videoWidth;
+              keypoint.position.y *= this.props.videoHeight;
+            });
+
+            const score = pose.score;
+            if (score >= this.state.viewConfig.minPoseConfidence) {
+              if (this.state.viewConfig.showPoints)
+                drawKeypoints(
+                  keypoints,
+                  this.state.viewConfig.minPartConfidence,
+                  ctx,
+                  scale,
+                  offset
+                );
+              if (this.state.viewConfig.showSkeleton)
+                drawSkeleton(
+                  keypoints,
+                  this.state.viewConfig.minPartConfidence,
+                  ctx,
+                  scale,
+                  offset
+                );
+              if (this.state.viewConfig.showBoundingBox)
+                drawBoundingBox(keypoints, ctx, scale, offset);
+            }
         });
+        else {
+            if (this.state.viewConfig.showPoints) {
+              draw3DPoints(poses as unknown as Pose3D, ctx);
+            }
+        }
+      }
+
+      if (this.props.showHits && this.views[0].poseData.dimension == '2d') {
+/*        for (let pose of this.views[0].calculator.record) {
+          if (pose.score >= this.state.viewConfig.minPoseConfidence) {
+  //          if (pose.keypoints[LEFT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose.keypoints[LEFT_WRIST].score >= this.state.viewConfig.minPartConfidence)
+  //            drawSegment(toTuple(pose.keypoints[LEFT_ELBOW].position), toTuple(pose.keypoints[LEFT_WRIST].position), 'blue', ctx);
+            if (pose.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence)
+              drawSegment(toTuple(pose.keypoints[RIGHT_ELBOW].position), toTuple(pose.keypoints[RIGHT_WRIST].position), 'blue', ctx);
+          }
+        }
+*/
+        let pose2 = this.views[0].calculator.record[this.views[0].calculator.record.length-1] as Pose2D;
+
+        let pose1 : Pose2D = null;
+        for (let i = this.views[0].calculator.record.length-1; i>=0; i--) if (this.views[0].calculator.record[i] != pose2) {
+          pose1 = this.views[0].calculator.record[i] as Pose2D;
+          break;
+        }
+
+        if (pose1 && pose2 && pose1.score >= this.state.viewConfig.minPoseConfidence && pose2.score >= this.state.viewConfig.minPoseConfidence && pose1.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose1.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_ELBOW].score >= this.state.viewConfig.minPartConfidence && pose2.keypoints[RIGHT_WRIST].score >= this.state.viewConfig.minPartConfidence) {
+          let {x : x1, y : y1} = pose1.keypoints[RIGHT_WRIST].position;
+          let {x : x2, y : y2} = pose2.keypoints[RIGHT_WRIST].position;
+
+          drawSegment([y1, x1], [y2+50*(y2-y1), x2+50*(x2-x1)], 'black', ctx);
+        }
       }
     };
 
@@ -272,6 +335,9 @@ class ExerciseScreen extends React.Component<
     };
 
     executeEveryFrame(() => {
+      if (this.state.beforeStart > 0)
+        return;
+
       this.setState({
         ...this.state,
         progress: 
@@ -286,8 +352,15 @@ class ExerciseScreen extends React.Component<
 
     executeEveryFrame(() => {
       ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
+
+      if (this.state.loadingData) return;
+
+      let poses : Pose[] = [];
       this.views.forEach((view) => {
-        view.calculator.getPoseResult();
+        view.calculator.getPoseResult(this.state.beforeStart == 0);
+        if (view.calculator.record.length > 0)
+          poses.push(view.calculator.record[view.calculator.record.length - 1]);
+        
         drawVideoPose(
           view.video,
           view.calculator.resultPoses,
@@ -295,36 +368,48 @@ class ExerciseScreen extends React.Component<
           view.offset
         );
       });
-      if (this.state.viewConfig.showCount) {
-        const x = this.props.videoWidth - 40, y = 20, w = 20, h = 20;
 
-        for (let i = 0; i < this.props.repeat; i++) {
-          ctx.fillStyle = this.state.count > i ? 'rgb(22, 22, 22)' : 'rgb(222, 222, 222)';
-          ctx.fillRect(x - 40 * i, y, w, h);
-        }
-      }
-      if (this.state.viewConfig.showScore) {
-        const x = this.props.videoWidth - 20, y = this.props.videoHeight / 2;
+      if (this.state.beforeStart == 0) this.setState({
+        ...this.state,
+        liveScores: this.state.liveScores.concat(poses.length == 2 ? [posePoseSimilarity(poses[0], poses[1])] : [0]),
+      });
 
-        ctx.fillStyle = 'rgb(22, 22, 22)';
-        ctx.font = '40px arial';
-        ctx.textAlign = 'right';
-        if (this.state.scores.length) {
-          const score = this.state.scores[this.state.scores.length - 1];
-          ctx.fillText(`${Math.round(score * 100)}점`, x, y);
-        }
-      }
       if (this.state.viewConfig.showProgress) {
-        const x = 20,
-          y = this.props.videoHeight - 20,
+        const x = 0,
+          y = this.props.videoHeight - 10,
           h = 10,
-          w = this.props.videoWidth - 40;
+          w = this.props.videoWidth;
 
-        ctx.fillStyle = 'rgb(22, 22, 22)';
+        ctx.fillStyle = 'rgb(222, 222, 222)';
         ctx.fillRect(x, y, w, h);
 
-        ctx.fillStyle = 'rgb(222, 22, 22)';
-        ctx.fillRect(x, y, w * this.state.progress, h);
+        let i = 0;
+        for (let score of this.state.liveScores) {
+          if (i == 0 && this.state.liveScores.length > 1) score = this.state.liveScores[1];
+          if (score < 0) score = 0;
+          score = Math.floor(score * 100);
+          if (this.props.phase == 'break') score = 100;
+          ctx.fillStyle = `rgb(${200-2*score}, ${score*3/2+40}, 120)`;
+          ctx.fillRect(x + i * w * this.state.progress / this.state.liveScores.length - 1, y, 
+                      w * this.state.progress / this.state.liveScores.length + 2, h);
+          i++;
+        }
+      }
+
+      if (this.state.beforeStart > 0) {
+        ctx.clearRect(0, 0, this.props.videoWidth, this.props.videoHeight);
+        this.setState({
+          ...this.state,
+          beforeStart: this.state.beforeStart - 1,
+        });
+
+        if (this.state.beforeStart <= 0) {
+          this.setState({
+            ...this.state,
+            liveScores: [],
+          })
+          this.views.forEach((view) => view.video.play());
+        }
       }
     });
   };
@@ -351,34 +436,65 @@ class ExerciseScreen extends React.Component<
     });
   };
 
+  scoreMessage = (score: number) => {
+    if (score < 0.15) return "Bad..";
+    else if (score < 0.5) return "Good";
+    else if (score < 0.8) return "Nice!";
+    else return "Great!!";
+  }
+
+  scoreColor = (score: number) => {
+    if (score < 0.15) return 'red';
+    else if (score < 0.5) return 'black';
+    else if (score < 0.8) return mainColor1;
+    else return mainColor2;
+  }
+
   render() {
     return (
       <div style={{ width: this.props.videoWidth }}>
+        { (true) &&
+          <div style={{position: 'absolute', left: 'calc(50% - 40px)', top: 'calc(50% - 40px)', zIndex: -1}}>
+            <Loading mini={true} />
+          </div>
+        }
+        { this.state.viewConfig.showScore && this.props.phase == 'exercise' &&
+          <div className='zone mini fly'
+                style={{
+                  transform: `translate(20px, ${this.props.videoHeight - 94}px)`, 
+                  fontWeight: 600, 
+                  color: this.state.liveScores.length ? this.scoreColor(this.state.liveScores[this.state.liveScores.length - 1]) : 'red',
+                }}
+          >
+            { this.state.liveScores.length ? this.scoreMessage(this.state.liveScores[this.state.liveScores.length - 1]) : "파이팅!" }
+          </div>
+        }
+        { this.state.viewConfig.showCount && this.props.repeat > 1 &&
+          <div className='zone mini fly invisible' style={{transform: `translate(${this.props.videoWidth - 150}px, 0px)`, fontWeight: 600, fontSize: 20}}>
+            { `${this.state.count+1} / ${this.props.repeat}` }
+          </div>
+        }
+        { !this.state.loadingData && 0 < this.state.beforeStart &&
+          <div className='zone fly ball' style={{transform: `translate(${this.props.videoWidth/2 - 50}px, ${this.props.videoHeight/2 - 50}px)`}}>
+            { Math.ceil(this.state.beforeStart / fps) }
+          </div>
+        }
         <canvas
           ref={this.canvas}
           width={this.props.videoWidth}
           height={this.props.videoHeight}
         >
-          운동 기능이 지원되지 않는 브라우저입니다..ㅠㅠ
+          <div className='zone'>
+            { warningIcon }
+            <div style={{paddingBottom: '16px'}} />
+            <h1 className='grey'> 이런! </h1>
+            <div style={{paddingBottom: '16px'}} />
+            <div>
+              운동 기능을 이용할 수 없는 브라우저입니다..ㅜㅜ 최신 브라우저로 업데이트해 주세요.
+            </div>
+          </div>
         </canvas>
-        <label>
-          <Switch
-            id="Skeleton"
-            onChange={this.checkSkeleton}
-            checked={this.state.viewConfig.showSkeleton}
-          />
-          운동 가이드 보기
-        </label>
-        <br />
-        <label>
-          <Switch
-            id="Kalman"
-            onChange={this.checkKalmanFilters}
-            checked={this.state.useKalmanFilters}
-          />
-          칼만 필터 씌우기 (씌우면 움직임이 더 부드러워진다는 속설이 있습니다.)
-        </label>
-      </div>
+        </div>
     );
   }
 }

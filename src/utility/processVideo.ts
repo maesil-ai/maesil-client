@@ -25,7 +25,7 @@ export const extractPoseFromVideo = async (
     return poseResult[0];
   };
 
-  return new Promise<posenet.Pose[]>((resolve, reject) => {
+  return new Promise<posenet.Pose[]>((resolve) => {
     const poses: posenet.Pose[] = [];
 
     let time = 0;
@@ -37,7 +37,6 @@ export const extractPoseFromVideo = async (
 
     const scores = [];
     let idx = 0;
-    const MINIMUM_THRESHOLD = 0.5;
     scores.push(0);
     video.addEventListener('seeked', async () => {
       const pose = await extractPose();
@@ -45,14 +44,6 @@ export const extractPoseFromVideo = async (
       scores.push(pose.score);
       idx++;
       scores[idx] += scores[idx - 1];
-      if (idx >= fps) {
-        const meanScore = (scores[idx] - scores[idx - fps]) / fps;
-        if (meanScore < MINIMUM_THRESHOLD) {
-          onAbort('영상에는 몸 전체가 나와야 합니다.');
-          reject();
-          return;
-        }
-      }
 
       onProgress(time / video.duration);
 

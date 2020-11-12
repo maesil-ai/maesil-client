@@ -5,6 +5,7 @@ import Header from 'components/Header';
 import Footer from 'components/Footer';
 import { useSelector } from 'react-redux';
 import { RootReducerState } from 'reducers';
+import { warningIcon } from 'utility/svg';
 
 
 function Error() {
@@ -12,11 +13,13 @@ function Error() {
     return (
         <>
             <Header real={false}/>
-            <Title title='아니, 이게 무슨 일이죠?' />
             <div className='zone'>
-                <div> 저희가 제대로 만들어졌다면 이런 페이지가 뜨면 안 되는데... </div>
-                <div> 아래와 같은 에러가 발생했습니다. 죄송합니다. </div>
-                <div/> 
+                { warningIcon }
+                <div style={{paddingBottom: '16px'}} />
+                <h1 className='grey'> 이런! </h1>
+                <div style={{paddingBottom: '16px'}} />
+                <div className='grey'> 어디선가 문제가 생겼습니다... 이 페이지를 보게 되는 일이 있으면 안 되는데, 죄송합니다. </div>
+                <div style={{paddingBottom: '16px'}} />
                 <div> { system.message } </div>
             </div>
             <Footer/>

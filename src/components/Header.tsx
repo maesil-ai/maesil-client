@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import { Link } from 'react-router-dom';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import { headerLogo, searchIcon, userIcon, settingIcon, logoutIcon, headerLogoHorizontal, backIcon, sidebarIcon, closeIcon } from 'utility/svg';
 import LoginButton from './LoginButton';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootReducerState } from 'reducers';
@@ -14,47 +14,161 @@ interface HeaderProps {
 function Header({ real = true } : HeaderProps) {
   let user = useSelector((state : RootReducerState) => state.user );
   let system = useSelector((state : RootReducerState) => state.system );
+  let [query, setQuery] = React.useState<string>();
+  let [searchPhase, setSearchPhase] = React.useState<boolean>(false);
+  let [sidebarOn, setRealSidebarOn] = React.useState<number>(0);
+  let [sidebarNext, setSidebarOn] = React.useState<boolean>(false);
 
-  const dropdownMenu = real && React.useMemo(() => (
-    <li className="dropdown right">
-      <div style={{ padding: '28.5px' }}>
-        <PermIdentityIcon fontSize="large" />
-      </div>
-      <div className="dropdown-content">
-        {user.loggedIn ? (
-          <>
-            <div className="text"> {user.userInfo.nickname}님 안녕하세요! </div>
-            <div> <Link to="/mypage"> 마이페이지 </Link> </div>
-            <div> <Link to={`/user/${user.userInfo.nickname}`}> 내 채널 </Link> </div>
-            <div> <Link to="/upload/exercise"> 운동 올리기 </Link> </div>
-            <div> <Link to="/upload/course"> 운동 코스 올리기 </Link> </div>
-            <div> <Link to="/setting"> 설정 </Link> </div>
-            <div> <Link to="/logout"> 로그아웃 </Link> </div>
-            <div className="text"> 구독한 채널들 </div>
-            {user.loggedIn && user.subscribes.map((channel) => (
-              <div key={channel.id}>
-                <Link to={`/user/${channel.name}`}> {channel.name} </Link>
-              </div>
-            ))}
-          </>
-            ) : (
-          <LoginButton />
-        )}
-      </div>
-    </li>
-  ), [user]);
+  React.useEffect(() => {
+    let halt = false;
+    setTimeout(() => {
+      let nextSidebar = (sidebarOn * 11 + (sidebarNext ? 1 : 0)) / 12;
+      if (sidebarNext && nextSidebar < sidebarOn + 0.004) nextSidebar = sidebarOn + 0.004;
+      if (!sidebarNext && nextSidebar > sidebarOn - 0.004) nextSidebar = sidebarOn - 0.004;
+      if (nextSidebar < 0.001) setRealSidebarOn(0);
+      else if (nextSidebar > 0.999) setRealSidebarOn(1);
+      else setRealSidebarOn(nextSidebar);
+    }, 10);
+    return () => halt = true;
+  }, [sidebarOn, sidebarNext]);
 
-  return (
-    <header>
-      <ul>
-        <li className="left">
-          <Link to="/" style={{ padding: '32px' }} onClick={() => { system.error && store.dispatch(closeError()); } }>
-            매실
+  let sidebar = (
+    <>
+      { sidebarOn > 0.04 && <div className='sidebarShadow' style={{opacity: sidebarOn * 0.7}} onClick={() => setSidebarOn(false) }/> }
+      <div className='sidebar' style={{transform: `translateX(${(1-sidebarOn) * -(100)}%)`}}>
+        <div className='profilePart'>
+          <div className='profileBox middle'>
+            <img className='profileImage' src={user.userInfo.profile_image}/>
+          </div>
+          <Link to={user.loggedIn ? '/mypage' : '/'} className='profileName'>
+            { user.loggedIn ? `${user.userInfo.nickname}님, 안녕하세요!` : '먼저 로그인해 주세요.' }
           </Link>
-        </li>
-        {dropdownMenu}
-      </ul>
+        </div>
+        <div className='closeButton' onClick={() => setSidebarOn(false) }>
+          { closeIcon }
+        </div>
+        <div className='menuPart'>
+          { !user.loggedIn && (
+            <>
+              <div className='mobileOnly loginButtonParent' style={{width: '100%', paddingLeft: 'calc(50% - 121px)'}}>
+                <LoginButton/>
+              </div>
+            </>
+          )}
+          { user.loggedIn && (
+            <>
+              <Link to='/mypage' className='menu'>
+                마이페이지
+              </Link>
+              <Link to='/studio' className='menu'>
+                새로운 운동 올리기
+              </Link>
+            </>
+          )}
+          { user.loggedIn && user.subscribes.length > 0 && (
+            <>
+              <div className='line' />
+              <div className='headerTitle'>
+                { user.userInfo.nickname }님이 구독한 채널
+              </div>
+              { user.subscribes.map((channel) => (
+                <Link to={`/user/${channel.name}`} className='menu' key={ channel.name }>
+                  { channel.name }
+                </Link>
+              )) }
+            </>
+          )}
+        </div>
+        <div className='bottomPart'>
+          <Link className='leftButton' to='/setting'>
+            { settingIcon }
+          </Link>
+          { user.loggedIn && (
+            <Link className='rightButton' to="/logout">
+              { logoutIcon }
+            </Link>
+          )}
+        </div>
+      </div>
+    </>
+  );
+
+  if (searchPhase) return (
+    <>
+      <header>
+        <div className='menu rightMenu' style={{width: '100%'}}>
+          <div style={{top: '32px', height: '32px', margin: '0px 10px' }} onClick={() => setSearchPhase(false)}>
+            { backIcon }
+          </div>
+          <span className='blank' />
+          <div style={{top: '23px', height: '33px', flexGrow: 1}}>
+            <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } style={{width: '100%'}} />	
+          </div>
+          <span className='blank' />
+          <div style={{top: '26px', height: '32px'}}>
+            <Link to={`/search/${query}`}>
+              { searchIcon }
+            </Link>
+          </div>
+          <span className='blank' />
+        </div>
+      </header>
+      { sidebarOn > 0 && sidebar }
+      <div style={{paddingBottom: '98px'}} />
+    </>
+  )
+  else return (
+    <>
+    <header>
+      <div className="logo">
+          <Link to="/" onClick={() => { system.error && store.dispatch(closeError()); } }>
+            { headerLogoHorizontal }
+          </Link>
+      </div>
+      <div className="menu leftmenu">
+        <span className='blank' />
+        <div style={{top: '22px', height: '31px', cursor: 'pointer'}} onClick={() => setSidebarOn(true) }>
+          { sidebarIcon }
+        </div>
+      </div>
+
+      <div className="menu rightmenu">
+        <div className='desktopTabletOnly' style={{top: '23px', height: '33px'}}>
+          <input className='search' value={query} onChange={(event) => setQuery(event.target.value) } />	
+        </div>
+        <span className='desktopTabletOnly blank' />
+        <div className='desktopTabletOnly' style={{top: '26px', height: '32px'}}>
+          <Link to={`/search/${query}`}>
+            { searchIcon }
+          </Link>
+        </div>
+        <div className='mobileOnly' style={{top: '26px', height: '32px'}} onClick={() => setSearchPhase(true)}>
+          { searchIcon }
+        </div>
+        { user.loggedIn && (
+          <>
+            <span className='blank' />
+            <Link to='/mypage' style={{transform: 'translateY(11px)'}}>
+                <div className='profileBox middle'>
+                  <img className='profileImage' src={user.userInfo.profile_image}/>
+                </div>
+            </Link>
+          </>
+        )}
+        { !user.loggedIn && (
+          <>
+            <span className='blank desktopTabletOnly' />
+            <div className='desktopTabletOnly' style={{top: '0px', height: '32px'}}>
+              <LoginButton/>
+            </div>
+          </>
+        )}
+        <span className='blank ' />
+      </div>
     </header>
+    { sidebarOn > 0 && sidebar }
+    <div style={{paddingBottom: '122px'}} />
+    </>
   );
 }
 

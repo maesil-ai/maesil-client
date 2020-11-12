@@ -8,9 +8,10 @@ import InfoForm from 'components/InfoForm';
 import Loading from 'pages/Loading';
 import usePromise from 'utility/usePromise';
 import { APIGetUserInfoData } from 'utility/types';
+import Tabs from 'components/Tabs';
 
-function Modify() {
-  let [loading, userInfo, error] = usePromise<APIGetUserInfoData>(getUserInfo);
+function SettingInfo() {
+  let [loading, userInfo] = usePromise<APIGetUserInfoData>(getUserInfo);
 
   const handleSubmit = async (name: string, sex: string, height: number, weight: number, setMessage: (string) => void) => {
     let result = postUserInfo(name, sex, height, weight);
@@ -19,21 +20,16 @@ function Modify() {
   }
 
   if (loading) return <Loading/>;
-  else if (error) return (
-    <>
-      <Header />
-      <Footer />
-    </>
-  );
   else
     return (
       <>
         <Header />
-        <Title title="설정" />
+        <Tabs data={[{
+          name: "정보 수정",
+          link: "/settings/info",
+          active: true,
+        }]} />
         <div className="zone">
-          <div>
-            정보 수정
-          </div>
           <InfoForm defaultInfo={userInfo} onSubmit={handleSubmit} buttonMessage='수정'/>
         </div>
         <Footer />
@@ -41,4 +37,4 @@ function Modify() {
     );
 }
 
-export default Modify;
+export default SettingInfo;

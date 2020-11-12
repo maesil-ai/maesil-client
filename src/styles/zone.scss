@@ -1,16 +1,59 @@
+@import './index.scss';
+
 .zone {
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 48px;
     width: calc(100% - 100px);
-    padding: 20px;
-  
-    display: block;
-  
-    font-size: 18px;
-    font-weight: 400;
+    padding: 36px 0px;
   
     background-color: white;
     color: #555;
+
+    display: block;
   
-    letter-spacing: 0.1rem;
+    text-align: center;
+
+    &.mini {
+      width: 160px;
+      border-radius: 32px;
+      padding: 24px 0px;
+    }
+
+    &.ball {
+      width: 100px;
+      padding: 30px 0px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 40px;
+      color: $color1;
+      border: 5px $color1 solid;
+    }
+
+    &.fly {
+      position: absolute;
+    }
+
+    h1 {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 32px;
+      line-height: 48px;
+    }
+
+    div {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 26px;
+    }
+
+
+    &.invisible {
+      background: none;
+      box-shadow: none;
+    }
+  
+//    letter-spacing: 0.1rem;
     text-align: center;
   
     .fill {
@@ -18,29 +61,127 @@
       width: 100%;
     }
     
+    .inputbox {
+      border: 1px solid #D0D0D0;
+      box-sizing: border-box;
+      border-radius: 24px;
+
+      width: inherit;
+      height: 48px;
+      margin-bottom: 24px;
+
+
+      .unit {
+        width: 24px;
+        padding: 10px;
+        right: 0;
+        top: 0;
+        color: #d0d0d0;
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+
+    .tagify {
+      border: 0px;
+      margin: 3px 10px;
+      
+      * {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+
     input,
     textarea,
     select,
     table,
     tbody {
-      margin: 10px;
+      margin: 10px 24px;
       padding: 5px;
       font-size: inherit;
-      font-weight: inherit;
       border: 1px;
-      text-align: left;
       font-weight: bold;
       width: inherit;
+      text-align: center;
+    }
+
+    td.labelColumn {
+      text-align: left;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    td.contentColumn {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 300;
+      color: grey;
+    }
+    
+    td.center {
       text-align: center;
     }
   
     input,
     textarea,
     select {
-      border-bottom: 2px solid #555;
-      background-color: white;
-      padding: 5px;
-      margin: 10px;
+      width: calc(100% - 48px);
+      padding: 0px;
+
+      &.withunit {
+        width: calc(100% - 96px);        
+      }
+    }
+
+
+
+    .grey {
+      color: grey;
+    }
+
+    input {
+      &.underbar {
+        border-bottom: 1px solid grey;
+      }
+    }
+
+
+    button {
+      &.submit {
+        cursor: pointer;
+        background: $color1;
+        border-radius: 32px;
+        color: white;
+        height: 48px;
+        width: 256px;
+      }
+      &.mini {
+        border-radius: 16px;
+        height: 32px;
+        width: 120px;
+        padding: 0px;
+        font-size: 16px;
+      }
+      min-width: 44px;
+    }
+
+
+    .select {
+      cursor: pointer;
+      background: white;
+      border-radius: 24px;
+      width: 64px;
+      height: 64px;
+      border: 1px #d0d0d0 solid;
+
+      &.selected.red {
+        border: 3px #F53B3B solid;
+      }
+
+      &.selected.blue {
+        border: 3px #1B80F7 solid;
+      }
     }
   
     textarea {

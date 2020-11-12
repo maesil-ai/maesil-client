@@ -3,17 +3,29 @@ import PoseCalculator from './poseCalculator';
 
 export const fps = 30;
 
-export type Pose = posenet.Pose;
 export type PosenetModelConfig = posenet.ModelConfig;
 export interface Position {
   x: number;
   y: number;
 }
 
-export interface PoseData {
+export type Pose2D = posenet.Pose;
+export type Pose3D = number[][];
+export type Pose = Pose2D | Pose3D;
+
+export interface PoseData2D {
+  dimension: "2d",
   fps: number;
-  poses: Pose[];
+  poses: Pose2D[];
 }
+
+export interface PoseData3D {
+  dimension: "3d",
+  fps: number;
+  poses: Pose3D[];
+}
+
+export type PoseData = PoseData2D | PoseData3D;
 
 export interface PosenetConfig {
   algorithm: string;
@@ -48,8 +60,24 @@ export const defaultPosenetConfig: PosenetConfig = {
   },
 };
 
+// TO-DO add type
+export const defaultBodyPixResNetConfig = {
+  algorithm: 'multi-person-part',
+  architecture: 'ResNet50',
+  outputStride: 32,
+  quantBytes: 2
+};
+
+export const defaultBodyPixMobileNetConfig = {
+  algorithm: 'multi-person-part',
+  architecture: 'MobileNetV1',
+  outputStride: 16,
+  multiplier: 0.75,
+  quantBytes: 2
+};
+
 export interface PlayRecord {
-  time: number;
+  playTime: number;
   calorie: number;
   score: number;
 }
@@ -59,26 +87,35 @@ export interface CourseContent {
   id: number;
   repeat: number;
   message: string;
+  waitBefore?: number;
 };
 
 export interface ScreenView {
   video: HTMLVideoElement;
   scale: number;
   offset: [number, number];
-  poseData?: PoseData;
+  poseData?: PoseData2D;
   calculator?: PoseCalculator;
 }
+
+export interface TagData {
+  id: number;
+  name: string;
+  englishName: string;
+};
 
 export interface ContentData {
   type: 'exercise' | 'course';
   id: number;
   name: string;
   description: string;
-  playTime: string;
+  playTime: number;
   userId: number;
   userName: string;
   thumbUrl: string;
   thumbGifUrl: string;
+  profileImageUrl: string;
+  tagList: string[];
   videoUrl: string;
   innerData?: string;
   reward: number;
@@ -88,6 +125,27 @@ export interface ContentData {
   createdAt: string;
   updatedAt: string;
   heart?: boolean;
+  customData?: string;
+}
+
+export interface RecordData {
+  contentName: string;
+  contentId: number;
+  thumbUrl: string;
+  thumbGifUrl: string;
+  playTime: number;
+  calorie: number;
+  score: number;
+}
+
+export interface DailyRecordData {
+  dateString: string;
+  year: number;
+  month: number;
+  date: number;
+  playTime: string;
+  calorie: number;
+  score: number;
 }
 
 export interface APIPostExerciseForm {
@@ -96,8 +154,9 @@ export interface APIPostExerciseForm {
   description: string;
   play_time: number;
   thumbnail: Blob;
+  gif_thumbnail: Blob;
   reward: number;
-  tag_id: number;
+  tags: string;
   level: number;
   skeleton: string;
 }
@@ -111,7 +170,7 @@ export interface APIPostCourseForm {
   course_name: string;
   gif_thumbnail: Blob;
   exercise_list: string;
-  tag_id: number;
+  tags: string;
 }
 
 export interface APIGetUserInfoData {
@@ -125,12 +184,14 @@ export interface APIGetUserInfoData {
   level: number | null;
   points: number | null;
   status: string;
+  profile_image: string;
   created_at: string;
   updated_at: string;
 }
 
 export const userInfoHasMetadata = (userInfo: APIGetUserInfoData) => {
   if (
+    userInfo &&
     userInfo.nickname &&
     userInfo.gender &&
     userInfo.weight &&

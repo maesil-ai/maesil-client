@@ -20,9 +20,14 @@ import Shelf from 'components/Shelf';
 import UserIntroduce from 'components/UserIntroduce';
 import { useSelector } from 'react-redux';
 import { RootReducerState } from 'reducers';
+import { match } from 'react-router-dom';
+
+interface MatchParams {
+  name: string;
+};
 
 interface UserpageProps {
-  match?: any;
+  match: match<MatchParams>;
 }
 
 function Userpage({ match }: UserpageProps) {
@@ -53,8 +58,9 @@ function Userpage({ match }: UserpageProps) {
     return (
       <>
         <Header />
+        <div style={{marginBottom: '-50px'}} />
         <UserIntroduce name={name} id={id} />
-        <Shelf title={`${name}님이 올린 영상들`} exercises={exercises} control={ myUserInfo?.nickname == name ? "remove" : "" } />
+        <Shelf title={`${name}님이 올린 운동들`} contents={exercises} control={ myUserInfo?.nickname == name ? "remove" : null } />
         <Footer />
       </>
     );

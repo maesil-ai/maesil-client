@@ -1,10 +1,188 @@
-.title {
-  margin: 45px auto;
-  padding-left: 30px;
-  font-size: 25px;
-  font-weight: 500;
+@import './index.scss';
 
-  height: 40px;
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+#root {
+  padding-bottom: 116px;
+}
+
+html, body, #root {
+  min-height: calc(100vh - 116px);
+  width: 100%;
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
+
+  .title {
+    padding-left: 30px;  
+    height: 32px;
+  }
+
+  .title.large {
+    margin: 45px 25px auto;
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+  .title.small {
+    margin-top: 50px;
+    font-size: 23px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #222222;
+  }
+  
+  >.subtitle {
+    margin: 30px auto;
+    margin-top: -30px;
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: 500;
+  
+    height: 25px;
+  } 
+}
+
+.banner {
+  height: 360px;
+  background: #1E1A14;
+  .bannerImage {
+    position: absolute;
+    left: calc(35% - 400px);
+  }
+
+  .bannerTitle {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 64px;
+    color: white;
+    font-weight: bold;
+    font-size: 36px;
+    text-align: left;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+      width: 60%;
+      text-align: right;
+    }
+  }
+
+  .bannerText {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 132px;
+    color: white;
+    font-weight: normal;
+    font-size: 18px;
+    opacity: 0.6;
+    line-height: 27px;
+    text-align: left;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+      text-align: right;
+    }
+  }
+
+  .bannerButton {
+    position: absolute;
+    left: calc(65% - 200px);
+    top: 240px;
+
+    @media (max-width: $max-tablet-width) {
+      left: auto;
+      right: 10%;
+    }
+  }
+}
+
+.profile {
+  height: 60px;
+
+  .profileName {
+    position: absolute;
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
+    left: 60px;
+    top: 20px;
+  }
+}
+
+.profileBox {
+  border-radius: 42%;
+  overflow: hidden;
+
+  &.small {
+    width: 40px;
+    height: 40px;
+    margin: 3px;
+    margin-top: 15px;
+    position: absolute;
+  }
+
+  &.middle {
+    width: 50px;
+    height: 50px;
+  }
+
+  &.large {
+    width: 400px;
+    height: 400px;
+  }
+
+  .profileImage {
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+  }
+}
+
+.grey {
+  color: grey;
 }
 
 button {
@@ -46,13 +224,27 @@ button {
   }
 }
 
-body {
-  font-family: 'Noto Sans KR';
+input, textarea{ 
+  vertical-align: middle;
+  padding: 0px auto;
   margin: 0px auto;
-  background-color: #eeeeee;
+}
+
+.neonbox {
+  border: 2px solid $color1;
+  box-sizing: border-box;
+  border-radius: 24px;
+  padding: 10px 19px;
+  color: $color1;
+}
+
+body {
+  margin: 0px auto;
+  background-color: #f5f5f5;
 }
 
 * {
+  font-family: 'Noto Sans KR';
   margin: 0;
   padding: 0;
   border: 0;
@@ -90,17 +282,36 @@ div {
   position: relative;
 }
 
-
 footer {
-  height: 100px;
+  height: 96px;
   padding: 10px;
   margin-top: 50px;
-
-  font-size: 11px;
-  border-top: 1px solid #d9d9d9;
   background-color: #353535;
   text-align: left;
   color: rgb(236, 236, 236);
+  display: block;
+  width: calc(100% - 20px);
+  
+  position: absolute;
+  bottom: 0;
+
+  .item {
+    position: relative;
+    float: left;
+  }
+  .logo {
+    top: 21px;
+    left: 32px;
+  }
+
+  .text {
+    left: 80px;
+    top: 21px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 23px;
+  }
 }
 
 video.previewVideo {
@@ -110,4 +321,71 @@ video.previewVideo {
   flex-wrap: nowrap;
   margin: 0px auto;
   position: relative;
+}
+
+.tabs {
+  width: calc(100% - 100px);
+  padding: 0px 85px;
+  margin-bottom: -10px;
+  align-items: flex-start;
+  justify-content: left;
+
+  display: flex;
+
+  font-size: 18px;
+  font-weight: 400;
+
+
+  letter-spacing: 0.1rem;
+  text-align: center;
+
+  button {
+    background-color: transparent;
+    color: #555;
+    font-weight: 400;
+
+    &.active {
+      font-weight: 700;
+      border-bottom: 2px solid $color1;
+    }
+  }
+}
+
+.line {
+  width: 100%;
+  height: 0px;
+  border: 1px black solid;
+  opacity: 0.08;
+}
+
+.contentInfo {
+  width: 100%;
+  padding: 20px 0px;
+
+  h1 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  div {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    color: grey;
+  }
+}
+
+.nobr {
+  white-space: nowrap;
+}
+
+.backgroundGradient {
+  background-color: $main-gradient;
+}
+
+.textGradient {
+  color: $main-gradient;
 }

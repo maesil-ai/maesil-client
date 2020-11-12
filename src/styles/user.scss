@@ -1,3 +1,5 @@
+@import './index.scss';
+
 .userIntroduce {
     text-align: left;
     .userName {
@@ -19,5 +21,16 @@
         margin-bottom: 80px;
         display: flex;
         justify-content: left;
+
+        button {
+            cursor: pointer;
+        }
+        button.active {
+            background: $color1;
+        }
+
+        button.inactive {
+            background: grey;
+        }
     }
 }
